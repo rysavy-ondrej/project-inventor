@@ -1,0 +1,14 @@
+Licence BSD 3-Clause
+Copyright © 2024 FIT VUT, FIT ČVUT
+
+Všechna práva vyhrazena.
+
+Redistribuce a používání zdrojové nebo binární podoby (s úpravou či bez) je povoleno, jsou-li splněny následující podmínky:
+
+Redistribuce zdrojového kódu musí obsahovat výše uvedené oznámení o autorských právech, tento seznam podmínek a následující upozornění ohledně omezení záruk.
+
+Redistribuce v binární podobě musí v dokumentaci a ostatních přiložených materiálech obsahovat výše uvedené oznámení o autorských právech, tento seznam podmínek a následující upozornění ohledně omezení záruk.
+
+Bez předchozího výslovného písemného svolení nelze používat jméno autora ani nikoho z přispěvatelů k propagaci nebo podpoře produktů odvozených od tohoto softwaru.
+
+TENTO SOFTWARE JE POSKYTOVÁN VLASTNÍKY AUTORSKÝCH PRÁV „TAK, JAK JE“. NEJSOU POSKYTOVÁNY ŽÁDNÉ VÝSLOVNÉ ČI DOMNĚLÉ ZÁRUKY, NAPŘÍKLAD PŘEDPOKLÁDANÉ ZÁRUKY OBCHODOVATELNOSTI NEBO VHODNOSTI PRO URČITÝ ÚČEL. VLASTNÍK AUTORSKÝCH PRÁV ANI PŘISPĚVATELÉ NEJSOU ZA ŽÁDNÝCH OKOLNOSTÍ ODPOVĚDNI ZA ŽÁDNÉ PŘÍMÉ, NEPŘÍMÉ, NÁHODNÉ, ZVLÁŠTNÍ, NÁSLEDNÉ ČI EXEMPLÁRNÍ ŠKODY (NAPŘÍKLAD ZA ZTRÁTU DAT, UŠLÝ ZISK, NEMOŽNOST POUŽÍVÁNÍ NEBO PŘERUŠENÍ OBCHODNÍ ČINNOSTI; NEJSOU ODPOVĚDNI ANI ZA ZAJIŠTĚNÍ NÁHRADNÍHO ZBOŽÍ NEBO SLUŽEB) BEZ OHLEDU NA PŘÍČINU, ANI V PŘÍPADĚ TEORETICKÉ ODPOVĚDNOSTI ZAJIŠTĚNÉ SMLOUVOU, PLNOU ODPOVĚDNOSTÍ NEBO PORUŠENÍM ZÁKONA (VČETNĚ NEDBALOSTI A PODOBNĚ), KTERÉ BY MOHLY VZNIKNOUT POUŽÍVÁNÍM SOFTWARU, A TO ANI V PŘÍPADĚ PŘEDCHOZÍHO UPOZORNĚNÍ NA MOŽNÉ ŠKODY.
