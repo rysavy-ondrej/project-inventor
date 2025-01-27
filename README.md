@@ -1,1 +1,1 @@
-# project-inventor
+# Project INVENTOR
