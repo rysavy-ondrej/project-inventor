@@ -2,7 +2,7 @@
 
 ## Monitoring Agent
 
-The Monitoring Agent is a core component of our network monitoring system, designed to execute a range of diagnostic and performance assessments across network infrastructures. Each agent is a robust, stand-alone module capable of running independently across various segments of the network, from edge devices to central servers. These agents actively gather data on network health, efficiency, and security, transmitting this information back to central management systems for analysis and response.
+The [Monitoring Agent](src/agent/) is a core component of our network monitoring system, designed to execute a range of diagnostic and performance assessments across network infrastructures. Each agent is a robust, stand-alone module capable of running independently across various segments of the network, from edge devices to central servers. These agents actively gather data on network health, efficiency, and security, transmitting this information back to central management systems for analysis and response.
 
 Monitoring agents are equipped with the tools to perform both scheduled and on-demand tests, ensuring comprehensive coverage and immediate responsiveness to emerging issues. They are capable of:
 * Automatically detecting and responding to network events or anomalies.
