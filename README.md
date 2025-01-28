@@ -61,3 +61,9 @@ This license does not require you to release the source code of any modification
 © 2025 Flowmon Networks and Brno University of Technology. All rights reserved.
 
 This copyright notice pertains to all the software, documentation, and other materials included in this repository, unless otherwise stated.
+
+## Contributors
+
+The following developers have contributed to this project:
+
+Martin Holkovič, Martin Elich, Jan Pikl, Pavel Podlužanský, Radek Friedl, Michal Pánek, Dias Assatulla, Pavel Horáček, Kristián Kičinka, Václav Korvas, Petr Matoušek, Nelson Mutua, Marko Poľanský, Libor Polčák, Ondřej Ryšavý
