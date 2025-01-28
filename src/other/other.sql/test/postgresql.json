@@ -1,0 +1,9 @@
+{
+    "db_type" : "postgresql",
+    "target_host" : "0.0.0.0",
+    "target_port" : 5432,
+    "dbname" : "testdb",
+    "username" : "postgres",
+    "password" : "mysecretpassword",
+    "query" : ""
+}

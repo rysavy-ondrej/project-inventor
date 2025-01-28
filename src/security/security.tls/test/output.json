@@ -1,0 +1,16 @@
+{
+    "output": {
+        "status": "error",
+        "error": {
+            "error_code": "TLS_TEST_ERROR",
+            "description": "Error running TLS test: 'target_host'"
+        }
+    },
+    "queue": {
+        "status": "error",
+        "error": {
+            "error_code": "TLS_TEST_ERROR",
+            "description": "Error running TLS test: 'target_host'"
+        }
+    }
+}

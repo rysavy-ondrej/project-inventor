@@ -1,0 +1,46 @@
+{
+    "output": {
+        "target_host": "kazi.fit.vutbr.cz",
+        "target_port": "25",
+        "IP_address": "147.229.8.12",
+        "connected_time": "2024-11-22T11:58:56.596428Z",
+        "server_msg": "250-kazi.fit.vutbr.cz Hello static-84-42-180-82.bb.vodafone.cz [84.42.180.82], pleased to meet you",
+        "ehlo_op": {
+            "status_code": "250",
+            "status_msg": "['ENHANCEDSTATUSCODES', 'PIPELINING', 'EXPN', 'VERB', '8BITMIME', 'SIZE 33554432', 'DSN', 'ETRN', 'AUTH PLAIN LOGIN', 'DELIVERBY', 'HELP']",
+            "SIZE": "32.0 MB"
+        },
+        "noop_op": {
+            "status_code": "250",
+            "status_msg": "b'2.0.0 OK'"
+        },
+        "response_time": "0.019s",
+        "quit_op": {
+            "status_code": "221",
+            "status_msg": "b'2.0.0 kazi.fit.vutbr.cz closing connection'"
+        },
+        "duration": "0.246s"
+    },
+    "queue": {
+        "target_host": "kazi.fit.vutbr.cz",
+        "target_port": "25",
+        "IP_address": "147.229.8.12",
+        "connected_time": "2024-11-22T11:58:56.596428Z",
+        "server_msg": "250-kazi.fit.vutbr.cz Hello static-84-42-180-82.bb.vodafone.cz [84.42.180.82], pleased to meet you",
+        "ehlo_op": {
+            "status_code": "250",
+            "status_msg": "['ENHANCEDSTATUSCODES', 'PIPELINING', 'EXPN', 'VERB', '8BITMIME', 'SIZE 33554432', 'DSN', 'ETRN', 'AUTH PLAIN LOGIN', 'DELIVERBY', 'HELP']",
+            "SIZE": "32.0 MB"
+        },
+        "noop_op": {
+            "status_code": "250",
+            "status_msg": "b'2.0.0 OK'"
+        },
+        "response_time": "0.019s",
+        "quit_op": {
+            "status_code": "221",
+            "status_msg": "b'2.0.0 kazi.fit.vutbr.cz closing connection'"
+        },
+        "duration": "0.246s"
+    }
+}

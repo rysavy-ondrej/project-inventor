@@ -1,0 +1,22 @@
+{
+    "output": {
+        "target_host": "ftp.gnu.org",
+        "IP_address": "2001:470:142:3::b",
+        "connected_time": "2024-11-22T11:26:14.220344Z",
+        "welcome_op": "220 GNU FTP server ready.",
+        "login_op": "Failed: 530 Please login with USER and PASS.",
+        "response_time": "0.118s",
+        "quit_op": "221 Goodbye.",
+        "duration": "0.536s"
+    },
+    "queue": {
+        "target_host": "ftp.gnu.org",
+        "IP_address": "2001:470:142:3::b",
+        "connected_time": "2024-11-22T11:26:14.220344Z",
+        "welcome_op": "220 GNU FTP server ready.",
+        "login_op": "Failed: 530 Please login with USER and PASS.",
+        "response_time": "0.118s",
+        "quit_op": "221 Goodbye.",
+        "duration": "0.536s"
+    }
+}

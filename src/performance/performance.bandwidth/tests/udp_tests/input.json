@@ -1,0 +1,8 @@
+{
+    "host": "nyc.speedtest.is.cc",
+    "port": "5202",
+    "protocol": "udp",
+    "duration": "10",
+    "reverse": "false"
+  }
+  

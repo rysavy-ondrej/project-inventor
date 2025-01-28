@@ -1,0 +1,40 @@
+{
+    "output": {
+        "run_id": 1,
+        "status": "success",
+        "data": {
+            "connection_time": 14.759540557861328,
+            "upload_time": 236.7875576019287,
+            "download_time": 2.276182174682617,
+            "upload_size": 0.95367431640625,
+            "download_size": 0.95367431640625,
+            "query_time": 15.404224395751953,
+            "rows": [
+                {
+                    "_id": "6756e90f18f357da9131c015",
+                    "name": "Alice",
+                    "age": "25"
+                }
+            ]
+        }
+    },
+    "queue": {
+        "run_id": 1,
+        "status": "success",
+        "data": {
+            "connection_time": 14.759540557861328,
+            "upload_time": 236.7875576019287,
+            "download_time": 2.276182174682617,
+            "upload_size": 0.95367431640625,
+            "download_size": 0.95367431640625,
+            "query_time": 15.404224395751953,
+            "rows": [
+                {
+                    "_id": "6756e90f18f357da9131c015",
+                    "name": "Alice",
+                    "age": "25"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,5 @@
+{
+  "target_hosts": ["example.com", "vutbr.cz"],
+  "query_type" : "A",
+  "nameservers": ["188.116.92.133"]
+}

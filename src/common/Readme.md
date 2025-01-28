@@ -1,0 +1,1 @@
+This folder contains common code shared by various scripts.

@@ -1,0 +1,8 @@
+{
+  "target_url": "https://httpbin.org/post",
+  "http_method": "POST",
+  "follow_redirects": true,
+  "match_data": "{\"headers\": {\"Accept\": \"*/*\", \"Host\": \"https://httpbin.org\"}}",
+  "match_scope": "partial"
+}
+

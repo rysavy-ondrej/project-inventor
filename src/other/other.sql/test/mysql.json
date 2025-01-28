@@ -1,0 +1,9 @@
+{
+    "db_type": "mysql",
+    "dbname": "testdb",
+    "username": "root",
+    "password": "mysecretpassword",
+    "target_host": "localhost",
+    "target_port": 3306,
+    "query" : ""
+}

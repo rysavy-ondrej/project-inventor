@@ -1,0 +1,8 @@
+{
+    "host": "105.235.237.2",
+    "port": "5201",
+    "protocol": "tcp",
+    "duration": "10",
+    "reverse": "false"
+  }
+  

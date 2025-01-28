@@ -1,0 +1,4 @@
+{
+    "target_host": "test.mosquitto.org",
+    "topic_names": "$SYS/broker/version,$SYS/broker/uptime"
+}

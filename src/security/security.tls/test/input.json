@@ -1,0 +1,23 @@
+{
+    "target_host": "www.example.com",
+    "target_port": 443,
+    "tls_version": "TLSv1.2",
+    "cipher_suites": [
+        "ECDHE-ECDSA-AES256-GCM-SHA384",
+        "ECDHE-RSA-AES256-GCM-SHA384"
+    ],
+    "elliptic_curves": [
+        "prime256v1"
+    ],
+    "extensions": [
+        {
+            "type": "sni",
+            "data": "example.com"
+        },
+        {
+            "type": "alpn",
+            "data": ["spdy/2", "http/1.1"]
+        }
+    ],
+    "timeout": 6 
+}

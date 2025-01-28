@@ -1,0 +1,112 @@
+{
+    "output": {
+        "run_id": 1,
+        "status": "completed",
+        "summary": {
+            "total_tests": 2,
+            "successful_tests": 2,
+            "failed_tests": 0,
+            "response_time_avg": 67.4688,
+            "response_time_min": 62.2821,
+            "response_time_max": 72.6554,
+            "resolution_type": "A"
+        },
+        "details": [
+            {
+                "target_host": "example.com.",
+                "IP_address": [
+                    "93.184.215.14"
+                ],
+                "expiration_time": 2636,
+                "response_time": 72.6554,
+                "status": "success",
+                "status_code": "NOERROR",
+                "nameservers_used": [
+                    "188.116.92.133"
+                ],
+                "ds": "N/A",
+                "cname": "N/A",
+                "ns": "N/A",
+                "soa": "N/A",
+                "caa": "N/A",
+                "dnskey": "N/A",
+                "rrsig": "N/A"
+            },
+            {
+                "target_host": "vutbr.cz.",
+                "IP_address": [
+                    "147.229.2.90"
+                ],
+                "expiration_time": 299,
+                "response_time": 62.2821,
+                "status": "success",
+                "status_code": "NOERROR",
+                "nameservers_used": [
+                    "188.116.92.133"
+                ],
+                "ds": "N/A",
+                "cname": "N/A",
+                "ns": "N/A",
+                "soa": "N/A",
+                "caa": "N/A",
+                "dnskey": "N/A",
+                "rrsig": "N/A"
+            }
+        ]
+    },
+    "queue": {
+        "run_id": 1,
+        "status": "completed",
+        "summary": {
+            "total_tests": 2,
+            "successful_tests": 2,
+            "failed_tests": 0,
+            "response_time_avg": 67.4688,
+            "response_time_min": 62.2821,
+            "response_time_max": 72.6554,
+            "resolution_type": "A"
+        },
+        "details": [
+            {
+                "target_host": "example.com.",
+                "IP_address": [
+                    "93.184.215.14"
+                ],
+                "expiration_time": 2636,
+                "response_time": 72.6554,
+                "status": "success",
+                "status_code": "NOERROR",
+                "nameservers_used": [
+                    "188.116.92.133"
+                ],
+                "ds": "N/A",
+                "cname": "N/A",
+                "ns": "N/A",
+                "soa": "N/A",
+                "caa": "N/A",
+                "dnskey": "N/A",
+                "rrsig": "N/A"
+            },
+            {
+                "target_host": "vutbr.cz.",
+                "IP_address": [
+                    "147.229.2.90"
+                ],
+                "expiration_time": 299,
+                "response_time": 62.2821,
+                "status": "success",
+                "status_code": "NOERROR",
+                "nameservers_used": [
+                    "188.116.92.133"
+                ],
+                "ds": "N/A",
+                "cname": "N/A",
+                "ns": "N/A",
+                "soa": "N/A",
+                "caa": "N/A",
+                "dnskey": "N/A",
+                "rrsig": "N/A"
+            }
+        ]
+    }
+}

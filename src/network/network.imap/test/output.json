@@ -1,0 +1,30 @@
+{
+    "output": {
+        "target_host": "kazi.fit.vutbr.cz",
+        "target_port": "993",
+        "IP_address": "2001:67c:1220:808::93e5:80c",
+        "protocol_version": "IMAP4REV1",
+        "connected_time": "2024-11-22T11:27:38.236504Z",
+        "noop_op": {
+            "status_code": "OK",
+            "status_msg": "[b'NOOP completed.']"
+        },
+        "response_time": "0.019s",
+        "server_msg": "('OK', [b'IMAP4rev1 SASL-IR LOGIN-REFERRALS ID ENABLE IDLE LITERAL+ AUTH=PLAIN AUTH=LOGIN'])",
+        "duration": "1.471s"
+    },
+    "queue": {
+        "target_host": "kazi.fit.vutbr.cz",
+        "target_port": "993",
+        "IP_address": "2001:67c:1220:808::93e5:80c",
+        "protocol_version": "IMAP4REV1",
+        "connected_time": "2024-11-22T11:27:38.236504Z",
+        "noop_op": {
+            "status_code": "OK",
+            "status_msg": "[b'NOOP completed.']"
+        },
+        "response_time": "0.019s",
+        "server_msg": "('OK', [b'IMAP4rev1 SASL-IR LOGIN-REFERRALS ID ENABLE IDLE LITERAL+ AUTH=PLAIN AUTH=LOGIN'])",
+        "duration": "1.471s"
+    }
+}

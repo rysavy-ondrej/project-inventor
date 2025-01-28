@@ -1,0 +1,19 @@
+{
+    "db_type": "dynamodb",
+    "target_host": "0.0.0.0",
+    "target_port": 8000,
+    "dbname": "testdb",
+    "username": "fakeAccessKeyId",
+    "password": "fakeSecretAccessKey",
+    "region": "us-west-2",
+    "query": {
+        "table_name": "users",
+        "key_condition_expression": "#id = :id",
+        "expression_attribute_names": {
+            "#id": "id"
+        },
+        "expression_attribute_values": {
+            ":id": {"S": "12345"}
+        }
+    }
+}

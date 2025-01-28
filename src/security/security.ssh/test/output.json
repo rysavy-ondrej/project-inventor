@@ -1,0 +1,18 @@
+{
+    "output": {
+        "target_host": "eva.fit.vutbr.cz",
+        "IP_address": "2001:67c:1220:8b0::93e5:b00e",
+        "connected_time": "2024-11-22T12:01:57.186182Z",
+        "ssh_banner": "SSH-2.0-OpenSSH_9.9\r\n",
+        "response_time": "0.027s",
+        "duration": "0.082s"
+    },
+    "queue": {
+        "target_host": "eva.fit.vutbr.cz",
+        "IP_address": "2001:67c:1220:8b0::93e5:b00e",
+        "connected_time": "2024-11-22T12:01:57.186182Z",
+        "ssh_banner": "SSH-2.0-OpenSSH_9.9\r\n",
+        "response_time": "0.027s",
+        "duration": "0.082s"
+    }
+}

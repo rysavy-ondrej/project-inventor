@@ -1,0 +1,7 @@
+{
+    "target_host": "8.8.8.8",
+    "packet_size": 200,
+    "packet_count": 2,
+    "interpacket_delay": 3,
+    "timeout": 5
+}

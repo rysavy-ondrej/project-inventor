@@ -1,0 +1,5 @@
+{
+    "target_host": "kazi.fit.vutbr.cz",
+    "target_port": "25",
+    "send_email_flag": "False"
+}

@@ -1,0 +1,9 @@
+{
+    "db_type" : "redis",
+    "target_host" : "0.0.0.0",
+    "target_port" : 6379,
+    "dbname" : "testdb",
+    "username" : "default",
+    "password" : "mysecretpassword",
+    "query" : "SET name 'Alice'"
+}

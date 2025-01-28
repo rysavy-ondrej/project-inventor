@@ -1,0 +1,9 @@
+{
+    "db_type": "oracle",
+    "dbname": "testdb",
+    "username": "system",
+    "password": "oracle",
+    "target_host": "localhost",
+    "target_port": 1521,
+    "query" : ""
+}

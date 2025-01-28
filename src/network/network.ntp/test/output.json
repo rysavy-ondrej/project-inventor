@@ -1,0 +1,34 @@
+{
+    "output": {
+        "target_host": "tik.cesnet.cz",
+        "IP_address": "195.113.144.201",
+        "connected_time": "2024-11-22T11:58:02.884535Z",
+        "delay": "0.021407127380371094",
+        "offset": "-10.703453540802002",
+        "leap_indicator": "no warning",
+        "stratum": "1",
+        "refid": "ATOM",
+        "root_delay": "0.0",
+        "root_dispersion": "0.0009918212890625",
+        "precision": "-23",
+        "tx_time": "2024-11-22T11:57:52.169491Z",
+        "recv_time": "2024-11-22T11:57:52.169408Z",
+        "dest_time": "2024-11-22T11:58:02.883648Z"
+    },
+    "queue": {
+        "target_host": "tik.cesnet.cz",
+        "IP_address": "195.113.144.201",
+        "connected_time": "2024-11-22T11:58:02.884535Z",
+        "delay": "0.021407127380371094",
+        "offset": "-10.703453540802002",
+        "leap_indicator": "no warning",
+        "stratum": "1",
+        "refid": "ATOM",
+        "root_delay": "0.0",
+        "root_dispersion": "0.0009918212890625",
+        "precision": "-23",
+        "tx_time": "2024-11-22T11:57:52.169491Z",
+        "recv_time": "2024-11-22T11:57:52.169408Z",
+        "dest_time": "2024-11-22T11:58:02.883648Z"
+    }
+}

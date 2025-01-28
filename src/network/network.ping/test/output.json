@@ -1,0 +1,68 @@
+{
+    "output": {
+        "run_id": 1,
+        "status": "completed",
+        "summary": {
+            "IP_address": "8.8.8.8",
+            "pkts_send": 2,
+            "pkts_received": 2,
+            "pkts_lost": 0.0,
+            "rtt_min": 37.779,
+            "rtt_max": 85.885,
+            "rtt_avg": 61.832,
+            "rtt_stddev": 34.016,
+            "jitter": 48.106
+        },
+        "details": [
+            {
+                "connected_time": "2024-12-01T14:17:19.265050Z",
+                "response_time": "2024-12-01T14:17:19.350935Z",
+                "rtt": 85.885,
+                "bytes_received": 208,
+                "status_msg": "Echo Reply",
+                "status_code": 0
+            },
+            {
+                "connected_time": "2024-12-01T14:17:19.351288Z",
+                "response_time": "2024-12-01T14:17:19.389067Z",
+                "rtt": 37.779,
+                "bytes_received": 208,
+                "status_msg": "Echo Reply",
+                "status_code": 0
+            }
+        ]
+    },
+    "queue": {
+        "run_id": 1,
+        "status": "completed",
+        "summary": {
+            "IP_address": "8.8.8.8",
+            "pkts_send": 2,
+            "pkts_received": 2,
+            "pkts_lost": 0.0,
+            "rtt_min": 37.779,
+            "rtt_max": 85.885,
+            "rtt_avg": 61.832,
+            "rtt_stddev": 34.016,
+            "jitter": 48.106
+        },
+        "details": [
+            {
+                "connected_time": "2024-12-01T14:17:19.265050Z",
+                "response_time": "2024-12-01T14:17:19.350935Z",
+                "rtt": 85.885,
+                "bytes_received": 208,
+                "status_msg": "Echo Reply",
+                "status_code": 0
+            },
+            {
+                "connected_time": "2024-12-01T14:17:19.351288Z",
+                "response_time": "2024-12-01T14:17:19.389067Z",
+                "rtt": 37.779,
+                "bytes_received": 208,
+                "status_msg": "Echo Reply",
+                "status_code": 0
+            }
+        ]
+    }
+}

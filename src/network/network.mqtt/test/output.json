@@ -1,0 +1,24 @@
+{
+    "output": {
+        "target_host": "test.mosquitto.org",
+        "IP_address": "5.196.78.28",
+        "response_time": 0.044,
+        "is_connected": true,
+        "connected_time": "2024-11-25T17:40:41.134277Z",
+        "reason_code_list": "[ReasonCode(Suback, 'Granted QoS 0')]",
+        "$SYS/broker/version": "b'mosquitto version 2.1.0'",
+        "$SYS/broker/uptime": "b'418992 seconds'",
+        "duration": 1.78
+    },
+    "queue": {
+        "target_host": "test.mosquitto.org",
+        "IP_address": "5.196.78.28",
+        "response_time": 0.044,
+        "is_connected": true,
+        "connected_time": "2024-11-25T17:40:41.134277Z",
+        "reason_code_list": "[ReasonCode(Suback, 'Granted QoS 0')]",
+        "$SYS/broker/version": "b'mosquitto version 2.1.0'",
+        "$SYS/broker/uptime": "b'418992 seconds'",
+        "duration": 1.78
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "output": {
+        "run_id": 1,
+        "status": "success",
+        "data": {
+            "connection_time": 11.7514,
+            "upload_time": 284.4956,
+            "download_time": 5.1486,
+            "upload_size": 0.9537,
+            "download_size": 0.9537,
+            "complex_query_time": 1.6002,
+            "query_result": null,
+            "query_time": null
+        }
+    },
+    "queue": {
+        "run_id": 1,
+        "status": "success",
+        "data": {
+            "connection_time": 11.7514,
+            "upload_time": 284.4956,
+            "download_time": 5.1486,
+            "upload_size": 0.9537,
+            "download_size": 0.9537,
+            "complex_query_time": 1.6002,
+            "query_result": null,
+            "query_time": null
+        }
+    }
+}

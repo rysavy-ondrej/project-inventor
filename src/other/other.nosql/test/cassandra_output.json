@@ -1,0 +1,24 @@
+{
+    "output": {
+        "run_id": 1,
+        "status": "success",
+        "data": {
+            "connection_time": 0.9043216705322266,
+            "upload_time": 1093.2846069335938,
+            "download_time": 37.8422737121582,
+            "upload_size": 0.95367431640625,
+            "download_size": 0.95367431640625
+        }
+    },
+    "queue": {
+        "run_id": 1,
+        "status": "success",
+        "data": {
+            "connection_time": 0.9043216705322266,
+            "upload_time": 1093.2846069335938,
+            "download_time": 37.8422737121582,
+            "upload_size": 0.95367431640625,
+            "download_size": 0.95367431640625
+        }
+    }
+}

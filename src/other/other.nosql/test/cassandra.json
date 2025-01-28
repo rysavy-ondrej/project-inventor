@@ -1,0 +1,9 @@
+{
+    "db_type" : "cassandra",
+    "target_host" : "0.0.0.0",
+    "target_port" : 9042,
+    "dbname" : "testdb",
+    "username" : "cassandrauser",
+    "password" : "mysecretpassword",
+    "query" : ""
+}

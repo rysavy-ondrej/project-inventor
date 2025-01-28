@@ -1,0 +1,9 @@
+{
+  "target_url": "https://mocktarget.apigee.net/xml",
+  "http_method": "GET",
+  "follow_redirects": true,
+  "match_type": "XML",
+  "match_data": "<root><city>San Jose</city></root>",
+  "match_scope": "partial"
+}
+

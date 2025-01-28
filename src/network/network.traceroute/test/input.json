@@ -1,0 +1,7 @@
+{
+    "target_host": "8.8.8.8",
+    "ttl_max": 10,
+    "packet_size": 200,
+    "timeout": 3,
+    "repeats": 1
+}
