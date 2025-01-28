@@ -5,10 +5,9 @@
 The [Monitoring Agent](src/agent/) is a core component of our network monitoring system, designed to execute a range of diagnostic and performance assessments across network infrastructures. Each agent is a robust, stand-alone module capable of running independently across various segments of the network, from edge devices to central servers. These agents actively gather data on network health, efficiency, and security, transmitting this information back to central management systems for analysis and response.
 
 Monitoring agents are equipped with the tools to perform both scheduled and on-demand tests, ensuring comprehensive coverage and immediate responsiveness to emerging issues. They are capable of:
-* Automatically detecting and responding to network events or anomalies.
-* Executing predefined and custom test scripts based on network conditions.
+* Automatically detecting network events or anomalies.
 * Collecting and forwarding detailed logs and metrics for centralized analysis.
-* Updating their configurations dynamically from a central repository to adapt to new testing requirements or network changes.
+* Updating their configurations from a central repository to adapt to new testing requirements or network changes.
 
 Agents are designed to be lightweight and easily deployable on a variety of hardware and network environments, including virtual machines, dedicated hardware, and cloud platforms. The deployment process is streamlined to support rapid scaling, allowing network administrators to swiftly increase monitoring capabilities in response to expanding network infrastructure or escalating demand.
 
