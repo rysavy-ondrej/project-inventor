@@ -53,7 +53,7 @@ This project is licensed under the BSD-3-Clause License, which grants broad perm
    
 2. **Redistributions in binary form** must reproduce the above copyright notice, this list of conditions, and the following disclaimer in the documentation and/or other materials provided with the distribution.
    
-3. **Neither the name of Flown Networks, Brno University of Technology nor the names of its contributors** may be used to endorse or promote products derived from this software without specific prior written permission.
+3. **Neither the name of Flowmon Networks, Brno University of Technology nor the names of its contributors** may be used to endorse or promote products derived from this software without specific prior written permission.
 
 This license does not require you to release the source code of any modifications you make to the software, but it does not permit proprietary licensing, meaning any derivative work must also be licensed under BSD-3.
 
