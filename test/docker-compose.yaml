@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  network-monitors:
+    build: 
+      context: ..
+      dockerfile: Dockerfile
+
+    command: ["/app/run.sh"]
