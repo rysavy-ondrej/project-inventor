@@ -1,0 +1,75 @@
+monitors:
+  - name: network.ping
+    module: network_ping
+    exec: src/network/network.ping
+
+schedule:
+  - test: network.ping
+    write-to: network.ping.vutbr.json 
+    targets:  
+        - { "target_host": "www.vut.cz", "packet_size": 200, "packet_count": 5, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.fce.vutbr.cz", "packet_size": 200, "packet_count": 5, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.fsi.vutbr.cz", "packet_size": 200, "packet_count": 5, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.fekt.vutbr.cz", "packet_size": 200, "packet_count": 5, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.fa.vutbr.cz", "packet_size": 200, "packet_count": 5, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.fch.vutbr.cz", "packet_size": 200, "packet_count": 5, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.favu.vutbr.cz", "packet_size": 200, "packet_count": 5, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.fit.vut.cz", "packet_size": 200, "packet_count": 5, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.cesa.vut.cz", "packet_size": 200, "packet_count": 5, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.ceitec.cz", "packet_size": 200, "packet_count": 5, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 30s
+
+  - test: network.ping
+    write-to: network.ping.internet.json 
+    targets:  
+        - { "target_host": "google.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "youtube.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "facebook.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "amazon.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "wikipedia.org", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "twitter.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "instagram.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "linkedin.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "yahoo.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "reddit.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "netflix.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "ebay.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "bing.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "pinterest.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "microsoft.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "live.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "tiktok.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "wordpress.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "stackoverflow.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "github.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "quora.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "apple.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "cnn.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "nytimes.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "office.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "paypal.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "dropbox.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "adobe.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "slack.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "spotify.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "tumblr.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "whatsapp.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "vk.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "indeed.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "bbc.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "imdb.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "booking.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "tripadvisor.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "weather.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "costco.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "target.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "walmart.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "homedepot.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "bestbuy.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "yelp.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "etsy.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "uber.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "airbnb.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "zoom.us", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "salesforce.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 1m

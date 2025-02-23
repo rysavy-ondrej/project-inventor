@@ -1,5 +1,6 @@
 import json
 import sys
+from multiprocessing import Queue
 
 def load_config(file):
     """
@@ -18,7 +19,9 @@ def load_config(file):
         print(f"Error: The source contains invalid JSON.")
         return None
 
-
+def run(params : dict, run_id : int, queue : Queue = None) -> dict:
+    res = { "Config" : params, "Status" : "Done" }
+    return res
 
 def main():
     # Check if a file path argument is provided in command line

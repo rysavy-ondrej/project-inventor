@@ -9,7 +9,7 @@ docker==7.1.0
 easysnmp==0.2.6
 fastapi~=0.109.2
 icmplib==3.0.4
-iperf3==3.0
+iperf3
 ldap3==2.9.1
 mock-open
 mysql-connector-python==8.4.0
@@ -27,7 +27,6 @@ pymongo==4.8.0
 pymssql==2.3.0
 pyodbc==5.0.1
 pytest-asyncio
-pytest==8.1.1
 pytest~=8.2.2
 python-jose~=3.3.0
 python-multipart~=0.0.9

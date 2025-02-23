@@ -1,0 +1,23 @@
+monitors:
+  - name: dummy.test
+    module: dummy
+    exec: src/common/dummy
+
+schedule:
+  - test: dummy.test
+    write-to: dummy-1.json   
+    targets:  
+        - { "foo" : 1, "bar" : "abc" }
+        - { "foo" : 2, "bar" : "def" }
+        - { "foo" : 3, "bar" : "ghi" }
+        - { "foo" : 4, "bar" : "jkl" }
+        - { "foo" : 5, "bar" : "mno" }
+    repeat-every: 5s
+
+  - test: dummy.test
+    write-to: dummy-2.json 
+    targets:  
+        - { "foo" : 1, "bar" : "abc" }
+        - { "foo" : 2, "bar" : "def" }
+        - { "foo" : 3, "bar" : "ghi" }
+    repeat-every: 10s
