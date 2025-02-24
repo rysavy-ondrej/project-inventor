@@ -5,7 +5,7 @@ monitors:
 
 schedule:
   - test: dummy.test
-    write-to: dummy-1.json   
+    write-to: dummy-1     # the filename will be appended by date and json
     targets:  
         - { "foo" : 1, "bar" : "abc" }
         - { "foo" : 2, "bar" : "def" }
@@ -15,7 +15,7 @@ schedule:
     repeat-every: 5s
 
   - test: dummy.test
-    write-to: dummy-2.json 
+    write-to: dummy-2 
     targets:  
         - { "foo" : 1, "bar" : "abc" }
         - { "foo" : 2, "bar" : "def" }

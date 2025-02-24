@@ -127,10 +127,12 @@ try {
     Write-Host "Running test execution loop..."
     while ($true) {
         $now = Get-Date
+        $formattedNow = $now.ToString("yyyy-MM-dd")
         Write-Host "Checking jobs to run [$now]..."
         foreach ($job in $jobs) {
+            
             # Check if the job is due to run.
-            if (($now - $job.LastRun).TotalSeconds -ge $job.Interval -and $job.JobObject -eq $null) {
+            if (($now - $job.LastRun).TotalSeconds -ge $job.Interval -and $null -eq $job.JobObject) {
                 Write-Host "  Launching $($job.Name).$($job.Id), seconds since last run: $(($now - $job.LastRun).TotalSeconds), expected $($job.Interval)"
                 # Start the external Python script.
                 $job.JobObject = Start-ThreadJob -StreamingHost $Host -ScriptBlock {
@@ -138,8 +140,10 @@ try {
                     $cmd = $job.PythonCmd -replace '"', "'"
                     $path = $job.Location
                     $tempFile = [System.IO.Path]::GetTempFileName()
+                    $outfilePath = "$($job.ResultsFile).$($using:formattedNow).json"
                     Start-Process -FilePath "python3" -ArgumentList "-c `"$cmd`"" -WorkingDirectory $path -RedirectStandardOutput $tempFile -Wait
-                    Get-Content $tempFile | Add-Content -Path $job.ResultsFile
+                    Write-Host "  Append results to $outfilePath" 
+                    Get-Content $tempFile | Add-Content -Path $outfilePath
                     Remove-Item $tempFile
                 }
                 # Update the job's LastRun time.
