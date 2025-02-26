@@ -1,1 +1,0 @@
-Get-EventSubscriber -Force | Where-Object { $_.SourceIdentifier -like "Inventor.TimerEvent*" } | Unregister-Event -Force

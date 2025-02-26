@@ -142,8 +142,18 @@ try {
                     $tempFile = [System.IO.Path]::GetTempFileName()
                     $outfilePath = "$($job.ResultsFile).$($using:formattedNow).json"
                     Start-Process -FilePath "python3" -ArgumentList "-c `"$cmd`"" -WorkingDirectory $path -RedirectStandardOutput $tempFile -Wait
-                    Write-Host "  Append results to $outfilePath" 
-                    Get-Content $tempFile | Add-Content -Path $outfilePath
+                    Write-Host "  $($job.Name).$($job.Id) finished. Append results to $outfilePath." 
+
+                    # Get the test ouput from temp file
+                    $jsonObject = Get-Content $tempFile | ConvertFrom-Json
+                
+                    # Add timestamp property:
+                    $timestamp = $(Get-Date).ToString("yyyy-MM-ddTHH:mm:ss")
+                    $jsonObject | Add-Member -Name 'Timestamp' -Type NoteProperty -Value $timestamp 
+                    # Add source property:
+                    # TODO: where to get this value? environment variable? which one?
+
+                    $jsonObject | ConvertTo-Json -Compress | Add-Content -Path $outfilePath
                     Remove-Item $tempFile
                 }
                 # Update the job's LastRun time.
