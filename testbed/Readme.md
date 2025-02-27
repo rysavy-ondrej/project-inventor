@@ -49,7 +49,7 @@ monitors:
 
 schedule:
   - test: network.ping
-    write-to: network.ping.vutbr.json 
+    write-to: network.ping.vutbr 
     targets:  
         - { "target_host": "www.vut.cz", "packet_size": 200, "packet_count": 5, "interpacket_delay": 1, "timeout": 5 }
         - { "target_host": "www.fce.vutbr.cz", "packet_size": 200, "packet_count": 5, "interpacket_delay": 1, "timeout": 5 }
@@ -58,7 +58,7 @@ schedule:
     repeat-every: 30s
 
   - test: network.ping
-    write-to: network.ping.internet.json
+    write-to: network.ping.internet
     omit-fields: [ "rtt_stddev" ]  
     hash-fields: [ { src: "IP_address", trg: "IP_address-hash" } ]  
     targets:  
