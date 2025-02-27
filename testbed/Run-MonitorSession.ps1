@@ -119,9 +119,14 @@ try {
                 Name          = $test.test
                 LastRun       = (Get-Date).AddSeconds($randomDelay)
                 JobObject     = $null
+                OmitProperties = $test["omit-fields"]
+                HashProperties = $test["hash-fields"]
             }
         }
     }
+
+    $md5 = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
+    $utf8 = New-Object -TypeName System.Text.UTF8Encoding
 
     Write-Host "Found $($jobs.Count) tests."
     Write-Host "Running test execution loop..."
@@ -152,6 +157,25 @@ try {
                     $jsonObject | Add-Member -Name 'Timestamp' -Type NoteProperty -Value $timestamp 
                     # Add source property:
                     # TODO: where to get this value? environment variable? which one?
+
+                    # Hash properties:
+                    foreach($hashProp in $job.HashProperties) {
+                        $md5 = $using:md5
+                        $utf8 = $using:utf8
+                        $str = $jsonObject."$($hashProp.src)"
+                        if ($null -ne $str)
+                        {                    
+                            $hash = [System.BitConverter]::ToString($md5.ComputeHash($utf8.GetBytes($str))).Replace('-','')
+                            $jsonObject | Add-Member -Name $hashProp.trg -Type NoteProperty -Value $hash
+                        }
+                        else {
+                            Write-Host "  Error: Hash: Cannot make hash: $($hashProp.src) -> $($hashProp.trg). Property $($hashProp.src) does not exists or is empty."
+                        }
+                    }                    
+                    # Omit properties:
+                    foreach($omit in $job.OmitProperties) {
+                        $jsonObject.PSObject.Properties.Remove($omit) 
+                    }
 
                     $jsonObject | ConvertTo-Json -Compress | Add-Content -Path $outfilePath
                     Remove-Item $tempFile

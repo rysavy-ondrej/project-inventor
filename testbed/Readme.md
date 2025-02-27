@@ -33,7 +33,8 @@ This section specifies how and when the tests should be executed. Each scheduled
 - **write-to**: The file name where the test output will be stored.
 - **targets**: An array of target objects. Each target contains the parameters for an individual test execution. This has form of JSON input expected by the test.
 - **repeat-every**: A time interval (e.g., `"30s"`, `"1m"`) that determines how often the test session should be repeated.
-
+- **omit-fields**: Removes the specified fields from the outpu JSON. This is an array of fields.
+- **hash-fields**: Compute a new fields as MD5 hash fo the specified field. This is an arrayf of `{"src": SOURCE-FIELD-NAME, "trg": HASH_FIELD-NAME }` objects.
 Customize each test session by adjusting the targets and timing parameters to suit your monitoring requirements. Use the `write-to` property to specify distinct output files for different sessions.
 
 ## Example Configuration
@@ -57,7 +58,9 @@ schedule:
     repeat-every: 30s
 
   - test: network.ping
-    write-to: network.ping.internet.json 
+    write-to: network.ping.internet.json
+    omit-fields: [ "rtt_stddev" ]  
+    hash-fields: [ { src: "IP_address", trg: "IP_address-hash" } ]  
     targets:  
         - { "target_host": "google.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
         - { "target_host": "youtube.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }

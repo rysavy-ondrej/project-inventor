@@ -20,7 +20,8 @@ def load_config(file):
         return None
 
 def run(params : dict, run_id : int, queue : Queue = None) -> dict:
-    res = { "Config" : params, "Status" : "Done" }
+    res = params
+    res["Status"]= "Done"
     return res
 
 def main():

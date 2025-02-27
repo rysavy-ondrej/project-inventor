@@ -20,7 +20,7 @@ schedule:
     repeat-every: 30s
 
   - test: network.ping
-    write-to: network.ping.internet 
+    write-to: network.ping.internet
     targets:  
         - { "target_host": "google.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
         - { "target_host": "youtube.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }

@@ -15,9 +15,11 @@ schedule:
     repeat-every: 5s
 
   - test: dummy.test
-    write-to: dummy-2 
+    write-to: dummy-2
+    omit-fields: [ "foo1", "bar" ]  
+    hash-fields: [ { src: "bar", trg: "bar-hash" } ] 
     targets:  
-        - { "foo" : 1, "bar" : "abc" }
-        - { "foo" : 2, "bar" : "def" }
-        - { "foo" : 3, "bar" : "ghi" }
-    repeat-every: 10s
+        - { "foo" : 1, "foo1" : 1, "foo2" : 1, "bar" : "abc" }
+        - { "foo" : 2, "foo1" : 1, "foo2" : 1, "bar" : "def" }
+        - { "foo" : 3, "foo1" : 1, "foo2" : 1, "bar" : "ghi" }
+    repeat-every: 5s
