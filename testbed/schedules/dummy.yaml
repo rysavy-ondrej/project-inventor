@@ -7,11 +7,11 @@ schedule:
   - test: dummy.test
     write-to: dummy-1     # the filename will be appended by date and json
     targets:  
-        - { "foo" : 1, "bar" : "abc" }
-        - { "foo" : 2, "bar" : "def" }
-        - { "foo" : 3, "bar" : "ghi" }
-        - { "foo" : 4, "bar" : "jkl" }
-        - { "foo" : 5, "bar" : "mno" }
+        - { "foo" : 1, "bar" : "abc", "switch" : true }
+        - { "foo" : 2, "bar" : "def", "switch" : false }
+        - { "foo" : 3, "bar" : "ghi", "switch" : true }
+        - { "foo" : 4, "bar" : "jkl", "switch" : false }
+        - { "foo" : 5, "bar" : "mno", "switch" : true }
     repeat-every: 5s
 
   - test: dummy.test

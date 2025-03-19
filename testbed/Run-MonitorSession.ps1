@@ -14,9 +14,6 @@
 .EXAMPLE
     .\Run-MonitorSession.ps1 -TestSuiteFile "./schedules/config.yaml" -OutPath "./results"
 
-.NOTES
-    Author: Your Name
-    Date: Today's Date
 #>
 
 param (    
@@ -67,6 +64,13 @@ if (-not (Test-Path -Path $TestSuiteFile)) {
     Write-Error "The configuration file '$TestSuiteFile' does not exist."
     exit 1
 }
+
+# Test if the output folder exists
+if (-not (Test-Path -Path $OutPath)) {
+    Write-Host "The output folder '$OutPath' does not exist. Creating it..."
+    New-Item -ItemType Directory -Path $OutPath
+}
+
 try {
 
     $rootFolder = Split-Path -Path (Get-Location) -Parent
@@ -143,9 +147,12 @@ try {
                 $job.JobObject = Start-ThreadJob -StreamingHost $Host -ScriptBlock {
                     $job = $using:job
                     $cmd = $job.PythonCmd -replace '"', "'"
+                    $cmd = $cmd -replace 'true','True'
+                    $cmd = $cmd -replace 'false','False'
                     $path = $job.Location
                     $tempFile = [System.IO.Path]::GetTempFileName()
                     $outfilePath = "$($job.ResultsFile).$($using:formattedNow).json"
+                    Write-Host "  Starting job for $cmd "
                     Start-Process -FilePath "python3" -ArgumentList "-c `"$cmd`"" -WorkingDirectory $path -RedirectStandardOutput $tempFile -Wait
                     Write-Host "  $($job.Name).$($job.Id) finished. Append results to $outfilePath." 
 

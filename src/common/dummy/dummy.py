@@ -25,6 +25,8 @@ def run(params : dict, run_id : int, queue : Queue = None) -> dict:
     return res
 
 def main():
+
+    json.loads('{ "foo" : 5, "bar" : "mno", "switch" : "true" }')
     # Check if a file path argument is provided in command line
     if len(sys.argv) > 1:
         config_path = sys.argv[1]
