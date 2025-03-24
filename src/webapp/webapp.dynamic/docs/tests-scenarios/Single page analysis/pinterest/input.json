@@ -1,0 +1,5 @@
+{
+      "target_host": "https://cz.pinterest.com/",
+      "screenshot_timing_type": "networkidle2",
+      "timeout": 15000
+}

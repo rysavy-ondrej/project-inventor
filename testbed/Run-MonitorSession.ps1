@@ -150,7 +150,7 @@ try {
                     Write-Host "  $($job.Name).$($job.Id) finished. Append results to $outfilePath." 
 
                     # Get the test ouput from temp file
-                    $jsonObject = Get-Content $tempFile | ConvertFrom-Json
+                    $jsonObject = Get-Content $tempFile | ConvertFrom-Json -Depth 10 # added depth it is needed to allow all data for webapp.http.dynamic
                 
                     # Add timestamp property:
                     $timestamp = $(Get-Date).ToString("yyyy-MM-ddTHH:mm:ss")
@@ -177,7 +177,8 @@ try {
                         $jsonObject.PSObject.Properties.Remove($omit) 
                     }
 
-                    $jsonObject | ConvertTo-Json -Compress | Add-Content -Path $outfilePath
+                    $jsonObject | ConvertTo-Json -Compress -Depth 10 | Add-Content -Path $outfilePath # added depth it is needed to allow all data for webapp.http.dynamic
+
                     Remove-Item $tempFile
                 }
                 # Update the job's LastRun time.

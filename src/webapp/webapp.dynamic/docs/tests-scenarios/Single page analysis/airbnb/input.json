@@ -1,0 +1,5 @@
+{
+      "target_host": "https://www.airbnb.cz/",
+      "screenshot_timing_type": "networkidle2",
+      "timeout": 15000
+}
