@@ -1,21 +1,21 @@
 version: "3.8"
 
 services:
-  testbed-dummy:
-    build: 
-      context: ..
-      dockerfile: Dockerfile
-    working_dir: /inventor/testbed
-    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/dummy.yaml -OutPath ./results/
-    volumes:
-      - ./results:/inventor/testbed/results
+#  testbed-dummy:
+#    build:
+#     context: ..
+#      dockerfile: Dockerfile
+#    working_dir: /inventor/testbed
+#    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/dummy.yaml -OutPath ./results/
+#    volumes:
+#      - ./results:/inventor/testbed/results
 
-  testbed-network.ping:
+  testbed-webapp.http.dynamic:
     build: 
       context: ..
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.node
     working_dir: /inventor/testbed
-    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.ping.yaml -OutPath ./results/
+    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/webapp.http.dynamic.yaml -OutPath ./results/
     volumes:
       - ./results:/inventor/testbed/results
       
