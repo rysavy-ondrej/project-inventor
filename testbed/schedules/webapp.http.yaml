@@ -7,18 +7,18 @@ schedule:
   - test: webapp.http
     write-to: webapp.http.vutbr
     targets:
-        - { "target_url": "https://www.vut.cz", "timeout": 5 }
-        - { "target_url": "https://www.fce.vut.cz", "timeout": 5 }
-        - { "target_url": "https://www.fsi.vut.cz", "timeout": 5 }
-        - { "target_url": "https://www.fekt.vut.cz", "timeout": 5 }
-        - { "target_url": "https://www.fa.vut.cz", "timeout": 5 }
-        - { "target_url": "https://www.fch.vut.cz", "timeout": 5 }
-        - { "target_url": "https://www.favu.vut.cz", "timeout": 5 }
-        - { "target_url": "https://www.fit.vut.cz", "timeout": 5 }
-        - { "target_url": "https://www.cesa.vut.cz", "timeout": 5 }
-        - { "target_url": "https://www.caitec.cz", "timeout": 5 }
+        - { "target_url": "vut.cz", "timeout" 5, "follow_redirects": true }
+        - { "target_url": "fce.vut.cz", "timeout" 5, "follow_redirects": true }
+        - { "target_url": "fsi.vut.cz", "timeout" 5, "follow_redirects": true }
+        - { "target_url": "fekt.vut.cz", "timeout" 5, "follow_redirects": true }
+        - { "target_url": "fa.vut.cz", "timeout" 5, "follow_redirects": true }
+        - { "target_url": "fch.vut.cz", "timeout" 5, "follow_redirects": true }
+        - { "target_url": "favu.vut.cz", "timeout" 5, "follow_redirects": true }
+        - { "target_url": "fit.vut.cz", "timeout" 5, "follow_redirects": true }
+        - { "target_url": "cesa.vut.cz", "timeout" 5, "follow_redirects": true }
+        - { "target_url": "caitec.cz", "timeout" 5, "follow_redirects": true }
     hash-fields:
-        - {"src": "body", "trg": "body_hash"}
+        - { "src": "body", "trg": "body_hash" }
     omit-fields:
         - "body"
     repeat-every: 5m
@@ -26,18 +26,18 @@ schedule:
   - test: webapp.http
     write-to: webapp.http.http1.vutbr
     targets:
-        - { "target_url": "https://www.vut.cz", "timeout": 5 , "http_version": 1.0}
-        - { "target_url": "https://www.fce.vut.cz", "timeout": 5 , "http_version": 1.0}
-        - { "target_url": "https://www.fsi.vut.cz", "timeout": 5 , "http_version": 1.0}
-        - { "target_url": "https://www.fekt.vut.cz", "timeout": 5 , "http_version": 1.0}
-        - { "target_url": "https://www.fa.vut.cz", "timeout": 5 , "http_version": 1.0}
-        - { "target_url": "https://www.fch.vut.cz", "timeout": 5 , "http_version": 1.0}
-        - { "target_url": "https://www.favu.vut.cz", "timeout": 5 , "http_version": 1.0}
-        - { "target_url": "https://www.fit.vut.cz", "timeout": 5 , "http_version": 1.0}
-        - { "target_url": "https://www.cesa.vut.cz", "timeout": 5 , "http_version": 1.0}
-        - { "target_url": "https://www.caitec.cz", "timeout": 5 , "http_version": 1.0}
+        - { "target_url": "vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "fce.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "fsi.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "fekt.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "fa.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "fch.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "favu.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "fit.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "cesa.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "caitec.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.0 }
     hash-fields:
-        - {"src": "body", "trg": "body_hash"}
+        - { "src": "body", "trg": "body_hash" }
     omit-fields:
         - "body"
     repeat-every: 5m
@@ -45,18 +45,18 @@ schedule:
   - test: webapp.http
     write-to: webapp.http.http11.vutbr
     targets:
-        - { "target_url": "https://www.vut.cz", "timeout": 5 , "http_version": 1.1}
-        - { "target_url": "https://www.fce.vut.cz", "timeout": 5 , "http_version": 1.1}
-        - { "target_url": "https://www.fsi.vut.cz", "timeout": 5 , "http_version": 1.1}
-        - { "target_url": "https://www.fekt.vut.cz", "timeout": 5 , "http_version": 1.1}
-        - { "target_url": "https://www.fa.vut.cz", "timeout": 5 , "http_version": 1.1}
-        - { "target_url": "https://www.fch.vut.cz", "timeout": 5 , "http_version": 1.1}
-        - { "target_url": "https://www.favu.vut.cz", "timeout": 5 , "http_version": 1.1}
-        - { "target_url": "https://www.fit.vut.cz", "timeout": 5 , "http_version": 1.1}
-        - { "target_url": "https://www.cesa.vut.cz", "timeout": 5 , "http_version": 1.1}
-        - { "target_url": "https://www.caitec.cz", "timeout": 5 , "http_version": 1.1}
+        - { "target_url": "vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "fce.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "fsi.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "fekt.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "fa.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "fch.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "favu.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "fit.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "cesa.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "caitec.cz", "timeout" 5, "follow_redirects": true, "http_version": 1.1 }
     hash-fields:
-        - {"src": "body", "trg": "body_hash"}
+        - { "src": "body", "trg": "body_hash" }
     omit-fields:
         - "body"
     repeat-every: 5m
@@ -64,18 +64,18 @@ schedule:
   - test: webapp.http
     write-to: webapp.http.http2.vutbr
     targets:
-        - { "target_url": "https://www.vut.cz", "timeout": 5 , "http_version": 2.0}
-        - { "target_url": "https://www.fce.vut.cz", "timeout": 5 , "http_version": 2.0}
-        - { "target_url": "https://www.fsi.vut.cz", "timeout": 5 , "http_version": 2.0}
-        - { "target_url": "https://www.fekt.vut.cz", "timeout": 5 , "http_version": 2.0}
-        - { "target_url": "https://www.fa.vut.cz", "timeout": 5 , "http_version": 2.0}
-        - { "target_url": "https://www.fch.vut.cz", "timeout": 5 , "http_version": 2.0}
-        - { "target_url": "https://www.favu.vut.cz", "timeout": 5 , "http_version": 2.0}
-        - { "target_url": "https://www.fit.vut.cz", "timeout": 5 , "http_version": 2.0}
-        - { "target_url": "https://www.cesa.vut.cz", "timeout": 5 , "http_version": 2.0}
-        - { "target_url": "https://www.caitec.cz", "timeout": 5 , "http_version": 2.0}
+        - { "target_url": "vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "fce.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "fsi.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "fekt.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "fa.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "fch.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "favu.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "fit.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "cesa.vut.cz", "timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "caitec.cz", "timeout" 5, "follow_redirects": true, "http_version": 2.0 }
     hash-fields:
-        - {"src": "body", "trg": "body_hash"}
+        - { "src": "body", "trg": "body_hash" }
     omit-fields:
         - "body"
     repeat-every: 5m
@@ -83,58 +83,58 @@ schedule:
   - test: webapp.http
     write-to: webapp.http.internet
     targets:
-        - { "target_url": "https://www.google.com","timeout": 5}
-        - { "target_url": "https://www.youtube.com","timeout": 5}
-        - { "target_url": "https://www.facebook.com","timeout": 5}
-        - { "target_url": "https://www.amazon.com","timeout": 5}
-        - { "target_url": "https://www.wikipedia.org","timeout": 5}
-        - { "target_url": "https://www.twitter.com","timeout": 5}
-        - { "target_url": "https://www.instagram.com","timeout": 5}
-        - { "target_url": "https://www.linkedin.com","timeout": 5}
-        - { "target_url": "https://www.yahoo.com","timeout": 5}
-        - { "target_url": "https://www.reddit.com","timeout": 5}
-        - { "target_url": "https://www.netflix.com","timeout": 5}
-        - { "target_url": "https://www.ebay.com","timeout": 5}
-        - { "target_url": "https://www.bing.com","timeout": 5}
-        - { "target_url": "https://www.pinterest.com","timeout": 5}
-        - { "target_url": "https://www.microsoft.com","timeout": 5}
-        - { "target_url": "https://www.live.com","timeout": 5}
-        - { "target_url": "https://www.tiktok.com","timeout": 5}
-        - { "target_url": "https://www.wordpress.com","timeout": 5}
-        - { "target_url": "https://www.stackoverflow.com","timeout": 5}
-        - { "target_url": "https://www.github.com","timeout": 5}
-        - { "target_url": "https://www.quora.com","timeout": 5}
-        - { "target_url": "https://www.apple.com","timeout": 5}
-        - { "target_url": "https://www.cnn.com","timeout": 5}
-        - { "target_url": "https://www.nytimes.com","timeout": 5}
-        - { "target_url": "https://www.office.com","timeout": 5}
-        - { "target_url": "https://www.paypal.com","timeout": 5}
-        - { "target_url": "https://www.dropbox.com","timeout": 5}
-        - { "target_url": "https://www.adobe.com","timeout": 5}
-        - { "target_url": "https://www.slack.com","timeout": 5}
-        - { "target_url": "https://www.spotify.com","timeout": 5}
-        - { "target_url": "https://www.tumblr.com","timeout": 5}
-        - { "target_url": "https://www.whatsapp.com","timeout": 5}
-        - { "target_url": "https://www.vk.com","timeout": 5}
-        - { "target_url": "https://www.indeed.com","timeout": 5}
-        - { "target_url": "https://www.bbc.com","timeout": 5}
-        - { "target_url": "https://www.imdb.com","timeout": 5}
-        - { "target_url": "https://www.booking.com","timeout": 5}
-        - { "target_url": "https://www.tripadvisor.com","timeout": 5}
-        - { "target_url": "https://www.weather.com","timeout": 5}
-        - { "target_url": "https://www.costco.com","timeout": 5}
-        - { "target_url": "https://www.target.com","timeout": 5}
-        - { "target_url": "https://www.walmart.com","timeout": 5}
-        - { "target_url": "https://www.homedepot.com","timeout": 5}
-        - { "target_url": "https://www.bestbuy.com","timeout": 5}
-        - { "target_url": "https://www.yelp.com","timeout": 5}
-        - { "target_url": "https://www.etsy.com","timeout": 5}
-        - { "target_url": "https://www.uber.com","timeout": 5}
-        - { "target_url": "https://www.airbnb.com","timeout": 5}
-        - { "target_url": "https://www.zoom.us","timeout": 5}
-        - { "target_url": "https://www.salesforce.com","timeout": 5}
+        - { "target_url": "google.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "youtube.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "facebook.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "amazon.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "wikipedia.org","timeout" 5, "follow_redirects": true }
+        - { "target_url": "twitter.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "instagram.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "linkedin.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "yahoo.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "reddit.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "netflix.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "ebay.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "bing.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "pinterest.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "microsoft.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "live.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "tiktok.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "wordpress.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "stackoverflow.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "github.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "quora.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "apple.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "cnn.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "nytimes.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "office.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "paypal.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "dropbox.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "adobe.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "slack.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "spotify.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "tumblr.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "whatsapp.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "vk.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "indeed.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "bbc.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "imdb.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "booking.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "tripadvisor.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "weather.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "costco.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "target.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "walmart.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "homedepot.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "bestbuy.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "yelp.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "etsy.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "uber.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "airbnb.com","timeout" 5, "follow_redirects": true }
+        - { "target_url": "zoom.us","timeout" 5, "follow_redirects": true }
+        - { "target_url": "salesforce.com","timeout" 5, "follow_redirects": true }
     hash-fields:
-        - {"src": "body", "trg": "body_hash"}
+        - { "src": "body", "trg": "body_hash" }
     omit-fields:
         - "body"
     repeat-every: 10m
@@ -142,58 +142,58 @@ schedule:
   - test: webapp.http
     write-to: webapp.http.http1.internet
     targets:
-        - { "target_url": "https://www.google.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.youtube.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.facebook.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.amazon.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.wikipedia.org","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.twitter.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.instagram.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.linkedin.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.yahoo.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.reddit.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.netflix.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.ebay.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.bing.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.pinterest.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.microsoft.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.live.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.tiktok.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.wordpress.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.stackoverflow.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.github.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.quora.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.apple.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.cnn.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.nytimes.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.office.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.paypal.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.dropbox.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.adobe.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.slack.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.spotify.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.tumblr.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.whatsapp.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.vk.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.indeed.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.bbc.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.imdb.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.booking.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.tripadvisor.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.weather.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.costco.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.target.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.walmart.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.homedepot.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.bestbuy.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.yelp.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.etsy.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.uber.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.airbnb.com","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.zoom.us","timeout": 5, "http_version": 1.0}
-        - { "target_url": "https://www.salesforce.com","timeout": 5, "http_version": 1.0}
+        - { "target_url": "google.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "youtube.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "facebook.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "amazon.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "wikipedia.org","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "twitter.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "instagram.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "linkedin.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "yahoo.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "reddit.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "netflix.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "ebay.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "bing.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "pinterest.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "microsoft.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "live.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "tiktok.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "wordpress.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "stackoverflow.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "github.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "quora.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "apple.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "cnn.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "nytimes.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "office.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "paypal.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "dropbox.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "adobe.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "slack.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "spotify.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "tumblr.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "whatsapp.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "vk.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "indeed.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "bbc.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "imdb.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "booking.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "tripadvisor.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "weather.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "costco.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "target.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "walmart.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "homedepot.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "bestbuy.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "yelp.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "etsy.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "uber.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "airbnb.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "zoom.us","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
+        - { "target_url": "salesforce.com","timeout" 5, "follow_redirects": true, "http_version": 1.0 }
     hash-fields:
-        - {"src": "body", "trg": "body_hash"}
+        - { "src": "body", "trg": "body_hash" }
     omit-fields:
         - "body"
     repeat-every: 10m
@@ -201,58 +201,58 @@ schedule:
   - test: webapp.http
     write-to: webapp.http.http11.internet
     targets:
-        - { "target_url": "https://www.google.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.youtube.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.facebook.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.amazon.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.wikipedia.org","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.twitter.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.instagram.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.linkedin.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.yahoo.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.reddit.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.netflix.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.ebay.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.bing.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.pinterest.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.microsoft.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.live.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.tiktok.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.wordpress.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.stackoverflow.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.github.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.quora.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.apple.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.cnn.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.nytimes.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.office.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.paypal.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.dropbox.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.adobe.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.slack.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.spotify.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.tumblr.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.whatsapp.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.vk.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.indeed.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.bbc.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.imdb.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.booking.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.tripadvisor.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.weather.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.costco.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.target.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.walmart.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.homedepot.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.bestbuy.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.yelp.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.etsy.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.uber.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.airbnb.com","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.zoom.us","timeout": 5, "http_version": 1.1}
-        - { "target_url": "https://www.salesforce.com","timeout": 5, "http_version": 1.1}
+        - { "target_url": "google.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "youtube.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "facebook.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "amazon.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "wikipedia.org","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "twitter.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "instagram.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "linkedin.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "yahoo.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "reddit.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "netflix.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "ebay.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "bing.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "pinterest.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "microsoft.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "live.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "tiktok.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "wordpress.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "stackoverflow.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "github.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "quora.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "apple.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "cnn.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "nytimes.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "office.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "paypal.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "dropbox.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "adobe.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "slack.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "spotify.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "tumblr.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "whatsapp.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "vk.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "indeed.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "bbc.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "imdb.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "booking.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "tripadvisor.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "weather.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "costco.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "target.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "walmart.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "homedepot.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "bestbuy.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "yelp.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "etsy.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "uber.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "airbnb.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "zoom.us","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
+        - { "target_url": "salesforce.com","timeout" 5, "follow_redirects": true, "http_version": 1.1 }
     hash-fields:
-        - {"src": "body", "trg": "body_hash"}
+        - { "src": "body", "trg": "body_hash" }
     omit-fields:
         - "body"
     repeat-every: 10m
@@ -260,60 +260,58 @@ schedule:
   - test: webapp.http
     write-to: webapp.http.http2.internet
     targets:
-        - { "target_url": "https://www.google.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.youtube.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.facebook.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.amazon.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.wikipedia.org","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.twitter.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.instagram.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.linkedin.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.yahoo.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.reddit.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.netflix.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.ebay.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.bing.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.pinterest.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.microsoft.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.live.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.tiktok.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.wordpress.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.stackoverflow.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.github.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.quora.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.apple.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.cnn.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.nytimes.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.office.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.paypal.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.dropbox.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.adobe.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.slack.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.spotify.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.tumblr.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.whatsapp.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.vk.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.indeed.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.bbc.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.imdb.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.booking.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.tripadvisor.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.weather.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.costco.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.target.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.walmart.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.homedepot.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.bestbuy.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.yelp.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.etsy.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.uber.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.airbnb.com","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.zoom.us","timeout": 5, "http_version": 2.0}
-        - { "target_url": "https://www.salesforce.com","timeout": 5, "http_version": 2.0}
+        - { "target_url": "google.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "youtube.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "facebook.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "amazon.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "wikipedia.org","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "twitter.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "instagram.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "linkedin.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "yahoo.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "reddit.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "netflix.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "ebay.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "bing.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "pinterest.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "microsoft.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "live.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "tiktok.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "wordpress.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "stackoverflow.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "github.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "quora.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "apple.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "cnn.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "nytimes.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "office.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "paypal.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "dropbox.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "adobe.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "slack.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "spotify.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "tumblr.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "whatsapp.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "vk.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "indeed.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "bbc.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "imdb.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "booking.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "tripadvisor.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "weather.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "costco.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "target.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "walmart.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "homedepot.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "bestbuy.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "yelp.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "etsy.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "uber.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "airbnb.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "zoom.us","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
+        - { "target_url": "salesforce.com","timeout" 5, "follow_redirects": true, "http_version": 2.0 }
     hash-fields:
-        - {"src": "body", "trg": "body_hash"}
+        - { "src": "body", "trg": "body_hash" }
     omit-fields:
         - "body"
     repeat-every: 10m
-
-
