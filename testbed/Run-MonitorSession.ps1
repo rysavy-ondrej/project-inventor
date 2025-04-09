@@ -229,15 +229,12 @@ try {
                     Start-Process -FilePath "python3" -ArgumentList "-c `"$cmd`"" -WorkingDirectory $path -RedirectStandardOutput $tempFile -Wait
                     Write-Host "  $($job.Name).$($job.Id) finished. Append results to $outfilePath." 
 
+                    $inputConfig = $job.Configuration
+
                     # Get the test ouput from temp file
                     $jsonObject = Get-Content $tempFile | ConvertFrom-Json
-                
-                    # Add timestamp property:
-                    $timestamp = $(Get-Date).ToString("yyyy-MM-ddTHH:mm:ss")
-                    $jsonObject | Add-Member -Name 'Timestamp' -Type NoteProperty -Value $timestamp 
-                    # Add test instance ID property:
-                    $jsonObject | Add-Member -Name 'TestId' -Type NoteProperty -Value "$($job.Name).$($job.Id)" 
-
+                            
+                    # Compute Hash properties:
                     foreach ($hashProp in $job.HashProperties) {
                         HashProperty -Object $jsonObject -SourceProperty $hashProp.src -TargetProperty $hashProp.trg
                     }                  
@@ -246,7 +243,18 @@ try {
                         OmitProperty -Object $jsonObject -Property $omit
                     }
 
-                    $jsonObject | ConvertTo-Json -Compress | Add-Content -Path $outfilePath
+                    
+                    # Example usage:
+                    $outputObject = [PSCustomObject]@{
+                        Meta =  [PSCustomObject]@{
+                            Timestamp = $(Get-Date).ToString("yyyy-MM-ddTHH:mm:ss")
+                            TestId = "$($job.Name).$($job.Id)"
+                        }
+                        Config = $inputConfig | ConvertFrom-Json
+                        Result = $jsonObject
+                    }
+
+                    $outputObject | ConvertTo-Json -Compress | Add-Content -Path $outfilePath
                     Remove-Item $tempFile
                 }
                 # Update the job's LastRun time.
