@@ -106,7 +106,7 @@ try {
         # Iterate over each target defined in the test's targets array
         foreach ($target in $test.targets) {
             # Convert the target parameters to a compact JSON string
-            $targetJson = $target | ConvertTo-Json -Compress
+            $targetJson = $target | ConvertTo-Json -Depth 100 -Compress
         
             # Build the Python command.
             # Here we embed the JSON inside single quotes so it can be passed as a string literal.
@@ -254,7 +254,7 @@ try {
                         Result = $jsonObject
                     }
 
-                    $outputObject | ConvertTo-Json -Compress | Add-Content -Path $outfilePath
+                    $outputObject | ConvertTo-Json -Depth 100 -Compress | Add-Content -Path $outfilePath
                     Remove-Item $tempFile
                 }
                 # Update the job's LastRun time.
