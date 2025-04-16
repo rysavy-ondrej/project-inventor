@@ -334,7 +334,7 @@ def decode_headers(headers_bytes: BytesIO) -> dict:
     for header in headers_lines:
         if header.find(b": ") != -1:
             # RFC 7230 specifies header encoding to US-ASCII, which latin1 covers
-            headers_list.append(header.decode("latin1"))
+            headers_list.append(header.decode("latin1").lower())
     headers_dict = dict(h.split(": ", 1) for h in headers_list)
     return headers_dict
 
