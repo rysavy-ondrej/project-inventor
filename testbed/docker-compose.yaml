@@ -18,3 +18,12 @@ services:
     command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.ping.yaml -OutPath ./results/
     volumes:
       - ./results:/inventor/testbed/results
+      
+  testbed-http:
+    build: 
+      context: ..
+      dockerfile: Dockerfile
+    working_dir: /inventor/testbed
+    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/webapp.http.yaml -OutPath ./results/
+    volumes:
+      - ./results:/inventor/testbed/results
