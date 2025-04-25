@@ -148,75 +148,141 @@ try {
                 # Start the external Python script.
                 $job.JobObject = Start-ThreadJob -StreamingHost $Host -ScriptBlock {                    
                     #-- Need to have these two function accessbile from this script block ----------------
-                    function OmitProperty {
+                    function Remove-Property {
+                        [CmdletBinding()]
+                        param (
+                            [Parameter(Mandatory = $true, Position = 0)]
+                            [Alias('InputObject')]
+                            [PSObject]$Object,
+                    
+                            [Parameter(Mandatory = $true, Position = 1)]
+                            [string]$PropertyPath
+                        )
+                    
+                        # Split the property path into individual components
+                        $properties = $PropertyPath -split '\.'
+                    
+                        # Kick off recursive removal
+                        Remove-PropertyRecursive -Object $Object -Properties $properties
+                    }
+                    
+                    function Remove-PropertyRecursive {
+                        [CmdletBinding()]
                         param (
                             [Parameter(Mandatory = $true)]
                             [PSObject]$Object,
-        
+                    
                             [Parameter(Mandatory = $true)]
-                            [string]$Property
+                            [string[]]$Properties
                         )
-
-                        # Split the property path into individual components
-                        $properties = $Property -split '\.'
-
-                        # Iterate through each level of the object hierarchy
-                        $currentObject = $Object
-                        for ($i = 0; $i -lt $properties.Length - 1; $i++) {
-                            # Move to the next level of the object (i.e., go deeper into the nested objects)
-                            $currentObject = $currentObject.PSObject.Properties[$properties[$i]].Value
+                    
+                        if ($null -eq $Object) {
+                            return
                         }
-
-                        # Remove the final property from the last level of the object
-                        $currentObject.PSObject.Properties.Remove($properties[-1])
+                    
+                        # If this object is a collection (but not a string), recurse into each element
+                        if ($Object -is [System.Collections.IEnumerable] -and -not ($Object -is [string])) {
+                            foreach ($item in $Object) {
+                                Remove-PropertyRecursive -Object $item -Properties $Properties
+                            }
+                        }
+                        else {
+                            if ($Properties.Count -gt 1) {
+                                # Peel off the first segment and go deeper
+                                $first = $Properties[0]
+                                $rest  = $Properties[1..($Properties.Count - 1)]
+                    
+                                $next = $Object.PSObject.Properties[$first]?.Value
+                                Remove-PropertyRecursive -Object $next -Properties $rest
+                            }
+                            else {
+                                # Last segment: remove this property
+                                $Object.PSObject.Properties.Remove($Properties[0]) | Out-Null
+                            }
+                        }
                     }
 
-                    function HashProperty {
+                    function Add-HashProperty {
+                        [CmdletBinding()]
+                        param (
+                            [Parameter(Mandatory = $true, Position = 0)]
+                            [Alias('InputObject')]
+                            [PSObject]$Object,
+                    
+                            [Parameter(Mandatory = $true, Position = 1)]
+                            [string]$SourcePropertyPath,
+                    
+                            [Parameter(Mandatory = $true, Position = 2)]
+                            [string]$TargetPropertyPath
+                        )
+                    
+                        # Split the dot-notation into segments
+                        $sourceProps = $SourcePropertyPath -split '\.'
+                        $targetProps = $TargetPropertyPath -split '\.'
+                    
+                        # Kick off the recursive work, starting both source- and target‐contexts at the root
+                        ComputeHashPropertyRecursive -SrcParent $Object -TgtParent $Object -SourceProps $sourceProps -TargetProps $targetProps
+                    }
+                    
+                    function ComputeHashPropertyRecursive {
+                        [CmdletBinding()]
                         param (
                             [Parameter(Mandatory = $true)]
-                            [PSObject]$Object,
-
+                            [PSObject]$SrcParent,
+                    
                             [Parameter(Mandatory = $true)]
-                            [string]$SourceProperty,
-
+                            [PSObject]$TgtParent,
+                    
                             [Parameter(Mandatory = $true)]
-                            [string]$TargetProperty
+                            [string[]]$SourceProps,
+                    
+                            [Parameter(Mandatory = $true)]
+                            [string[]]$TargetProps
                         )
-
-                        # Split the source property path into individual components
-                        $sourceProperties = $SourceProperty -split '\.'
-    
-                        # Traverse the object to access the source property
-                        $currentObject = $Object
-                        for ($i = 0; $i -lt $sourceProperties.Length - 1; $i++) {
-                            # Go deeper into the nested objects
-                            $currentObject = $currentObject.PSObject.Properties[$sourceProperties[$i]].Value
-                        }
-
-                        # Get the value of the source property
-                        $sourceValue = $currentObject.PSObject.Properties[$sourceProperties[-1]].Value
-
-    
-                        # Compute the hash of the source property value (you can use any hash algorithm, here we use SHA256)
-                        $hash = [System.Security.Cryptography.MD5]::Create().ComputeHash([System.Text.Encoding]::UTF8.GetBytes($sourceValue)) 
-                        $hashString = [BitConverter]::ToString($hash) -replace '-'
-
-                        # Split the target property path into individual components
-                        $targetProperties = $TargetProperty -split '\.'
-    
-                        # Traverse the object to access or create the target property
-                        $currentObject = $Object
-                        for ($i = 0; $i -lt $targetProperties.Length - 1; $i++) {
-                            if (-not $currentObject.PSObject.Properties[$targetProperties[$i]]) {
-                                # If the property doesn't exist, create it
-                                $currentObject | Add-Member -MemberType NoteProperty -Name $targetProperties[$i] -Value @{}
+                    
+                        if ($null -eq $SrcParent) { return }
+                    
+                        # If this object is a collection (but not a string), recurse into each item
+                        if ($SrcParent -is [System.Collections.IEnumerable] -and -not ($SrcParent -is [string])) {
+                            foreach ($item in $SrcParent) {
+                                ComputeHashPropertyRecursive -SrcParent $item -TgtParent $item -SourceProps $SourceProps -TargetProps $TargetProps
                             }
-                            # Go deeper into the nested objects
-                            $currentObject = $currentObject.PSObject.Properties[$targetProperties[$i]].Value
                         }
-                        $currentObject | Add-Member -Name $targetProperties[-1] -Type NoteProperty -Value $hashString
-                        # Set the hash value in the target property
-                    }                   
+                        else {
+                            # If we're not yet at the leaf segment, drill deeper
+                            if ($SourceProps.Count -gt 1) {
+                                $srcFirst = $SourceProps[0]
+                                $srcRest  = $SourceProps[1..($SourceProps.Count - 1)]
+                    
+                                $tgtFirst = $TargetProps[0]
+                                $tgtRest  = $TargetProps[1..($TargetProps.Count - 1)]
+                    
+                                # Pull out the next source object
+                                $nextSrc = $SrcParent.PSObject.Properties[$srcFirst]?.Value
+                    
+                                # Ensure the target‐container exists (create it if needed)
+                                if (-not $TgtParent.PSObject.Properties[$tgtFirst]) {
+                                    $TgtParent | Add-Member -MemberType NoteProperty -Name $tgtFirst -Value ([PSCustomObject]@{}) 
+                                }
+                                $nextTgt = $TgtParent.PSObject.Properties[$tgtFirst].Value
+                    
+                                # Recurse
+                                ComputeHashPropertyRecursive -SrcParent $nextSrc -TgtParent $nextTgt -SourceProps $srcRest -TargetProps $tgtRest
+                            }
+                            else {
+                                # Leaf: compute hash of the single source property and write to target
+                                $srcName = $SourceProps[0]
+                                $tgtName = $TargetProps[0]
+                    
+                                $value = $SrcParent.PSObject.Properties[$srcName].Value
+                                # Here using MD5; swap in SHA256 if you like
+                                $hashBytes   = [System.Security.Cryptography.MD5]::Create().ComputeHash([System.Text.Encoding]::UTF8.GetBytes($value))
+                                $hashString  = [BitConverter]::ToString($hashBytes) -replace '-'
+                    
+                                $TgtParent | Add-Member -MemberType NoteProperty -Name $tgtName -Value $hashString
+                            }
+                        }
+                    }
                     #------------------------------------
                     $job = $using:job
                     $cmd = $job.PythonCmd -replace '"', "'"
@@ -236,11 +302,11 @@ try {
                             
                     # Compute Hash properties:
                     foreach ($hashProp in $job.HashProperties) {
-                        HashProperty -Object $jsonObject -SourceProperty $hashProp.src -TargetProperty $hashProp.trg
+                        Add-HashProperty -Object $jsonObject -SourceProperty $hashProp.src -TargetProperty $hashProp.trg
                     }                  
                     # Omit properties:
                     foreach ($omit in $job.OmitProperties) {
-                        OmitProperty -Object $jsonObject -Property $omit
+                        Remove-Property -Object $jsonObject -Property $omit
                     }
 
                     

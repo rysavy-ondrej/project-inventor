@@ -16,10 +16,10 @@ schedule:
 
   - test: dummy.test
     write-to: dummy-2
-    omit-fields: [ "foo1", "bar", "xtra.prop2" ]  
-    hash-fields: [ { src: "bar", trg: "bar-hash" }, { src : "xtra.prop1", trg : "xtra.prop1hash"} ] 
+    omit-fields: [ "foo1", "bar", "inner.prop2", "arr.image" ]  
+    hash-fields: [ { "src" : "bar", "trg" : "bar-hash" }, { "src" : "inner.prop1", "trg" : "inner.prop1hash" }, { "src" : "arr.image", "trg" : "arr.image-hash" } ] 
     targets:  
-        - { "foo" : 1, "foo1" : 1, "foo2" : 1, "bar" : "abc", "xtra" : { "prop1" : "werkugherkthelrituh", "prop2" : 2234 } }
-        - { "foo" : 2, "foo1" : 1, "foo2" : 1, "bar" : "def", "xtra" : { "prop1" : "werkugherkthelrituh", "prop2" : 2234 } }
-        - { "foo" : 3, "foo1" : 1, "foo2" : 1, "bar" : "ghi", "xtra" : { "prop1" : "werkugherkthelrituh", "prop2" : 2234 } }
+        - { "foo1" : 1, "foo2" : "abc", "foo3" : true, "bar" : "abc", "inner" : { "prop1" : "werkugherkthelrituh", "prop2" : 2234 }, "arr" : [ { "image" : "qw4er32iuh54o3ih54", "url" : "https://example.com/aaa.js", "data" : { "key" : "value" } }, { "image" : "qw4er32iuh54o3ih54", "url" : "https://example.com/aaa.js", "data" : { "key" : "value" } }] }
+        - { "foo1" : 2, "foo2" : "abc", "foo3" : false, "bar" : "def", "inner" : { "prop1" : "werkugherkthelrituh", "prop2" : 2234 }, "arr" : [ { "image" : "qw4er32iuh54o3ih54", "url" : "https://example.com/aaa.js", "data" : { "key" : "value" } } ]}
+        - { "foo1" : 3, "foo2" : "abc", "foo3" : true, "bar" : "ghi", "inner" : { "prop1" : "werkugherkthelrituh", "prop2" : 2234 }, "arr" : [ ] }
     repeat-every: 5s
