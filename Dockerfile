@@ -37,6 +37,9 @@ RUN pip3 install --upgrade pip && \
 # Install YAML module for PowerShell
 RUN pwsh -Command 'Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted; Install-Module -Name powershell-yaml -Scope CurrentUser -Force' 
 
+# Install MongoDB module for PowerShell
+RUN pwsh -Command 'Install-Module -Name Mdbc -Scope CurrentUser -Force'
+
 # Copy the rest of the application code
 COPY . .
 

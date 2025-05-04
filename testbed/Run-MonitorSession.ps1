@@ -73,6 +73,7 @@ if (-not (Test-Path -Path $OutPath)) {
 }
 
 try {
+    Import-Module Mdbc
 
     $rootFolder = Split-Path -Path (Get-Location) -Parent
 
@@ -85,6 +86,9 @@ try {
 
     # get all tests from the schedule:
     $schedule = $testSuiteConfiguration.schedule
+
+    # Create MongoDB context
+    Connect-Mdbc mongodb://mongo-server:27017 local
 
     Write-Host "Enumerating configured tests"
     $jobs = @()
@@ -102,6 +106,9 @@ try {
     
         # Convert the repeat interval to seconds.
         $intervalSeconds = Convert-RepeatInterval $test.'repeat-every'
+
+        # Create MongoDB collection for the test schedule
+        Add-MdbcCollection -Name $test.test
 
         # Iterate over each target defined in the test's targets array
         foreach ($target in $test.targets) {
@@ -126,6 +133,7 @@ try {
                 JobObject      = $null
                 OmitProperties = $test["omit-fields"]
                 HashProperties = $test["hash-fields"]
+                MDBCollection  = Get-MdbcCollection -Name $test.test
             }
         }
     }
@@ -321,6 +329,7 @@ try {
                     }
 
                     $outputObject | ConvertTo-Json -Depth 100 -Compress | Add-Content -Path $outfilePath
+                    $outputObject | Add-MdbcData -Collection $job.MDBCollection
                     Remove-Item $tempFile
                 }
                 # Update the job's LastRun time.

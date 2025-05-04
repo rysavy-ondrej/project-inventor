@@ -4,4 +4,5 @@
 
 # Generated results in the testbed
 testbed/results/*
+testbed/db/data
 
