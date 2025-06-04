@@ -292,7 +292,7 @@ try {
                     $tempFile = [System.IO.Path]::GetTempFileName()
                     $outfilePath = "$($job.ResultsFile).$($using:formattedNow).json"
                     Write-Host "  Starting job for $cmd "
-                    Start-Process -FilePath "python3" -ArgumentList "-c `"$cmd`"" -WorkingDirectory $path -RedirectStandardOutput $tempFile -Wait
+                    Start-Process -FilePath "/root/project-inventor/venv/bin/python3" -ArgumentList "-c `"$cmd`"" -WorkingDirectory $path -RedirectStandardOutput $tempFile -Wait
                     Write-Host "  $($job.Name).$($job.Id) finished. Append results to $outfilePath." 
 
                     $inputConfig = $job.Configuration

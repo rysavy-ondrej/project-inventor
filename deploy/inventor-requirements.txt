@@ -6,7 +6,7 @@ configparser~=6.0.0
 cryptography==41.0.5
 dnspython==2.5.0
 docker==7.1.0
-easysnmp==0.2.6
+#easysnmp==0.2.6
 fastapi~=0.109.2
 icmplib==3.0.4
 iperf3
