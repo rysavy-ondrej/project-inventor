@@ -2,7 +2,7 @@
 
 This is a lightweight, containerized environment for continuous monitoring and testing using Docker Compose and PowerShell scripting. The system is designed to manage test execution, log collection, and data storage efficiently while keeping configuration simple and flexible.
 
-Note: To run outside the container, use the (system service)[service/Readme.md] to ensure continuous operation of the testbed.
+Note: To run outside the container, use the [system service](service/Readme.md) to ensure continuous operation of the testbed.
 
 
 ## Overview
