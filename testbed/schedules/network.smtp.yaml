@@ -1,0 +1,33 @@
+monitors:
+  - name: network.smtp
+    module: network_smtp
+    exec: src/network/network.smtp
+
+schedule:
+  - test: network.smtp
+    write-to: network.smtp.vutbr 
+    targets:  
+        - { "target_host": "mailgw1.ro.vutbr.cz", "target_port": "25", "send_email_flag": "False" }
+        - { "target_host": "kazi.fit.vutbr.cz", "target_port": "25", "send_email_flag": "False" }
+        - { "target_host": "kazi.fit.vutbr.cz", "target_port": "465", "send_email_flag": "False" }
+        - { "target_host": "kazi.fit.vutbr.cz", "target_port": "587", "send_email_flag": "False" }
+        - { "target_host": "eva.fit.vutbr.cz", "target_port": "25", "send_email_flag": "False" }
+        - { "target_host": "eva.fit.vutbr.cz", "target_port": "465", "send_email_flag": "False" }
+        - { "target_host": "eva.fit.vutbr.cz", "target_port": "587", "send_email_flag": "False" }
+        - { "target_host": "mail.vutbr.cz", "target_port": "25", "send_email_flag": "False" }
+    repeat-every: 1m
+
+  - test: network.smtp
+    write-to: network.smtp.internet
+    targets:  
+        - { "target_host": "smtp.google.com", "target_port": "465", "send_email_flag": "False" }
+        - { "target_host": "smtp.google.com", "target_port": "587", "send_email_flag": "False" }
+        - { "target_host": "mx2.seznam.cz", "target_port": "465", "send_email_flag": "False" }
+        - { "target_host": "mx1.seznam.cz", "target_port": "465", "send_email_flag": "False" }
+        - { "target_host": "smtp.mail.yahoo.com", "target_port": "465", "send_email_flag": "False" }
+        - { "target_host": "smtp.mail.yahoo.com", "target_port": "587", "send_email_flag": "False" }
+        - { "target_host": "smtp-mail.outlook.com", "target_port": "465", "send_email_flag": "False" }
+        - { "target_host": "smtp.aol.com", "target_port": "465", "send_email_flag": "False" }
+        - { "target_host": "smtp.aol.com", "target_port": "587", "send_email_flag": "False" }
+        - { "target_host": "smtp.mail.me.com", "target_port": "587", "send_email_flag": "False" }
+    repeat-every: 5m

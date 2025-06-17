@@ -27,3 +27,11 @@ services:
     command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/webapp.http.yaml -OutPath ./results/
     volumes:
       - ./results:/inventor/testbed/results
+
+  testbed-network.smtp:
+    build:
+      context: ..
+    working_dir: /inventor/testbed
+    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.smtp.yaml -OutPath ./results/
+    wolumes:
+      - ./results:/inventor/testbed/results
