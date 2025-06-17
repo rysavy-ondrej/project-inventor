@@ -35,3 +35,11 @@ services:
     command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.smtp.yaml -OutPath ./results/
     wolumes:
       - ./results:/inventor/testbed/results
+
+  testbed-security.ssh:
+    build:
+      context: ..
+    working_dir: /inventor/testbed
+    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/security.ssh.yaml -OutPath ./results/
+    volumes:
+      - ./results:/inventor/testbed/results

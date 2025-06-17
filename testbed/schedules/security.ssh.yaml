@@ -1,0 +1,16 @@
+monitors:
+  - name: security.ssh
+    module: security_ssh
+    exec: src/security/security.ssh
+
+schedule:
+  - test: security.ssh
+    write-to: security.ssh.vutbr
+    targets:  
+        - { "target_host": "kazi.fit.vutbr.cz"}
+        - { "target_host": "eva.fit.vutbr.cz"}
+        - { "target_host": "merlin.fit.vutbr.cz"}
+        - { "target_host": "isa.fit.vutbr.cz"}
+        - { "target_host": "isa2.fit.vutbr.cz"}
+        - { "target_host": "isa3.fit.vutbr.cz"}
+    repeat-every: 5m
