@@ -1,0 +1,28 @@
+monitors:
+  - name: network.imap
+    module: network_imap
+    exec: src/network/network.imap
+
+schedule:
+  - test: network.imap
+    write-to: network.imap.vutbr 
+    targets:  
+        - { "target_host": "mailgw1.ro.vutbr.cz", "target_port": "25", "send_email_flag": "False" }
+        - { "target_host": "imap.fit.vutbr.cz", "target_port": "143", "login_flag": "False", "login_username": "xtest99@stud.fit.vutbr.cz", "login_server": "imap.fit.vutbr.cz" }
+        - { "target_host": "imap.fit.vutbr.cz", "target_port": "993", "login_flag": "False", "login_username": "xtest99@stud.fit.vutbr.cz", "login_server": "imap.fit.vutbr.cz" }
+        - { "target_host": "kos.feec.vutbr.cz", "target_port": "993", "login_flag": "False", "login_username": "xtest99@stud.fit.vutbr.cz", "login_server": "kos.feec.vutbr.cz" }
+        - { "target_host": "kos.feec.vutbr.cz", "target_port": "143", "login_flag": "False", "login_username": "xtest99@stud.fit.vutbr.cz", "login_server": "kos.feec.vutbr.cz" }
+        - { "target_host": "outlook.office365.com", "target_port": "143", "login_flag": "False", "login_username": "xtest99@stud.fit.vutbr.cz", "login_server": "outlook.office365.com" }
+        - { "target_host": "outlook.office365.com", "target_port": "993", "login_flag": "False", "login_username": "xtest99@stud.fit.vutbr.cz", "login_server": "outlook.office365.com" }
+    repeat-every: 2m
+
+  - test: network.smtp
+    write-to: network.smtp.internet
+    targets:  
+        - { "target_host": "imap.gmail.com", "target_port": "993", "login_flag": "False", "login_username": "xtest99@stud.fit.vutbr.cz", "login_server": "imap.gmail.com" }
+        - { "target_host": "imap.seznam.cz", "target_port": "993", "login_flag": "False", "login_username": "xtest99@stud.fit.vutbr.cz", "login_server": "imap.seznam.cz" }
+        - { "target_host": "imap.mail.yahoo.com", "target_port": "993", "login_flag": "False", "login_username": "xtest99@stud.fit.vutbr.cz", "login_server": "imap.mail.yahoo.com" }
+        - { "target_host": "imap.aol.com", "target_port": "993", "login_flag": "False", "login_username": "xtest99@stud.fit.vutbr.cz", "login_server": "imap.aol.com" }
+        - { "target_host": "imap-mail.outlook.com", "target_port": "993", "login_flag": "False", "login_username": "xtest99@stud.fit.vutbr.cz", "login_server": "imap-mail.outlook.com" }
+        - { "target_host": "imap.mail.me.com", "target_port": "993", "login_flag": "False", "login_username": "xtest99@stud.fit.vutbr.cz", "login_server": "imap.mail.me.com" }
+    repeat-every: 5m

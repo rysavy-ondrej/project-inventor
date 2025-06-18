@@ -8,7 +8,7 @@
 #!/usr/bin/env python3
 
 from icmplib import is_hostname, resolve
-import nmap 
+# import nmap 
 import time
 import imaplib 
 from socket import gethostbyname

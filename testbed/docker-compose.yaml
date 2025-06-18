@@ -43,3 +43,10 @@ services:
     command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/security.ssh.yaml -OutPath ./results/
     volumes:
       - ./results:/inventor/testbed/results
+
+  testbed-network.imap:
+    build:
+      context: ..
+    working_dir: /inventor/testbed
+    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.imap.yaml -OutPath ./results/
+
