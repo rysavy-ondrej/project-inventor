@@ -7,7 +7,6 @@ schedule:
   - test: network.imap
     write-to: network.imap.vutbr 
     targets:  
-        - { "target_host": "mailgw1.ro.vutbr.cz", "target_port": "25", "send_email_flag": "False" }
         - { "target_host": "imap.fit.vutbr.cz", "target_port": "143", "login_flag": "False", "login_username": "xtest99@stud.fit.vutbr.cz", "login_server": "imap.fit.vutbr.cz" }
         - { "target_host": "imap.fit.vutbr.cz", "target_port": "993", "login_flag": "False", "login_username": "xtest99@stud.fit.vutbr.cz", "login_server": "imap.fit.vutbr.cz" }
         - { "target_host": "kos.feec.vutbr.cz", "target_port": "993", "login_flag": "False", "login_username": "xtest99@stud.fit.vutbr.cz", "login_server": "kos.feec.vutbr.cz" }
