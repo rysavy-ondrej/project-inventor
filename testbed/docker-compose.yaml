@@ -49,4 +49,14 @@ services:
       context: ..
     working_dir: /inventor/testbed
     command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.imap.yaml -OutPath ./results/
+    volumes:
+      - ./results:/inventor/testbed/results
 
+
+  testbed-network.dns:
+    build:
+      context:
+    working_dir: /inventor/testbed
+    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.dns.yaml -OutPath ./results/
+    volumes:
+      - ./results:/inventor/testbed/results

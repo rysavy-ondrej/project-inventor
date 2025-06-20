@@ -1,0 +1,22 @@
+monitors:
+  - name: network.dns
+    module: network_dns
+    exec: src/network/network.dns
+
+schedule:
+  - test: network.dns
+    write-to: network.dns.vutbr 
+    targets:  
+        - { "target_hosts": ["example.com"], "query_type": "A", "nameservers": ["147.229.177.168"]}
+        - { "target_hosts": ["example.com"], "query_type": "A", "nameservers": ["147.229.9.49"]}
+        - { "target_hosts": ["vutbr.cz"], "query_type": "A", "nameservers": ["2a01:430:120::4d5d:db6e"]}
+        - { "target_hosts": ["vutbr.cz"], "query_type": "A", "nameservers": ["2001:67c:1220:e000::93e5:30a"]}
+    repeat-every: 3m
+
+  - test: network.dns
+    write-to: network.dns.internet
+    targets:  
+        - { "target_hosts": ["example.com"], "query_type": "A", "nameservers": ["8.8.8.8"]}
+        - { "target_hosts": ["example.com"], "query_type": "A", "nameservers": ["1.1.1.1"]}
+        - { "target_hosts": ["example.com"], "query_type": "A", "nameservers": ["9.9.9.9"]}
+    repeat-every: 5m
