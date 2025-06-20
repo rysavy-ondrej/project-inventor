@@ -1,0 +1,25 @@
+monitors:
+  - name: network.ntp
+    module: network_ntp
+    exec: src/network/network.ntp
+
+schedule:
+  - test: network.ntp
+    write-to: network.ntp.vutbr 
+    targets:  
+        - { "target_host": "ntp.fit.vutbr.cz"}
+        - { "target_host": "ntpm.fit.vutbr.cz"}
+    repeat-every: 2m
+
+  - test: network.ntp
+    write-to: network.ntp.internet
+    targets:  
+        - { "target_host": "tik.cesnet.cz"}
+        - { "target_host": "tak.cesnet.cz"}
+        - { "target_host": "time.google.com"}
+        - { "target_host": "time.aws.com"}
+        - { "target_host": "time.apple.com"}
+        - { "target_host": "time.cloudflare.com"}
+        - { "target_host": "time.windows.com"}
+        - { "target_host": "time.a-g-nist.gov"}
+    repeat-every: 5m
