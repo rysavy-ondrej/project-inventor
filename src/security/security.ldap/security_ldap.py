@@ -72,11 +72,11 @@ def collect_info(target_host) -> dict:
             # Connection successful, collect information by sending simple query
             connection.search(
                 search_base='',
-                search_filter='(objectclass=*)',
+                search_filter='(uid=*test*)',
                 search_scope=ldap3.SUBTREE,
-                attributes=['*']
+                attributes=['cn']
             )
-            probe['resposne_time'] = measure_response_time(start_time)
+            probe['response_time'] = measure_response_time(start_time)
             # This query will show empty list, but the case is to verify the connection
             probe['search_query'] = [str(entry) for entry in connection.entries] 
         

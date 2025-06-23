@@ -33,7 +33,7 @@ services:
       context: ..
     working_dir: /inventor/testbed
     command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.smtp.yaml -OutPath ./results/
-    wolumes:
+    volumes:
       - ./results:/inventor/testbed/results
 
   testbed-security.ssh:
@@ -52,7 +52,6 @@ services:
     volumes:
       - ./results:/inventor/testbed/results
 
-
   testbed-network.dns:
     build:
       context:
@@ -61,12 +60,18 @@ services:
     volumes:
       - ./results:/inventor/testbed/results
 
-
   testbed-network.ntp:
     build:
       context:
     working_dir: /inventor/testbed
     command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.ntp.yaml -OutPath ./results/
-    wolumes:
+    volumes:
       - ./results:/inventor/testbed/results
 
+  testbed-security.ldap:
+    build:
+      context:
+    working_dir: /inventor/testbed
+    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/security.ldap.yaml -OutPath ./results/
+    volumes:
+      - ./results:/inventor/testbed/results

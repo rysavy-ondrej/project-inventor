@@ -1,0 +1,17 @@
+monitors:
+  - name: security.ldap
+    module: security_ldap
+    exec: src/security/security.ldap
+
+schedule:
+  - test: security.ldap
+    write-to: security.ldap.vutbr 
+    targets:  
+        - { "target_host": "ldap.fit.vutbr.cz"}
+    repeat-every: 2m
+
+  - test: security.ldap
+    write-to: security.ldap.internet
+    targets:  
+        - { "target_host": "ldap.zcu.cz"}
+    repeat-every: 5m

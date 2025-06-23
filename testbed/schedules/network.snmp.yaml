@@ -1,0 +1,11 @@
+monitors:
+  - name: network.snmp
+    module: network_snmp
+    exec: src/network/network.snmp
+
+schedule:
+  - test: network.snmp
+    write-to: network.snmp.vutbr 
+    targets:  
+        - { "target_host": "isa.fit.vutbr.cz", "oids":"1.3.6.1.2.1.1.5.0,1.3.6.1.2.1.1.5.0", "community_string":"public"}
+    repeat-every: 2m
