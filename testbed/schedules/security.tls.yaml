@@ -1,0 +1,16 @@
+monitors:
+  - name: security.tls
+    module: security_tls
+    exec: src/security/security.tls
+
+schedule:
+  - test: security.tls
+    write-to: security.tls
+    targets:
+      - { "target_host": "www.vutbr.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "eliptic_curves":[], "extensions": [], "timeout": 6 }
+      - { "target_host": "www.example.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "eliptic_curves":[], "extensions": [], "timeout": 6 }
+      - { "target_host": "www.example.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+      - { "target_host": "www.vutbr.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [],"timeout": 6 }
+      - { "target_host": "www.google.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "eliptic_curves":[], "extensions": [], "timeout": 6 }
+
+    repeat-every: 5m

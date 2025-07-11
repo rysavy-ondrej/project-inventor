@@ -184,7 +184,7 @@ def run(params : dict, run_id : int ,queue : Queue = None) -> dict:
     result = {}
     if params is not None:
         try:
-            result = traceroute_test(run_id, params['target_host'],ttl_max=params['ttl_max'],
+            result = traceroute_test(run_id, target=params['target_host'],ttl_max=params['ttl_max'],
                                 packet_size=params['packet_size'], count=1,
                                 interval=0.05, timeout=params['timeout'],
                                 repeats=params['repeats'])

@@ -233,7 +233,7 @@ def create_ssl_context(tls_version, cipher_suites, elliptic_curves, extensions):
         context.set_cipher_list(b':'.join(cipher.encode('utf-8') for cipher in cipher_suites))
 
     # Set the elliptic curves
-    if elliptic_curves:
+    if elliptic_curves is not None and len(elliptic_curves) > 0:
         ell_curve = crypto.get_elliptic_curve(elliptic_curves[0])
         context.set_tmp_ecdh(ell_curve)
 
@@ -310,7 +310,7 @@ def perform_tls_handshake(run_id, hostname_or_ip, port, tls_version, cipher_suit
         res['target_port'] = port
         res['tls_version'] = ssl_conn.get_protocol_version_name()
         res['cipher_suite'] = ssl_conn.get_cipher_name()
-        res['elliptic_curve'] = elliptic_curves[0]
+        res['elliptic_curve'] = elliptic_curves[0] if elliptic_curves else 'N/A'
         res['SNIs'] = ssl_conn.get_servername().decode('utf-8') if ssl_conn.get_servername() else 'N/A'
         res['alpn'] = ssl_conn.get_alpn_proto_negotiated().decode('utf-8') if ssl_conn.get_alpn_proto_negotiated() else 'N/A'
         res['client_extension_count'] = 0
@@ -455,13 +455,23 @@ def enhance_tls_info(tls_info, handshake_packets):
 def run(params : dict, run_id : int, queue : Queue = None) -> dict:
     if params:
         try:
-            target_host = params['target_host']
-            target_port = params['target_port']
-            tls_version = params['tls_version']
-            cipher_suites = params['cipher_suites']
-            elliptic_curves = params['elliptic_curves']
-            extensions = params['extensions']
-            timeout = params['timeout']
+            target_host = params.get('target_host', None)
+            if target_host is None:
+                raise ValueError("Target host is not specified in the configuration file")
+            target_port = params.get('target_port', None)
+            if target_port is None:
+                raise ValueError("Target port is not specified in the configuration file")
+            tls_version = params.get('tls_version', None)
+            if tls_version is None:
+                raise ValueError("TLS version is not specified in the configuration file")
+            cipher_suites = params.get('cipher_suites', None)
+            if cipher_suites is None:
+                raise ValueError("Cipher suites are not specified in the configuration file")
+            elliptic_curves = params.get('elliptic_curves', [])
+            extensions = params.get('extensions', [])
+            timeout = params.get('timeout', None)
+            if timeout is None:
+                raise ValueError("Timeout is not specified in the configuration file")
 
             capture_thread = threading.Thread(target=sniff, args=(target_host, target_port, timeout))
             capture_thread.start()

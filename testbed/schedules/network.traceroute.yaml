@@ -1,0 +1,18 @@
+monitors:
+  - name: network.traceroute
+    module: network_traceroute
+    exec: src/network/network.traceroute
+
+schedule:
+  - test: network.traceroute
+    write-to: network.traceroute
+    targets:
+      - { "target_host": "vutbr.cz", "ttl_max": 30, "packet_size": 60, "timeout": 5, "repeats" : 1}
+      - { "target_host": "example.com", "ttl_max": 30, "packet_size": 60, "timeout": 5, "repeats" : 1}
+      - { "target_host": "seznam.cz", "ttl_max": 30, "packet_size": 60, "timeout": 5, "repeats" : 1}
+      - { "target_host": "8.8.8.8", "ttl_max": 30, "packet_size": 60, "timeout": 5, "repeats" : 1}
+      - { "target_host": "147.229.177.168", "ttl_max": 30, "packet_size": 60, "timeout": 5, "repeats" : 1}
+      - { "target_host": "199.43.135.53", "ttl_max": 30, "packet_size": 60, "timeout": 5, "repeats" : 1}
+      - { "target_host": "1.1.1.1", "ttl_max": 30, "packet_size": 60, "timeout": 10, "repeats" : 1}
+
+    repeat-every: 5m

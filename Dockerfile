@@ -26,6 +26,8 @@ RUN apt-get update
     # Install PowerShell
 RUN apt-get install -y powershell 
 RUN rm -rf /var/lib/apt/lists/*
+    # Install libpcap-dev for packet capture functionality
+RUN apt-get install -y libpcap-dev
 
 # Copy the dependency file to leverage Docker cache
 COPY ./deploy/inventor-requirements.txt .

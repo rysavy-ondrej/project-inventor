@@ -75,3 +75,21 @@ services:
     command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/security.ldap.yaml -OutPath ./results/
     volumes:
       - ./results:/inventor/testbed/results
+
+  testbed-network.traceroute:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    working_dir: /inventor/testbed
+    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.traceroute.yaml -OutPath ./results/
+    volumes:
+      - ./results:/inventor/testbed/results
+  
+  testbed-security.tls:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    working_dir: /inventor/testbed
+    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/security.tls.yaml -OutPath ./results/
+    volumes:
+      - ./results:/inventor/testbed/results
