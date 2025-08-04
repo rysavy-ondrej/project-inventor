@@ -17,7 +17,7 @@ schedule:
         - { "target_host": "www.fit.vut.cz", "packet_size": 200, "packet_count": 5, "interpacket_delay": 1, "timeout": 5 }
         - { "target_host": "www.cesa.vut.cz", "packet_size": 200, "packet_count": 5, "interpacket_delay": 1, "timeout": 5 }
         - { "target_host": "www.ceitec.cz", "packet_size": 200, "packet_count": 5, "interpacket_delay": 1, "timeout": 5 }
-    repeat-every: 30s
+    repeat-every: 1m
 
   - test: network.ping
     write-to: network.ping.internet
@@ -72,4 +72,4 @@ schedule:
         - { "target_host": "airbnb.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
         - { "target_host": "zoom.us", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
         - { "target_host": "salesforce.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
-    repeat-every: 1m
+    repeat-every: 5m
