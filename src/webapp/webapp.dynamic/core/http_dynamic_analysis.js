@@ -3,6 +3,8 @@ const fs = require('fs');
 const  generate_script = require('./script_generator');
 const {TimeoutError} = require("puppeteer");
 
+
+
 global.download_data = {
     'status': "",
     'visited_pages': [],
@@ -15,12 +17,12 @@ global.visited_page_item = {
     'dom_content_loaded_time': '',
     'total_data_size': 0,
     'waterfall_analysis': [],
-    'image': "",
+    'image': "null",
 
 };
 
 global.total_data_size = 0;
-global.image = 0;
+global.image = "null";
 
 
 // used in script_generator.js
@@ -32,7 +34,7 @@ function init_visited_page_item(){
         'dom_content_loaded_time': '',
         'total_data_size': 0,
         'waterfall_analysis': [],
-        'image': "",
+        'image': "null",
 
     };
 }
@@ -105,20 +107,25 @@ function validateParams(params) {
 
     return params;
 }
-async function add_metrics_to_visited_page_item(page){
-    const domContentLoadedTime =   await page.evaluate(() =>
-        window.performance.timing.domContentLoadedEventEnd - window.performance.timing.navigationStart
-    );
 
-    const loadTime =   await page.evaluate(() =>
-        window.performance.timing.loadEventEnd - window.performance.timing.navigationStart
-    );
-    visited_page_item.current_url = page.url();
+
+async function add_metrics_to_visited_page_item(page){
+    const metrics = await page.evaluate(() => {
+    const [perf] = performance.getEntriesByType('navigation');
+    return {
+        domContentLoadedTime: perf.domContentLoadedEventEnd,
+        loadTime: perf.loadEventEnd,
+        currentUrl: window.location.href,
+    };
+    });
+
+    visited_page_item.current_url = metrics.currentUrl;
     visited_page_item.image = image;
-    visited_page_item.load_time = loadTime;
-    visited_page_item.dom_content_loaded_time = domContentLoadedTime;
+    visited_page_item.load_time = metrics.loadTime;
+    visited_page_item.dom_content_loaded_time = metrics.domContentLoadedTime;
     visited_page_item.total_data_size = total_data_size;
 }
+
 async function handle_request(request) {
     if (request.isInterceptResolutionHandled()) return;
     request.continue();
@@ -225,7 +232,6 @@ async function main() {
     const browser = await puppeteer.launch({
         args: [ "--disable-setuid-sandbox",
         "--no-sandbox",
-        "--single-process",
         "--no-zygote",
         "--disable-gpu",
         "--disable-dev-shm-usage",],
@@ -235,6 +241,7 @@ async function main() {
     await page.setRequestInterception(true);
     page.on("request",handle_request);
     page.on("response", handle_response)
+
 
     let timeoutId;
     if (params.replay_script){
@@ -279,7 +286,7 @@ async function main() {
         try {
            await Promise.race([
                  (async () => {
-                     await page.goto(params.target_host , {waitUntil: params.screenshot_timing_type, timeout: 0})
+                     await page.goto(params.target_host , {waitUntil: ['load', 'networkidle0'], timeout: 0})
                      await new Promise(resolve => setTimeout(resolve, params.screenshot_timing))
                      image = await page.screenshot({ encoding: 'base64', fullPage: true  })
                  })(),

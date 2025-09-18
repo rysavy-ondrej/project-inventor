@@ -28,7 +28,6 @@ def run(params, run_id: int):
         output = json.loads(result.stdout)
 
     except Exception as e:
-        print(e)
         return {
             "status": "error",
             "error_msg": str(e)

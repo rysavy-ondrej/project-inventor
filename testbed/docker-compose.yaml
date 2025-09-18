@@ -11,6 +11,7 @@ services:
 #      - ./results:/inventor/testbed/results
 
   testbed-webapp.http.dynamic:
+    restart: on-failure
     build: 
       context: ..
       dockerfile: Dockerfile.node

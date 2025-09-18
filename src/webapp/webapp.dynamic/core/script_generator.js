@@ -2,6 +2,10 @@ const fs = require('fs');
 
 global.appended_code = `
     await new Promise(resolve => setTimeout(resolve, params.timing_between_steps));
+    await page.waitForFunction(() => {
+    const body = document.querySelector('body');
+    return body && body.offsetWidth > 0 && body.offsetHeight > 0;
+    });
     image = await page.screenshot({ encoding: 'base64', fullPage: true  });
     await add_metrics_to_visited_page_item(page);
     visited_page_item.status = "completed"
@@ -56,7 +60,8 @@ function extractAllBetweenCurlyBraces(str) {
 
 
 function generate_script(user_recorded_file,callback) {
-        let decoded_file = atob(user_recorded_file)
+    try{
+        let decoded_file = Buffer.from(user_recorded_file, 'base64').toString('utf-8');
         const matches  = extractAllBetweenCurlyBraces(extractOuterBraces(decoded_file))
         let new_file = "(async () => {{\n"+matches[0]+"}\n"
         for (let i = 1; i < matches.length; i++) {
@@ -65,6 +70,9 @@ function generate_script(user_recorded_file,callback) {
         }
         new_file += "\n})()"
         return callback(null,new_file);
+    }catch (err){
+            return callback(err, null);
+    }
 
 }
 
