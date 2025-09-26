@@ -1,15 +1,26 @@
-#!/bin/bash
-pwsh Run-MonitorSession.ps1 -TestSuiteFile schedules/network.ping.yaml -OutPath ./out/ &
-pwsh Run-MonitorSession.ps1 -TestSuiteFile schedules/network.smtp.yaml -OutPath ./out/ &
-pwsh Run-MonitorSession.ps1 -TestSuiteFile schedules/security.ssh.yaml -OutPath ./out/ &
-pwsh Run-MonitorSession.ps1 -TestSuiteFile schedules/network.imap.yaml -OutPath ./out/ &
-pwsh Run-MonitorSession.ps1 -TestSuiteFile schedules/network.dns.yaml -OutPath ./out/ &
-pwsh Run-MonitorSession.ps1 -TestSuiteFile schedules/security.ldap.yaml -OutPath ./out/ &
-PID1=$!
-pwsh Run-MonitorSession.ps1 -TestSuiteFile schedules/webapp.http.yaml -OutPath ./out/
-#PID2=$!
+#!/usr/bin/env bash
+# run-all-tests.sh
 
-#wait $PID1
-#wait $PID2
+set -euo pipefail
 
-#echo "Tests terminated!"
+SCHEDULE_DIR="schedules"
+OUT_DIR="./out"
+
+mkdir -p "$OUT_DIR"
+
+echo "Launching test suites from $SCHEDULE_DIR ..."
+
+pids=()
+
+for suite in "$SCHEDULE_DIR"/*.yaml; do
+    echo "Starting $suite ..."
+    pwsh Run-MonitorSession.ps1 -TestSuiteFile "$suite" -OutPath "$OUT_DIR" &
+    pids+=($!)
+done
+
+echo "All tests started, waiting for them to finish..."
+
+# just wait for all jobs
+wait
+
+echo "✅ All monitor sessions finished."
