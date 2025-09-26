@@ -43,5 +43,5 @@ RUN pwsh -Command 'Set-PSRepository -Name "PSGallery" -InstallationPolicy Truste
 # Copy the rest of the application code
 COPY . .
 
-# Define the default command to run your application
-CMD ["pwsh"]
+# Default: idle forever -- so we can exec inside to test and troubleshoot the container
+CMD ["tail", "-f", "/dev/null"]
