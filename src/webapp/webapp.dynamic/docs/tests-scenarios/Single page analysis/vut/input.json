@@ -1,0 +1,5 @@
+{
+      "target_host": "https://www.vut.cz/",
+      "screenshot_timing_type": "load",
+      "timeout": 15000
+}

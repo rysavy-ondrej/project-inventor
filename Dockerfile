@@ -36,6 +36,7 @@ COPY ./deploy/inventor-requirements.txt .
 RUN pip3 install --upgrade pip && \
     pip3 install --no-cache-dir -r inventor-requirements.txt
 
+
 # Install YAML module for PowerShell
 RUN pwsh -Command 'Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted; Install-Module -Name powershell-yaml -Scope CurrentUser -Force' 
 

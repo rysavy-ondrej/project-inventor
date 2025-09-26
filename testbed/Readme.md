@@ -1,3 +1,5 @@
+# CHANGES 
+- New docker file created for dynamic analysis. It is necessary to install chromium, node.js and puppeteer library for dynamic analysis. For that reason when starting webapp.http.dynamic tests you need set dockerfile to [Dockerfile.node](..%2FDockerfile.node)  instead of [Dockerfile](..%2FDockerfile) in [docker-compose.yaml](docker-compose.yaml)
 # INVENTOR Testbed
 
 This is a lightweight, containerized environment for continuous monitoring and testing using Docker Compose and PowerShell scripting. The system is designed to manage test execution, log collection, and data storage efficiently while keeping configuration simple and flexible.
