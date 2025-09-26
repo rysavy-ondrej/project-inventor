@@ -6,7 +6,7 @@ To run the testbes schedules as a service follow the steps:
 
 Create /etc/systemd/system/capture-tap.service:
 
-```
+```bash
 [Unit]
 Description=Run the inventor tests specified in the run all script.
 After=network.target
@@ -27,7 +27,7 @@ WantedBy=multi-user.target
 
 ### Enable and start the service
 
-```
+```bash
 sudo systemctl daemon-reload
 sudo systemctl enable inventor-testbed.service
 sudo systemctl start inventor-testbed.service
@@ -35,21 +35,21 @@ sudo systemctl start inventor-testbed.service
 
 ### Verify service status
 
-```
+```bash
 sudo systemctl status capture-tap.service
-
+```
 
 ## Enable updates from Git
 
 Updates from Git are performed once a day at midnight. This is achieved by the cron service.
 Use the command `crontab -e` to add the following line at the end of the configuration file:
 
-```
+```bash
 0 0 * * * cd /root/project-inventor && git pull origin main.
 ```
 
 ## Enable uploading the results to Git
 
-the results re upload every day to GitHub project `inventor-analysis`.
+The results are uploaded to the GitHub project "inventor-analysis" every day. This is accomplished by regularly executing the git-upload.sh script using the GitHub upload service.
 
 
