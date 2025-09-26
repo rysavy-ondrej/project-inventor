@@ -1,1 +1,14 @@
+[Unit]
+Description=Upload daily data files to GitHub
+After=network.target
 
+[Service]
+Type=oneshot
+User=root
+WorkingDirectory=/root
+ExecStart=/bin/bash /root/git-upload.sh
+StandardOutput=append:/var/log/github_upload.log
+StandardError=append:/var/log/github_upload.log
+
+[Install]
+WantedBy=multi-user.target
