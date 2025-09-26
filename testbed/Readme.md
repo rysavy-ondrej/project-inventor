@@ -123,3 +123,11 @@ docker-compose -f docker-compose.yaml up
 ```
 
 Docker Compose will build the image (if necessary) and start all defined services concurrently. Each container will execute its configured monitoring session independently, periodically running tests and writing outputs to the shared results directory.
+
+### Running only selected service
+
+In Docker Compose, each section defines a service. It is possible to run only a selected service as follows:
+
+```bash
+docker compose up testbed-webapp.http.dynamic
+```
