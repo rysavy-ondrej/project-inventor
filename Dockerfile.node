@@ -54,4 +54,5 @@ RUN apt update && apt install -y nodejs npm && npm install --prefix /inventor/sr
 
 
 # Define the default command to run your application
-CMD ["pwsh"]
+# Default: idle forever -- so we can exec inside to test and troubleshoot the container
+CMD ["tail", "-f", "/dev/null"]
