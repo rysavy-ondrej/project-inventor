@@ -36,7 +36,7 @@ sudo systemctl start inventor-testbed.service
 ### Verify service status
 
 ```bash
-sudo systemctl status capture-tap.service
+sudo systemctl status inventor-testbed.service
 ```
 
 ## Enable updates from Git
