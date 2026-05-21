@@ -28,7 +28,8 @@ download_file() {
     else
         wget -qO "$dest" "$url"
     fi
-#    [[ "$executable" == "true" ]] && chmod +x "$dest"
+    [[ "$executable" == "true" ]] && chmod +x "$dest"
+    return
 }
 
 # ---------------------------------------------------------------------------
