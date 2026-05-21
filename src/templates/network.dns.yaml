@@ -1,0 +1,11 @@
+monitors:
+  - name: network.dns
+    module: network_dns
+    exec: src/network/network.dns
+
+schedule:
+  - test: network.dns
+    write-to: network.dns
+    targets:
+        - { "target_hosts": ["www.example.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+    repeat-every: 5m

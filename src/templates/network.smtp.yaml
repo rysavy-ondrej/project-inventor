@@ -1,0 +1,11 @@
+monitors:
+  - name: network.smtp
+    module: network_smtp
+    exec: src/network/network.smtp
+
+schedule:
+  - test: network.smtp
+    write-to: network.smtp
+    targets:
+        - { "target_host": "www.example.com", "target_port": "25", "send_email_flag": "False" }
+    repeat-every: 5m

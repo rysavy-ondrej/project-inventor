@@ -1,0 +1,18 @@
+monitors:
+  - name: webapp.http.dynamic
+    module: monitor_webapp_dynamic_analysis
+    exec: src/webapp/webapp.dynamic
+
+schedule:
+  - test: webapp.http.dynamic
+    write-to: webapp.http.dynamic
+    hash-fields: [ { "src": "visited_pages.image", "trg": "visited_pages.image-hash" } ]
+    omit-fields: [ "visited_pages.image" ]
+    targets:
+      # https://www.example.com
+      - {
+        "replay_script": "Y29uc3QgcHVwcGV0ZWVyID0gcmVxdWlyZSgncHVwcGV0ZWVyJyk7CgooYXN5bmMgKCkgPT4gewogICAgY29uc3QgYnJvd3NlciA9IGF3YWl0IHB1cHBldGVlci5sYXVuY2goKTsKICAgIGNvbnN0IHBhZ2UgPSBhd2FpdCBicm93c2VyLm5ld1BhZ2UoKTsKICAgIGNvbnN0IHRpbWVvdXQgPSA1MDAwOwogICAgcGFnZS5zZXREZWZhdWx0VGltZW91dCh0aW1lb3V0KTsKCiAgICB7CiAgICAgICAgY29uc3QgdGFyZ2V0UGFnZSA9IHBhZ2U7CiAgICAgICAgYXdhaXQgdGFyZ2V0UGFnZS5zZXRWaWV3cG9ydCh7IHdpZHRoOiAxOTIwLCBoZWlnaHQ6IDEwODAgfSkKICAgIH0KCiAgICB7CiAgICAgICAgY29uc3QgdGFyZ2V0UGFnZSA9IHBhZ2U7CiAgICAgICAgYXdhaXQgdGFyZ2V0UGFnZS5nb3RvKCdodHRwczovL3d3dy5leGFtcGxlLmNvbScpOwogICAgfQoKICAgIGF3YWl0IGJyb3dzZXIuY2xvc2UoKTsKCn0pKCkuY2F0Y2goZXJyID0+IHsKICAgIGNvbnNvbGUuZXJyb3IoZXJyKTsKICAgIHByb2Nlc3MuZXhpdCgxKTsKfSk7Cg==",
+        "timing_between_steps": 400,
+        "timeout": 30000
+        }
+    repeat-every: 5m

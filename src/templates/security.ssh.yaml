@@ -1,0 +1,11 @@
+monitors:
+  - name: security.ssh
+    module: security_ssh
+    exec: src/security/security.ssh
+
+schedule:
+  - test: security.ssh
+    write-to: security.ssh
+    targets:
+        - { "target_host": "www.example.com" }
+    repeat-every: 5m

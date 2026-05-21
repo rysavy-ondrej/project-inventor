@@ -3,8 +3,8 @@
 
 set -euo pipefail
 
-SCHEDULE_DIR="schedules"
-OUT_DIR="./out"
+SCHEDULE_DIR="${1:-schedules}"
+OUT_DIR="${2:-./out}"
 
 mkdir -p "$OUT_DIR"
 

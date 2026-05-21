@@ -1,0 +1,11 @@
+monitors:
+  - name: network.ping
+    module: network_ping
+    exec: src/network/network.ping
+
+schedule:
+  - test: network.ping
+    write-to: network.ping
+    targets:
+        - { "target_host": "www.example.com", "packet_size": 100, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 5m

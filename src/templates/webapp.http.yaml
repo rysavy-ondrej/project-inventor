@@ -1,0 +1,15 @@
+monitors:
+  - name: webapp.http
+    module: webapp_http
+    exec: src/webapp/webapp.http
+
+schedule:
+  - test: webapp.http
+    write-to: webapp.http
+    targets:
+        - { "target_url": "www.example.com", "timeout": 5, "follow_redirects": true }
+    hash-fields:
+        - { "src": "body", "trg": "body_hash" }
+    omit-fields:
+        - "body"
+    repeat-every: 5m

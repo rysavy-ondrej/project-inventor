@@ -1,0 +1,11 @@
+monitors:
+  - name: security.ldap
+    module: security_ldap
+    exec: src/security/security.ldap
+
+schedule:
+  - test: security.ldap
+    write-to: security.ldap
+    targets:
+        - { "target_host": "www.example.com" }
+    repeat-every: 5m

@@ -1,0 +1,11 @@
+monitors:
+  - name: network.ntp
+    module: network_ntp
+    exec: src/network/network.ntp
+
+schedule:
+  - test: network.ntp
+    write-to: network.ntp
+    targets:
+        - { "target_host": "www.example.com" }
+    repeat-every: 5m

@@ -1,0 +1,11 @@
+monitors:
+  - name: network.imap
+    module: network_imap
+    exec: src/network/network.imap
+
+schedule:
+  - test: network.imap
+    write-to: network.imap
+    targets:
+        - { "target_host": "www.example.com", "target_port": "993", "login_flag": "False", "login_username": "", "login_server": "www.example.com" }
+    repeat-every: 5m
