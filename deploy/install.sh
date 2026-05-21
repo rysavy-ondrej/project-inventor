@@ -4,7 +4,6 @@
 set -euo pipefail
 
 GITHUB_RAW="https://raw.githubusercontent.com/rysavy-ondrej/project-inventor/main"
-GITHUB_API="https://api.github.com/repos/rysavy-ondrej/project-inventor/contents"
 
 SERVICE_NAME="inventor-monitor"
 
@@ -21,7 +20,6 @@ require_cmd() {
     command -v "$1" &>/dev/null || error "Required command not found: $1"
 }
 
-# Download a single file, optionally marking it executable.
 download_file() {
     local url="$1" dest="$2" executable="${3:-false}"
     mkdir -p "$(dirname "$dest")"
@@ -33,41 +31,6 @@ download_file() {
     [[ "$executable" == "true" ]] && chmod +x "$dest"
 }
 
-# Recursively download *.py files under a GitHub contents path into a local dir.
-download_tree() {
-    local api_path="$1" local_dir="$2"
-    local entries parsed
-
-    if ! entries=$(curl -fsSL "${GITHUB_API}/${api_path}" 2>/dev/null); then
-        warn "Failed to fetch listing for ${api_path}"
-        return
-    fi
-
-    # Single Python call: emit one "type\tname\turl" line per entry.
-    # Directories have download_url=null, so we emit an empty url for them.
-    parsed=$(echo "$entries" | python3 -c "
-import sys, json
-try:
-    data = json.load(sys.stdin)
-except Exception as e:
-    print(f'ERROR: {e}', file=sys.stderr)
-    sys.exit(1)
-for e in data:
-    print(e['type'] + '\t' + e['name'] + '\t' + (e.get('download_url') or ''))
-") || { warn "Failed to parse listing for ${api_path}"; return; }
-
-    # Use a here-string (not a pipe) so the while loop runs in the current shell,
-    # keeping recursive curl calls out of the pipe's stdin.
-    while IFS=$'\t' read -r etype ename edl; do
-        if [[ "$etype" == "file" && "$ename" == *.py && -n "$edl" ]]; then
-            info "  $api_path/$ename"
-            download_file "$edl" "$local_dir/$ename"
-        elif [[ "$etype" == "dir" ]]; then
-            download_tree "$api_path/$ename" "$local_dir/$ename"
-        fi
-    done <<< "$parsed"
-}
-
 # ---------------------------------------------------------------------------
 # Prompt for install prefix
 # ---------------------------------------------------------------------------
@@ -77,7 +40,6 @@ read -r -p "Target folder [${DEFAULT_PREFIX}]: " PREFIX
 PREFIX="${PREFIX:-$DEFAULT_PREFIX}"
 PREFIX="${PREFIX%/}"
 
-# Resolve to absolute path (create it first so realpath/cd works).
 mkdir -p "$PREFIX"
 PREFIX=$(cd "$PREFIX" && pwd)
 
@@ -101,34 +63,57 @@ done
 success "Directory layout created"
 
 # ---------------------------------------------------------------------------
-# 1. src/ — monitoring test-case modules
+# 1. src/ — monitoring test-case modules (Python files only)
 # ---------------------------------------------------------------------------
 
 info "Downloading monitoring modules (src/) ..."
 
-for module in \
-    network/network.dns        \
-    network/network.ftp        \
-    network/network.imap       \
-    network/network.mqtt       \
-    network/network.ntp        \
-    network/network.ping       \
-    network/network.smtp       \
-    network/network.snmp       \
-    network/network.traceroute \
-    other/other.nosql          \
-    other/other.sql            \
-    performance/performance.bandwidth \
-    security/security.ldap     \
-    security/security.ssh      \
-    security/security.tls      \
-    webapp/webapp.dynamic      \
-    webapp/webapp.http         \
-    webapp/webapp.rest         \
-    webapp/webapp.security     \
-    common/dummy
-do
-    download_tree "src/$module" "$PREFIX/src/$module"
+PYTHON_FILES=(
+    network/network.dns/network_dns.py
+    network/network.dns/monitor_dns.py
+    network/network.ftp/network_ftp.py
+    network/network.ftp/monitor_ftp.py
+    network/network.imap/network_imap.py
+    network/network.imap/monitor_imap.py
+    network/network.mqtt/network_mqtt.py
+    network/network.mqtt/monitor_mqtt.py
+    network/network.ntp/network_ntp.py
+    network/network.ntp/monitor_ntp.py
+    network/network.ping/network_ping.py
+    network/network.ping/monitor_ping.py
+    network/network.smtp/network_smtp.py
+    network/network.smtp/monitor_smtp.py
+    network/network.snmp/network_snmp.py
+    network/network.snmp/monitor_snmp.py
+    network/network.traceroute/network_traceroute.py
+    network/network.traceroute/monitor_traceroute.py
+    other/other.nosql/nosql.py
+    other/other.nosql/db_factory.py
+    other/other.nosql/monitor_nosql.py
+    other/other.sql/sql_db.py
+    other/other.sql/db_factory.py
+    other/other.sql/monitor_sql.py
+    performance/performance.bandwidth/performance.bandwidth.client.py
+    performance/performance.bandwidth/performance.bandwidth.server.py
+    security/security.ldap/security_ldap.py
+    security/security.ldap/monitor_ldap.py
+    security/security.ssh/security_ssh.py
+    security/security.ssh/monitor_ssh.py
+    security/security.tls/security_tls.py
+    security/security.tls/monitor_tls.py
+    webapp/webapp.dynamic/monitor_webapp_dynamic_analysis.py
+    webapp/webapp.http/webapp_http.py
+    webapp/webapp.http/test_http.py
+    webapp/webapp.rest/webapp_rest.py
+    webapp/webapp.rest/test_rest.py
+    webapp/webapp.security/webapp_security.py
+    webapp/webapp.security/test_security.py
+    common/dummy/dummy.py
+)
+
+for rel in "${PYTHON_FILES[@]}"; do
+    info "  $rel"
+    download_file "${GITHUB_RAW}/src/${rel}" "$PREFIX/src/${rel}"
 done
 
 success "Monitoring modules installed to $PREFIX/src/"
@@ -151,7 +136,7 @@ done
 success "Scripts installed to $PREFIX/bin/"
 
 # ---------------------------------------------------------------------------
-# 3. etc/ — schedule configuration pre-populated from minimal templates
+# 3. etc/ — schedule templates + Python requirements
 # ---------------------------------------------------------------------------
 
 info "Downloading schedule templates (etc/) ..."
@@ -179,10 +164,13 @@ do
     fi
 done
 
-success "Schedule templates installed to $PREFIX/etc/"
+info "Downloading Python requirements ..."
+download_file "${GITHUB_RAW}/deploy/inventor-requirements.txt" "$PREFIX/etc/requirements.txt"
+
+success "Config and requirements installed to $PREFIX/etc/"
 
 # ---------------------------------------------------------------------------
-# 4. var/ — output directory (empty, created above)
+# 4. var/ — output directory (created above)
 # ---------------------------------------------------------------------------
 
 success "Output directory ready at $PREFIX/var/"
@@ -199,6 +187,9 @@ echo "  Monitoring modules : $PREFIX/src/"
 echo "  Runner scripts     : $PREFIX/bin/"
 echo "  Schedule configs   : $PREFIX/etc/    (edit before running)"
 echo "  Monitor output     : $PREFIX/var/"
+echo ""
+echo "Install Python dependencies:"
+echo "  pip install -r $PREFIX/etc/requirements.txt"
 echo ""
 echo "Quick start:"
 echo "  pwsh $PREFIX/bin/Run-MonitorSession.ps1 -TestSuiteFile $PREFIX/etc/<schedule>.yaml -OutPath $PREFIX/var/"
@@ -231,8 +222,6 @@ info "Detected init system: $INIT_SYS"
 install_systemd_service() {
     local prefix="$1"
     local unit_file="/etc/systemd/system/${SERVICE_NAME}.service"
-
-    # Run as the invoking user (not root) even when the script is sudo'd.
     local run_user="${SUDO_USER:-$(whoami)}"
 
     info "Writing unit file: $unit_file"
@@ -280,8 +269,7 @@ EOF
         fi
         success "Service enabled and started"
     else
-        info "To start later:"
-        info "  sudo systemctl enable --now ${SERVICE_NAME}"
+        info "To start later: sudo systemctl enable --now ${SERVICE_NAME}"
     fi
 
     echo ""
