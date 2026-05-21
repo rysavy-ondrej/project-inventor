@@ -28,7 +28,7 @@ download_file() {
     else
         wget -qO "$dest" "$url"
     fi
-    [[ "$executable" == "true" ]] && chmod +x "$dest"
+#    [[ "$executable" == "true" ]] && chmod +x "$dest"
 }
 
 # ---------------------------------------------------------------------------
@@ -164,10 +164,16 @@ do
     fi
 done
 
-info "Downloading Python requirements ..."
-download_file "${GITHUB_RAW}/deploy/inventor-requirements.txt" "$PREFIX/etc/requirements.txt"
+success "Schedule templates installed to $PREFIX/etc/"
 
-success "Config and requirements installed to $PREFIX/etc/"
+# ---------------------------------------------------------------------------
+# 3b. src/requirements.txt — Python dependencies
+# ---------------------------------------------------------------------------
+
+info "Downloading Python requirements ..."
+download_file "${GITHUB_RAW}/deploy/inventor-requirements.txt" "$PREFIX/src/requirements.txt"
+
+success "Requirements file installed to $PREFIX/src/requirements.txt"
 
 # ---------------------------------------------------------------------------
 # 4. var/ — output directory (created above)
@@ -189,13 +195,35 @@ echo "  Schedule configs   : $PREFIX/etc/    (edit before running)"
 echo "  Monitor output     : $PREFIX/var/"
 echo ""
 echo "Install Python dependencies:"
-echo "  pip install -r $PREFIX/etc/requirements.txt"
+echo "  pip install -r $PREFIX/src/requirements.txt"
 echo ""
 echo "Quick start:"
 echo "  pwsh $PREFIX/bin/Run-MonitorSession.ps1 -TestSuiteFile $PREFIX/etc/<schedule>.yaml -OutPath $PREFIX/var/"
 echo "  # or run all schedules:"
 echo "  bash $PREFIX/bin/inventor-testbed.run-all.sh $PREFIX/etc/ $PREFIX/var/"
 echo ""
+
+# ---------------------------------------------------------------------------
+# Optional: create Python virtual environment and install requirements
+# ---------------------------------------------------------------------------
+
+read -r -p "Create a Python virtual environment and install requirements? [y/N]: " create_venv
+if [[ "${create_venv,,}" == "y" ]]; then
+    VENV_DIR="$PREFIX/venv"
+    info "Creating virtual environment at $VENV_DIR ..."
+    python3 -m venv "$VENV_DIR"
+    success "Virtual environment created"
+
+    info "Installing requirements ..."
+    "$VENV_DIR/bin/pip" install --upgrade pip --quiet
+    "$VENV_DIR/bin/pip" install -r "$PREFIX/src/requirements.txt"
+    success "Requirements installed"
+
+    echo ""
+    echo "Activate the environment before running tests:"
+    echo "  source $VENV_DIR/bin/activate"
+    echo ""
+fi
 
 # ---------------------------------------------------------------------------
 # Optional: install as system service
