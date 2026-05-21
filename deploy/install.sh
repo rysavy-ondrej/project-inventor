@@ -33,25 +33,39 @@ download_file() {
     [[ "$executable" == "true" ]] && chmod +x "$dest"
 }
 
-# Recursively download every file under a GitHub contents path into a local dir.
+# Recursively download *.py files under a GitHub contents path into a local dir.
 download_tree() {
     local api_path="$1" local_dir="$2"
-    local entries
-    entries=$(curl -fsSL "${GITHUB_API}/${api_path}")
-    local names types download_urls
-    names=$(echo "$entries"         | python3 -c "import sys,json; [print(e['name'])                  for e in json.load(sys.stdin)]")
-    types=$(echo "$entries"         | python3 -c "import sys,json; [print(e['type'])                  for e in json.load(sys.stdin)]")
-    download_urls=$(echo "$entries" | python3 -c "import sys,json; [print(e.get('download_url',''))   for e in json.load(sys.stdin)]")
+    local entries parsed
 
-    paste <(echo "$names") <(echo "$types") <(echo "$download_urls") | \
-    while IFS=$'\t' read -r name type dl_url; do
-        if [[ "$type" == "file" && -n "$dl_url" ]]; then
-            info "  $api_path/$name"
-            download_file "$dl_url" "$local_dir/$name"
-        elif [[ "$type" == "dir" ]]; then
-            download_tree "$api_path/$name" "$local_dir/$name"
+    if ! entries=$(curl -fsSL "${GITHUB_API}/${api_path}" 2>/dev/null); then
+        warn "Failed to fetch listing for ${api_path}"
+        return
+    fi
+
+    # Single Python call: emit one "type\tname\turl" line per entry.
+    # Directories have download_url=null, so we emit an empty url for them.
+    parsed=$(echo "$entries" | python3 -c "
+import sys, json
+try:
+    data = json.load(sys.stdin)
+except Exception as e:
+    print(f'ERROR: {e}', file=sys.stderr)
+    sys.exit(1)
+for e in data:
+    print(e['type'] + '\t' + e['name'] + '\t' + (e.get('download_url') or ''))
+") || { warn "Failed to parse listing for ${api_path}"; return; }
+
+    # Use a here-string (not a pipe) so the while loop runs in the current shell,
+    # keeping recursive curl calls out of the pipe's stdin.
+    while IFS=$'\t' read -r etype ename edl; do
+        if [[ "$etype" == "file" && "$ename" == *.py && -n "$edl" ]]; then
+            info "  $api_path/$ename"
+            download_file "$edl" "$local_dir/$ename"
+        elif [[ "$etype" == "dir" ]]; then
+            download_tree "$api_path/$ename" "$local_dir/$ename"
         fi
-    done
+    done <<< "$parsed"
 }
 
 # ---------------------------------------------------------------------------

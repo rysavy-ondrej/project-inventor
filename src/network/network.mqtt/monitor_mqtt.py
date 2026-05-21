@@ -32,6 +32,8 @@ def monitor_mqtt():
     with open('test/output.json', 'w') as file:
         json.dump(combined, file, indent=4)
 
+    assert combined["output"]["status"] != "error"
+    assert combined["queue"]["status"] != "error"
 
 def test_monitor_mqtt():
     monitor_mqtt()

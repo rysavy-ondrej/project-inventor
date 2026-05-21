@@ -404,18 +404,18 @@ def dns_resolve(query_domains, query_type, run_id, nameservers=None):
 def run(params : dict, run_id : int ,queue : Queue = None) -> dict:
 
     if params is not None:
-        #try:
-        domains = params['target_hosts']
-        query_type = params['query_type'].upper()
-        nameservers = params.get('nameservers', None)
+        try:
+            domains = params['target_hosts']
+            query_type = params['query_type'].upper()
+            nameservers = params.get('nameservers', None)
 
-        if query_type not in ['A', 'AAAA', 'CNAME', 'NS', 'SOA', 'DS', 'CAA', 'DNSKEY', 'RRSIG', 'PTR']:
-            res = error_json("INVALID_QUERY_TYPE", "Invalid query type")
-        else:
-            res = dns_resolve(domains, query_type, run_id, nameservers)
+            if query_type not in ['A', 'AAAA', 'CNAME', 'NS', 'SOA', 'DS', 'CAA', 'DNSKEY', 'RRSIG', 'PTR']:
+                res = error_json("INVALID_QUERY_TYPE", "Invalid query type")
+            else:
+                res = dns_resolve(domains, query_type, run_id, nameservers)
 
-        #except Exception as e:
-            #res = error_json("DNS_TEST_ERROR", f'Error running DNS test: {e}') 
+        except Exception as e:
+            res = error_json("DNS_TEST_ERROR", f'Error running DNS test: {e}')
 
     else:
         res = error_json("INVALID_CONFIGURATION", "Invalid configuration file")

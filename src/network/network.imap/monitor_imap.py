@@ -41,6 +41,8 @@ def monitor_imap():
     with open('test/output.json', 'w') as file:
         json.dump(combined, file, indent=4)
 
+    assert combined["output"]["status"] != "error"
+    assert combined["queue"]["status"] != "error"
 
 def test_monitor_imap():
     monitor_imap()

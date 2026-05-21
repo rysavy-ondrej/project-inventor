@@ -11,59 +11,29 @@ import socket
 import numpy as np
 
 def load_config(file):
-    """
-    Load the json configuration file
-
-    Parameters:
-    - file (str): The path to the json configuration file
-
-    Returns:
-    - dict: The configuration file as a dictionary
-    """
     try:
         with open(file, 'r') as f:
             config = json.load(f)
         return config
     except Exception as e:
-        err_msg = error_json("INVALID CONFIGURATION", f'Error loading configuration file: {e}')
         return None
 
 def error_json(code, message):
-    """
-    Create an error json message
-
-    Parameters:
-    - message (str): The error message
-
-    Returns:
-    - dict: The error message as a dictionary
-    """
     data = {'status': 'error',
-            'error': {'error_code' : code, 'description': message}}
+            'error': {'error_code': code, 'description': message}}
     return data
 
-def resolve_target(target):
-    """
-    Resolve the target to an IP address
-
-    Parameters:
-    - target (str): The target to resolve
-    """
+def resolve_target(target, run_id):
+    # Fix: run_id added as parameter (was referenced but not in scope)
     try:
         addresses = socket.getaddrinfo(target, None)
         ip_addr = addresses[0][4][0]
         return ip_addr, None
     except Exception as e:
-        error_msg = error_json("CAN'T RESOLVE", f'Error creating socket: {e}')
+        error_msg = error_json("CAN'T RESOLVE", f'Error resolving target: {e}')
         return None, {'run_id': run_id, 'status': 'error', 'error': error_msg}
 
 def process_hops(res):
-    """
-    Process the hops from the traceroute test
-
-    Parameters:
-    - res (list): The list of hops from the traceroute test
-    """
     hops = []
     last_distance = 0
     for hop in res:
@@ -79,80 +49,59 @@ def process_hops(res):
     return hops
 
 def calculate_path_stability(paths, target_reached):
-    """
-    Calculate the path stability of the traceroute test
-
-    Parameters:
-    - paths (list): The list of paths
-    """
-    max_length = max(len(path) for path in paths) if paths else 0
+    # Fix: guard empty paths to avoid np.var([]) returning NaN (breaks JSON)
+    if not paths:
+        return "N/A"
+    max_length = max(len(path) for path in paths)
+    if max_length == 0:
+        return "N/A"
     for path in paths:
         while len(path) < max_length:
             path.append(None)
-    variability = np.var([len(set(path)) for path in paths])
+    variability = np.var([len(set(filter(None, path))) for path in paths])
     max_variability = max_length - 1 if max_length > 1 else 1
-    stability = 1 - (variability / max_variability)
+    stability = round(float(1 - (variability / max_variability)), 4)
     if not target_reached:
         stability = "Target not reached"
     return stability
 
 def traceroute_test(run_id, target, ttl_max, packet_size, count, interval, timeout, repeats):
-    """
-    Perform a traceroute test to a target
-
-    Parameters:
-    - run_id (int): The id of the test
-    - target (str): The target to ping
-    - ttl_max (int): The maximum TTL
-    - packet_size (int): The size of the sended packet
-    - count (int): The number of packets to send to each hop
-    - interval (float): The interval between packets
-    - timeout (int): The timeout for each packet
-    - repeats (int): The number of times to repeat the tracerout test
-
-    Returns:
-    - dict: The results of the traceroute test
-    """
-
-    # Initialization
-    address, error_data = resolve_target(target)
+    address, error_data = resolve_target(target, run_id)
     if not address:
         return error_data
 
     run_details = []
     packet_sent, packet_received = 0, 0
-    min_hops, max_hops = float('inf'), float('-inf')
+    # Fix: use None instead of float('inf')/float('-inf') — those crash json.dumps
+    min_hops, max_hops = None, None
     paths = []
     target_reached = False
-    gateways_issue_detected = False
 
     for run_cnt in range(1, repeats + 1):
         try:
-            res = traceroute(target, count=count, interval=interval, timeout=timeout, max_hops=ttl_max, payload_size=packet_size)
-            packet_sent += res[0].packets_sent
-            packet_received += res[0].packets_received
+            res = traceroute(target, count=count, interval=interval, timeout=timeout,
+                             max_hops=ttl_max, payload_size=packet_size)
+            # Fix: aggregate across all hops, not just first hop
+            packet_sent += sum(hop.packets_sent for hop in res)
+            packet_received += sum(hop.packets_received for hop in res)
             paths.append([hop.address for hop in res])
 
-            # Check if the destination was reached
             if res and res[-1].address == address:
                 target_reached = True
 
-            # Update hop details and min/max hops
             hops = process_hops(res)
-            # Check if the last hop contains "Some gateways are not responding"
-            if hops and hops[-1]['hop_ip'] == 'Some gateways are not responding':
-                target_reached = True 
+            # Fix: removed false target_reached=True for missing gateways —
+            # intermediate hops not responding does NOT mean the target was reached
 
             run_details.append({'run': run_cnt, 'hops': hops})
             if res:
-                min_hops = min(min_hops, res[-1].distance)
-                max_hops = max(max_hops, res[-1].distance) 
+                distance = res[-1].distance
+                min_hops = distance if min_hops is None else min(min_hops, distance)
+                max_hops = distance if max_hops is None else max(max_hops, distance)
         except ICMPLibError as e:
             run_details.append({'run': run_cnt, 'hops': [str(e)]})
 
-    # Calculate path stability
-    path_stability = calculate_path_stability(paths, target_reached or gateways_issue_detected)
-    # Final results
+    path_stability = calculate_path_stability(paths, target_reached)
     packet_loss = round((1 - packet_received / packet_sent) * 100, 2) if packet_sent > 0 else 0
     data = {
         'run_id': run_id,
@@ -169,29 +118,23 @@ def traceroute_test(run_id, target, ttl_max, packet_size, count, interval, timeo
 
     return data
 
-def run(params : dict, run_id : int ,queue : Queue = None) -> dict:
-    """
-    Run the traceroute test
-
-    Parameters:
-    - params (dict): The configuration parameters
-    - run_id (int): The id of the test
-    - queue (Queue): The queue to send the results
-
-    Returns:
-    - dict: The results of the traceroute test
-    """
+def run(params: dict, run_id: int, queue: Queue = None) -> dict:
     result = {}
     if params is not None:
         try:
-            result = traceroute_test(run_id, target=params['target_host'],ttl_max=params['ttl_max'],
-                                packet_size=params['packet_size'], count=1,
-                                interval=0.05, timeout=params['timeout'],
-                                repeats=params['repeats'])
-            
+            result = traceroute_test(
+                run_id,
+                target=params['target_host'],
+                ttl_max=params['ttl_max'],
+                packet_size=params['packet_size'],
+                count=1,
+                interval=0.05,
+                timeout=params['timeout'],
+                repeats=params['repeats']
+            )
         except Exception as e:
-            result = error_json("ERROR", f'Error running traceroute test: {e}. Please check if you have the necessary permissions.')
-
+            result = error_json("ERROR", f'Error running traceroute test: {e}. '
+                                         'Please check if you have the necessary permissions.')
     else:
         result = error_json("INVALID CONFIGURATION", "Invalid configuration file")
 

@@ -59,20 +59,23 @@ def collect_info(target_host, com_string, oid) -> dict:
             target_host_ip = socket.getaddrinfo(target_host, SNMP_PORT)[0][4][0]
             probe['IP_address'] = target_host_ip
 
-        session = easysnmp.Session(hostname=target_host,version=2,community=com_string)
+        session = easysnmp.Session(hostname=target_host, version=2, community=com_string)
         start_time = time.time()
-        cleaned_oid = ",".join([item.strip() for item in oid.split(",")]) # To get rid off "oid1,oid2, oid3     "
-        
+        cleaned_oid = ",".join([item.strip() for item in oid.split(",")])
+
         for object in cleaned_oid.split(','):
             response = session.get(object)
             probe[object] = {
-                'get_value':str(response.value),
-                'snmp_data_type':str(response.snmp_type)
+                'get_value': str(response.value),
+                'snmp_data_type': str(response.snmp_type)
             }
-            
+
         probe['response_time'] = measure_response_time(start_time)
-    except Exception as e: 
-        probe = error_json("ERROR: something went wrong during testing", f'{e}')
+        probe['status'] = 'completed'
+    except Exception as e:
+        # Fix: preserve target_host/IP_address already collected; don't replace entire probe
+        probe['status'] = 'error'
+        probe['error'] = str(e)
 
 
     return probe
@@ -93,7 +96,8 @@ def run(params : dict, run_id : int, queue : Queue = None) -> dict:
             if ' ' in params['oids']: 
                 raise Exception("No whitespaces allowed in `oids` parametrs!")
 
-            result = collect_info(params['target_host'],params['community_string'],params['oids'])
+            result = collect_info(params['target_host'], params['community_string'], params['oids'])
+            result['run_id'] = run_id
         except Exception as e:
             result = error_json("CONFIG FILE ERROR", f'{e}')
     else:

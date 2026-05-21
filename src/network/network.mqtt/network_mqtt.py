@@ -92,12 +92,12 @@ def collect_info(target_host,topic_names) -> dict:
     client.loop_start()
     timer = time.time()
     while True:
-        if topic_set.issubset(probe.keys()): # If all topics are subscribed, then
+        if topic_set.issubset(probe.keys()):
             break
-        # If it is more than 15 seconds, then break the loop
         if measure_response_time(timer) > 15:
             break
-        
+        time.sleep(0.05)  # Fix: busy-wait was burning a full CPU core for up to 15 s
+
 
     client.loop_stop()
     client.disconnect()
@@ -113,13 +113,15 @@ def run(params : dict, run_id, queue : Queue = None) -> dict:
             if ',' in params['target_host'] or ' ' in params['target_host']:
                 raise Exception("Only one target is allowed!")
             
-            result = collect_info(params['target_host'],params['topic_names'])
+            result = collect_info(params['target_host'], params['topic_names'])
+            result['run_id'] = run_id
+            result['status'] = 'completed'
         except Exception as e:
             result = error_json("CONFIG FILE ERROR", f'{e}')
     else:
         result = error_json("CONFIG FILE ERROR", "Parametrs not specified")
 
     if queue:
-            queue.put(result)
+        queue.put(result)
 
     return result

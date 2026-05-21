@@ -136,6 +136,8 @@ def run(params : dict, run_id : int, queue : Queue = None) -> dict:
                 raise Exception("Only one target is allowed!")
             
             result = collect_info(params['target_host'])
+            result['run_id'] = run_id
+            result['status'] = 'error' if 'retcode' in result else 'completed'
         except Exception as e:
             result = error_json("CONFIG FILE ERROR", f'{e}')
 

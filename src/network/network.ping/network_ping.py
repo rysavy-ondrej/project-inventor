@@ -125,9 +125,11 @@ def simple_ping(target_host, packet_size, packet_count, timeout, interpacket_del
     probes = []
 
     for seq in range(packet_count):
-        if seq < packet_count - 1:
+        # Fix: sleep between packets, not before the first one
+        if seq > 0:
             time.sleep(interpacket_delay)
         probe = {}
+        reply = None  # Fix: initialise so exception handlers don't NameError
 
         # Create ICMP request
         request = ICMPRequest(destination=target_host, id=PID, sequence=seq, payload_size=packet_size)
@@ -174,7 +176,8 @@ def simple_ping(target_host, packet_size, packet_count, timeout, interpacket_del
             probe['rtt'] = 0
             probe['bytes_received'] = 0
             probe['status_msg'] = str(e)
-            probe['status_code'] = reply._type
+            # Fix: reply may be None if ICMPLibError was raised by sock.receive() itself
+            probe['status_code'] = reply._type if reply is not None else -1
 
         probes.append(probe)
 

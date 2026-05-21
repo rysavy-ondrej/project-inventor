@@ -48,10 +48,14 @@ def collect_info(target_host, port) -> dict:
     start_time = time.time()
     try:
         if int(port) == IMAP_SSL_PORT:
-            server = imaplib.IMAP4_SSL(target_host,timeout=5)
+            server = imaplib.IMAP4_SSL(target_host, timeout=5)
         else:
-            server = imaplib.IMAP4(target_host, port=port,timeout=5)
-            server.starttls()
+            server = imaplib.IMAP4(target_host, port=port, timeout=5)
+            # Fix: only upgrade if server supports STARTTLS; not all IMAP servers do
+            try:
+                server.starttls()
+            except imaplib.IMAP4.error:
+                pass
 
         if is_hostname(target_host):
             probe['IP_address'] = server.sock.getpeername()[0]
@@ -127,8 +131,10 @@ def run(params : dict, run_id : int, queue : Queue = None) -> dict:
             if ',' in params['target_port'] or ' ' in params['target_port']:
                 raise Exception("Only one port is allowed!")
             
-            result = collect_info(params['target_host'],params['target_port'])
-            
+            result = collect_info(params['target_host'], params['target_port'])
+            result['run_id'] = run_id
+            result['status'] = 'error' if 'retcode' in result else 'completed'
+
             if params['login_flag'] == "True":
                 login_check(params['login_server'], params['login_username'], result)
 

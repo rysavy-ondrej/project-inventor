@@ -81,22 +81,24 @@ def collect_info(target_host) -> dict:
 
     return probe
 
-def run(params : dict, run_id, queue : Queue = None) -> dict:
+def run(params: dict, run_id, queue: Queue = None) -> dict:
     result = {}
     if params is not None:
         try:
             if ',' in params['target_host'] or ' ' in params['target_host']:
                 raise Exception("Only one target is allowed!")
-            
+
             result = collect_info(params['target_host'])
+            result['run_id'] = run_id
+            result['status'] = 'error' if 'retcode' in result else 'completed'
         except Exception as e:
             result = error_json("CONFIG FILE ERROR", f'{e}')
-        
-        if queue:
-            queue.put(result)
     else:
         result = error_json("CONFIG FILE ERROR", "Parametrs not specified")
 
-    
+    # Fix: queue.put was inside the if-branch, so params=None never enqueued
+    # anything and the monitor wrapper would block forever on queue.get()
+    if queue:
+        queue.put(result)
 
     return result

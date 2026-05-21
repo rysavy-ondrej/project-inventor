@@ -64,8 +64,10 @@ def run(params : dict, run_id : int, queue : Queue = None) -> dict:
             if ',' in params['target_port'] or ' ' in params['target_port']:
                 raise Exception("Only one port is allowed!")
             
-            result = collect_info(params['target_host'],params['target_port'])
-            
+            result = collect_info(params['target_host'], params['target_port'])
+            result['run_id'] = run_id
+            result['status'] = 'error' if 'retcode' in result else 'completed'
+
             if params['send_email_flag'] == "True":
                 send_email(result, params['target_host'])
 
@@ -157,11 +159,14 @@ def collect_info(target_host, port) -> dict:
 
     try:
         if int(port) == SMTP_TLS_PORT:
-            server = smtplib.SMTP_SSL(target_host,timeout=5)    
+            server = smtplib.SMTP_SSL(target_host, timeout=5)
         else:
-            server = smtplib.SMTP(target_host,port=port,timeout=5)
-            # Start TLS session for security reasons
-            server.starttls()
+            server = smtplib.SMTP(target_host, port=port, timeout=5)
+            server.ehlo()
+            # Fix: only upgrade to TLS if the server advertises STARTTLS;
+            # calling starttls() unconditionally breaks plain port-25 servers
+            if server.has_extn('starttls'):
+                server.starttls()
 
         if is_hostname(target_host):
             probe['IP_address'] = server.sock.getpeername()[0]
