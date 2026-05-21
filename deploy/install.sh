@@ -29,7 +29,7 @@ download_file() {
         wget -qO "$dest" "$url"
     fi
     [[ "$executable" == "true" ]] && chmod +x "$dest"
-    return
+    info "  ok"
 }
 
 # ---------------------------------------------------------------------------

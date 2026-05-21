@@ -14,7 +14,7 @@ ldap3==2.9.1
 mock-open
 mysql-connector-python==8.4.0
 ntplib==0.4.0
-numpy==1.26.4
+#numpy==1.26.4
 oracledb==2.2.1
 paho-mqtt==2.1.0
 passlib~=1.7.4
