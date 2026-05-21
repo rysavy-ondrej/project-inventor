@@ -19,7 +19,7 @@ oracledb==2.2.1
 paho-mqtt==2.1.0
 passlib~=1.7.4
 psutil~=5.9.8
-psycopg2-binary==2.9.9
+#psycopg2-binary==2.9.9
 pyOpenSSL==24.1.0
 pycurl>=7.45.3
 pydantic~=2.6.1
