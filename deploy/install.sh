@@ -194,9 +194,10 @@ echo "  Monitoring modules : $PREFIX/src/"
 echo "  Runner scripts     : $PREFIX/bin/"
 echo "  Schedule configs   : $PREFIX/etc/    (edit before running)"
 echo "  Monitor output     : $PREFIX/var/"
+echo "  Python environment : $PREFIX/venv/"
 echo ""
-echo "Install Python dependencies:"
-echo "  pip install -r $PREFIX/src/requirements.txt"
+echo "Activate the environment for manual runs:"
+echo "  source $PREFIX/venv/bin/activate"
 echo ""
 echo "Quick start:"
 echo "  pwsh $PREFIX/bin/Run-MonitorSession.ps1 -TestSuiteFile $PREFIX/etc/<schedule>.yaml -OutPath $PREFIX/var/"
@@ -205,26 +206,38 @@ echo "  bash $PREFIX/bin/inventor-testbed.run-all.sh $PREFIX/etc/ $PREFIX/var/"
 echo ""
 
 # ---------------------------------------------------------------------------
-# Optional: create Python virtual environment and install requirements
+# 5. venv/ — Python virtual environment
 # ---------------------------------------------------------------------------
 
-read -r -p "Create a Python virtual environment and install requirements? [y/N]: " create_venv
-if [[ "${create_venv,,}" == "y" ]]; then
-    VENV_DIR="$PREFIX/venv"
-    info "Creating virtual environment at $VENV_DIR ..."
-    python3 -m venv "$VENV_DIR"
-    success "Virtual environment created"
+VENV_DIR="$PREFIX/venv"
+info "Creating Python virtual environment at $VENV_DIR ..."
+python3 -m venv "$VENV_DIR"
+success "Virtual environment created"
 
-    info "Installing requirements ..."
-    "$VENV_DIR/bin/pip" install --upgrade pip --quiet
-    "$VENV_DIR/bin/pip" install -r "$PREFIX/src/requirements.txt"
-    success "Requirements installed"
+info "Installing Python requirements ..."
+"$VENV_DIR/bin/pip" install --upgrade pip --quiet
+"$VENV_DIR/bin/pip" install -r "$PREFIX/src/requirements.txt"
+success "Requirements installed"
 
-    echo ""
-    echo "Activate the environment before running tests:"
-    echo "  source $VENV_DIR/bin/activate"
-    echo ""
-fi
+# ---------------------------------------------------------------------------
+# 6. Patch bin scripts to activate the virtual environment
+# ---------------------------------------------------------------------------
+
+info "Patching runner scripts to use virtual environment ..."
+for script in inventor-testbed.run-all.sh; do
+    script_path="$PREFIX/bin/$script"
+    tmp=$(mktemp)
+    {
+        head -1 "$script_path"
+        echo "# Activate the inventor-monitor virtual environment"
+        echo "source \"$VENV_DIR/bin/activate\""
+        tail -n +2 "$script_path"
+    } > "$tmp"
+    mv "$tmp" "$script_path"
+    chmod +x "$script_path"
+    info "  patched $script"
+done
+success "Runner scripts updated to use $VENV_DIR"
 
 # ---------------------------------------------------------------------------
 # Optional: install as system service
