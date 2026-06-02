@@ -3,6 +3,18 @@
 
 set -euo pipefail
 
+# ---------------------------------------------------------------------------
+# Require bash 4+ (associative arrays, ${var,,}, fractional read timeouts).
+# macOS ships bash 3.2 by default — install a newer one (e.g. `brew install bash`)
+# and re-run with it.
+# ---------------------------------------------------------------------------
+
+if [[ -z "${BASH_VERSINFO:-}" || "${BASH_VERSINFO[0]}" -lt 4 ]]; then
+    echo "[ERROR] This installer requires bash 4.0 or newer (found ${BASH_VERSION:-unknown})." >&2
+    echo "        On macOS:  brew install bash, then run:  \$(brew --prefix)/bin/bash $0" >&2
+    exit 1
+fi
+
 GITHUB_RAW="https://raw.githubusercontent.com/rysavy-ondrej/project-inventor/main"
 
 SERVICE_NAME="inventor-monitor"
@@ -33,6 +45,137 @@ download_file() {
 }
 
 # ---------------------------------------------------------------------------
+# Interactive UI helpers (pure bash, no external dependencies)
+#
+# These render arrow-key driven menus directly on the controlling terminal,
+# so they keep working even when the script is piped (curl ... | bash). When
+# no terminal is available they fall back to sensible defaults.
+# ---------------------------------------------------------------------------
+
+if [[ -r /dev/tty ]] && [[ -t 1 ]]; then
+    UI_TTY=/dev/tty
+else
+    UI_TTY=""
+fi
+
+ui_interactive() { [[ -n "$UI_TTY" ]]; }
+
+# Read a single keypress, expanding escape sequences (arrow keys) into a
+# stable token printed on stdout.
+ui_read_key() {
+    local key="" rest=""
+    IFS= read -rsn1 key < "$UI_TTY" || return 1
+    # An escape byte starts an arrow-key sequence (ESC [ A/B/C/D); grab the
+    # two trailing bytes. The short timeout lets a lone Esc keypress fall through.
+    if [[ "$key" == $'\x1b' ]]; then
+        IFS= read -rsn2 -t 0.05 rest < "$UI_TTY" || true
+        key+="$rest"
+    fi
+    printf '%s' "$key"
+}
+
+ui_hide_cursor() { printf '\033[?25l' > "$UI_TTY"; }
+ui_show_cursor() { printf '\033[?25h' > "$UI_TTY"; }
+
+# ui_menu TITLE DEFAULT_INDEX OPTION...
+# Single choice. Result in UI_RESULT (value) and UI_RESULT_INDEX.
+ui_menu() {
+    local title="$1"; shift
+    local cur="$1"; shift
+    local opts=("$@")
+    local n=${#opts[@]}
+    (( cur < 0 || cur >= n )) && cur=0
+
+    printf '%s\n' "$title" > "$UI_TTY"
+    printf '  \033[2m(↑/↓ to move · Enter to select)\033[0m\n' > "$UI_TTY"
+    ui_hide_cursor
+    trap 'ui_show_cursor' RETURN
+
+    local first=1 i key
+    while true; do
+        (( first == 0 )) && printf '\033[%dA' "$n" > "$UI_TTY"
+        first=0
+        for ((i = 0; i < n; i++)); do
+            printf '\r\033[K' > "$UI_TTY"
+            if (( i == cur )); then
+                printf '  \033[7m ❯ %s \033[0m\n' "${opts[i]}" > "$UI_TTY"
+            else
+                printf '    %s\n' "${opts[i]}" > "$UI_TTY"
+            fi
+        done
+        key=$(ui_read_key)
+        case "$key" in
+            $'\x1b[A'|k) (( cur = (cur - 1 + n) % n )) ;;
+            $'\x1b[B'|j) (( cur = (cur + 1) % n )) ;;
+            ''|$'\n')    break ;;
+        esac
+    done
+    UI_RESULT="${opts[cur]}"
+    UI_RESULT_INDEX=$cur
+    ui_show_cursor
+    trap - RETURN
+}
+
+# ui_multiselect TITLE OPTION...
+# Multiple choice; every option pre-selected. Chosen indices in UI_SELECTED_INDICES.
+ui_multiselect() {
+    local title="$1"; shift
+    local opts=("$@")
+    local n=${#opts[@]}
+    local cur=0 first=1 i key
+    local checked=()
+    for ((i = 0; i < n; i++)); do checked[i]=1; done
+
+    printf '%s\n' "$title" > "$UI_TTY"
+    printf '  \033[2m(↑/↓ move · Space toggle · a all · n none · Enter confirm)\033[0m\n' > "$UI_TTY"
+    ui_hide_cursor
+    trap 'ui_show_cursor' RETURN
+
+    while true; do
+        (( first == 0 )) && printf '\033[%dA' "$n" > "$UI_TTY"
+        first=0
+        for ((i = 0; i < n; i++)); do
+            printf '\r\033[K' > "$UI_TTY"
+            local box="[ ]"
+            (( checked[i] == 1 )) && box="[x]"
+            if (( i == cur )); then
+                printf '  \033[7m ❯ %s %s \033[0m\n' "$box" "${opts[i]}" > "$UI_TTY"
+            else
+                printf '    %s %s\n' "$box" "${opts[i]}" > "$UI_TTY"
+            fi
+        done
+        key=$(ui_read_key)
+        case "$key" in
+            $'\x1b[A'|k) (( cur = (cur - 1 + n) % n )) ;;
+            $'\x1b[B'|j) (( cur = (cur + 1) % n )) ;;
+            ' ')         checked[cur]=$(( 1 - checked[cur] )) ;;
+            a|A)         for ((i = 0; i < n; i++)); do checked[i]=1; done ;;
+            n|N)         for ((i = 0; i < n; i++)); do checked[i]=0; done ;;
+            ''|$'\n')    break ;;
+        esac
+    done
+    UI_SELECTED_INDICES=()
+    for ((i = 0; i < n; i++)); do
+        (( checked[i] == 1 )) && UI_SELECTED_INDICES+=("$i")
+    done
+    ui_show_cursor
+    trap - RETURN
+}
+
+# ui_yesno QUESTION [default:yes|no] -> exit status 0 for yes, 1 for no.
+ui_yesno() {
+    local q="$1" default="${2:-no}"
+    if ! ui_interactive; then
+        [[ "$default" == "yes" ]]
+        return
+    fi
+    local di=1
+    [[ "$default" == "yes" ]] && di=0
+    ui_menu "$q" "$di" "Yes" "No"
+    [[ "$UI_RESULT" == "Yes" ]]
+}
+
+# ---------------------------------------------------------------------------
 # Prompt for install prefix
 # ---------------------------------------------------------------------------
 
@@ -52,6 +195,56 @@ info "Installing to: $PREFIX"
 
 require_cmd python3
 command -v curl &>/dev/null || require_cmd wget
+
+# ---------------------------------------------------------------------------
+# Select monitor categories
+# ---------------------------------------------------------------------------
+
+# All categories that ship monitoring modules. "common" holds shared helpers
+# (e.g. the dummy module) and is always installed regardless of the selection.
+ALL_CATEGORIES=(network performance security webapp other)
+
+declare -A CATEGORY_DESC=(
+    [network]="DNS, FTP, IMAP, MQTT, NTP, ping, SMTP, SNMP, traceroute probes"
+    [performance]="iperf3 bandwidth client/server"
+    [security]="LDAP, SSH, TLS probes"
+    [webapp]="HTTP, REST and web security probes"
+    [other]="SQL and NoSQL database monitors"
+)
+
+SELECTED_CATEGORIES=()
+if ui_interactive; then
+    # Build labelled options ("network — DNS, FTP, ...") aligned to ALL_CATEGORIES.
+    cat_labels=()
+    for cat in "${ALL_CATEGORIES[@]}"; do
+        cat_labels+=("$(printf '%-12s %s' "$cat" "${CATEGORY_DESC[$cat]}")")
+    done
+    ui_multiselect "Select monitor categories to install:" "${cat_labels[@]}"
+    for idx in "${UI_SELECTED_INDICES[@]:-}"; do
+        [[ -n "$idx" ]] && SELECTED_CATEGORIES+=("${ALL_CATEGORIES[$idx]}")
+    done
+    if (( ${#SELECTED_CATEGORIES[@]} == 0 )); then
+        warn "No categories selected — installing all."
+        SELECTED_CATEGORIES=("${ALL_CATEGORIES[@]}")
+    fi
+else
+    # Non-interactive (no terminal): install everything.
+    SELECTED_CATEGORIES=("${ALL_CATEGORIES[@]}")
+fi
+
+# "common" is always required by the other modules.
+SELECTED_CATEGORIES+=(common)
+
+# Quick membership test used while filtering downloads.
+category_selected() {
+    local needle="$1" cat
+    for cat in "${SELECTED_CATEGORIES[@]}"; do
+        [[ "$cat" == "$needle" ]] && return 0
+    done
+    return 1
+}
+
+info "Selected categories: ${SELECTED_CATEGORIES[*]}"
 
 # ---------------------------------------------------------------------------
 # Create directory layout
@@ -113,6 +306,9 @@ PYTHON_FILES=(
 )
 
 for rel in "${PYTHON_FILES[@]}"; do
+    # The category is the first path component (e.g. network/network.dns/... -> network).
+    cat="${rel%%/*}"
+    category_selected "$cat" || continue
     info "  $rel"
     download_file "${GITHUB_RAW}/src/${rel}" "$PREFIX/src/${rel}"
 done
@@ -156,6 +352,9 @@ for template in \
     webapp.http.yaml         \
     webapp.http.dynamic.yaml
 do
+    # Template names are prefixed with their category (e.g. network.dns.yaml).
+    cat="${template%%.*}"
+    category_selected "$cat" || continue
     dest="$PREFIX/etc/$template"
     if [[ -f "$dest" ]]; then
         info "  (skipping $template — already exists)"
@@ -168,13 +367,22 @@ done
 success "Schedule templates installed to $PREFIX/etc/"
 
 # ---------------------------------------------------------------------------
-# 3b. src/requirements.txt — Python dependencies
+# 3b. src/<category>/requirements.txt — per-category Python dependencies
 # ---------------------------------------------------------------------------
 
-info "Downloading Python requirements ..."
-download_file "${GITHUB_RAW}/deploy/inventor-requirements.txt" "$PREFIX/src/requirements.txt"
+info "Downloading per-category Python requirements ..."
 
-success "Requirements file installed to $PREFIX/src/requirements.txt"
+# Collect the requirements files that actually got installed so the venv step
+# can install exactly the selected categories.
+INSTALLED_REQUIREMENTS=()
+for cat in "${SELECTED_CATEGORIES[@]}"; do
+    rel="${cat}/requirements.txt"
+    info "  $rel"
+    download_file "${GITHUB_RAW}/src/${rel}" "$PREFIX/src/${rel}"
+    INSTALLED_REQUIREMENTS+=("$PREFIX/src/${rel}")
+done
+
+success "Per-category requirements installed under $PREFIX/src/"
 
 # ---------------------------------------------------------------------------
 # 4. var/ — output directory (created above)
@@ -190,6 +398,7 @@ echo ""
 echo "============================================================"
 echo "  inventor-monitor deployed to: $PREFIX"
 echo "============================================================"
+echo "  Categories         : ${SELECTED_CATEGORIES[*]}"
 echo "  Monitoring modules : $PREFIX/src/"
 echo "  Runner scripts     : $PREFIX/bin/"
 echo "  Schedule configs   : $PREFIX/etc/    (edit before running)"
@@ -214,11 +423,13 @@ info "Creating Python virtual environment at $VENV_DIR ..."
 python3 -m venv "$VENV_DIR"
 success "Virtual environment created"
 
-read -r -p "Install Python requirements into the virtual environment now? [y/N]: " install_reqs
-if [[ "${install_reqs,,}" == "y" ]]; then
-    info "Installing Python requirements ..."
+if ui_yesno "Install Python requirements into the virtual environment now?" no; then
+    info "Installing Python requirements for selected categories ..."
     "$VENV_DIR/bin/pip" install --upgrade pip --quiet
-    "$VENV_DIR/bin/pip" install -r "$PREFIX/src/requirements.txt"
+    for req in "${INSTALLED_REQUIREMENTS[@]}"; do
+        info "  pip install -r $req"
+        "$VENV_DIR/bin/pip" install -r "$req"
+    done
     success "Requirements installed"
 else
     info "Skipping requirements installation."
@@ -226,10 +437,14 @@ else
     echo "To install them later, run:"
     echo "  source $VENV_DIR/bin/activate"
     echo "  pip install --upgrade pip"
-    echo "  pip install -r $PREFIX/src/requirements.txt"
+    for req in "${INSTALLED_REQUIREMENTS[@]}"; do
+        echo "  pip install -r $req"
+    done
     echo ""
     echo "Or without activating the environment:"
-    echo "  $VENV_DIR/bin/pip install -r $PREFIX/src/requirements.txt"
+    for req in "${INSTALLED_REQUIREMENTS[@]}"; do
+        echo "  $VENV_DIR/bin/pip install -r $req"
+    done
     echo ""
 fi
 
@@ -257,8 +472,7 @@ success "Runner scripts updated to use $VENV_DIR"
 # Optional: install as system service
 # ---------------------------------------------------------------------------
 
-read -r -p "Install inventor-monitor as a system service? [y/N]: " install_svc
-[[ "${install_svc,,}" != "y" ]] && exit 0
+ui_yesno "Install inventor-monitor as a system service?" no || exit 0
 
 require_cmd pwsh
 
@@ -316,8 +530,7 @@ EOF
 
     success "Unit file installed: $unit_file"
 
-    read -r -p "Enable and start the service now? [y/N]: " start_now
-    if [[ "${start_now,,}" == "y" ]]; then
+    if ui_yesno "Enable and start the service now?" no; then
         if [[ $EUID -ne 0 ]]; then
             sudo systemctl enable --now "$SERVICE_NAME"
         else
@@ -344,17 +557,15 @@ install_launchd_service() {
     local prefix="$1"
     local label="${SERVICE_NAME}"
 
-    echo ""
-    echo "Service scope:"
-    echo "  1) User   — ~/Library/LaunchAgents   (starts on login, no sudo needed)"
-    echo "  2) System — /Library/LaunchDaemons   (starts at boot, requires sudo)"
-    read -r -p "Choice [1]: " scope
-    scope="${scope:-1}"
-
     local plist_dir plist_file use_sudo=false
-    if [[ "$scope" == "2" ]]; then
+    if ui_interactive; then
+        ui_menu "Service scope:" 0 \
+            "User   — ~/Library/LaunchAgents   (starts on login, no sudo needed)" \
+            "System — /Library/LaunchDaemons   (starts at boot, requires sudo)"
+        [[ "$UI_RESULT_INDEX" == "1" ]] && use_sudo=true
+    fi
+    if [[ "$use_sudo" == "true" ]]; then
         plist_dir="/Library/LaunchDaemons"
-        use_sudo=true
     else
         plist_dir="${HOME}/Library/LaunchAgents"
     fi
@@ -414,8 +625,7 @@ EOF
 
     success "Plist installed: $plist_file"
 
-    read -r -p "Load and start the service now? [y/N]: " start_now
-    if [[ "${start_now,,}" == "y" ]]; then
+    if ui_yesno "Load and start the service now?" no; then
         if [[ "$use_sudo" == "true" ]]; then
             sudo launchctl load -w "$plist_file"
         else
