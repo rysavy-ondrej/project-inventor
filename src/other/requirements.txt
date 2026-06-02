@@ -1,0 +1,19 @@
+# Python dependencies for src/other (SQL and NoSQL database monitors).
+# Versions are aligned with deploy/inventor-requirements.txt.
+
+# SQL drivers
+mysql-connector-python==8.4.0
+pymssql==2.3.0
+oracledb==2.2.1
+psycopg2-binary==2.9.9
+
+# NoSQL drivers
+pymongo==4.8.0
+cassandra-driver==3.29.1
+redis==5.0.7
+boto3==1.34.143
+
+# Containerised test fixtures
+docker==7.1.0
+
+pytest~=8.2.2

@@ -214,10 +214,24 @@ info "Creating Python virtual environment at $VENV_DIR ..."
 python3 -m venv "$VENV_DIR"
 success "Virtual environment created"
 
-info "Installing Python requirements ..."
-"$VENV_DIR/bin/pip" install --upgrade pip --quiet
-"$VENV_DIR/bin/pip" install -r "$PREFIX/src/requirements.txt"
-success "Requirements installed"
+read -r -p "Install Python requirements into the virtual environment now? [y/N]: " install_reqs
+if [[ "${install_reqs,,}" == "y" ]]; then
+    info "Installing Python requirements ..."
+    "$VENV_DIR/bin/pip" install --upgrade pip --quiet
+    "$VENV_DIR/bin/pip" install -r "$PREFIX/src/requirements.txt"
+    success "Requirements installed"
+else
+    info "Skipping requirements installation."
+    echo ""
+    echo "To install them later, run:"
+    echo "  source $VENV_DIR/bin/activate"
+    echo "  pip install --upgrade pip"
+    echo "  pip install -r $PREFIX/src/requirements.txt"
+    echo ""
+    echo "Or without activating the environment:"
+    echo "  $VENV_DIR/bin/pip install -r $PREFIX/src/requirements.txt"
+    echo ""
+fi
 
 # ---------------------------------------------------------------------------
 # 6. Patch bin scripts to activate the virtual environment

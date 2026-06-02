@@ -1,0 +1,2 @@
+# Python dependencies for src/common.
+# The dummy module relies on the standard library only — no external packages required.

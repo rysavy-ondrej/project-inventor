@@ -1,0 +1,6 @@
+# Python dependencies for src/webapp (HTTP, REST and security probes).
+# Versions are aligned with deploy/inventor-requirements.txt.
+
+pycurl>=7.45.3
+certifi
+pytest~=8.2.2

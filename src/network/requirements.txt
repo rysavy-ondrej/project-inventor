@@ -1,0 +1,13 @@
+# Python dependencies for src/network monitoring modules.
+# Versions are aligned with deploy/inventor-requirements.txt.
+
+icmplib==3.0.4
+dnspython==2.5.0
+ntplib==0.4.0
+paho-mqtt==2.1.0
+numpy==1.26.4
+pytest~=8.2.2
+
+# easysnmp needs the libsnmp / net-snmp development headers on the host.
+# Uncomment after installing them (apt: libsnmp-dev, brew: net-snmp).
+#easysnmp==0.2.6

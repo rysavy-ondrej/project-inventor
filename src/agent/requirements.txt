@@ -14,3 +14,7 @@ starlette~=0.36.3
 pytest~=8.2.2
 pytest-asyncio
 mock-open
+
+# Log forwarders — imported by main_modules/* but not in deploy/inventor-requirements.txt.
+python-logstash
+splunk-handler

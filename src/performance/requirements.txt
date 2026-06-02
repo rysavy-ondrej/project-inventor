@@ -1,0 +1,6 @@
+# Python dependencies for src/performance.
+# The performance.bandwidth modules shell out to the iperf3 binary via subprocess,
+# so the iperf3 system package must be installed (apt: iperf3, brew: iperf3).
+# The Python iperf3 binding below is listed for parity with deploy/inventor-requirements.txt.
+
+iperf3
