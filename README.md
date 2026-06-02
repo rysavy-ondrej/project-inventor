@@ -2,7 +2,7 @@
 
 ## Monitoring Agent
 
-The [Monitoring Agent](src/agent/) is a core component of our network monitoring system, designed to execute a range of diagnostic and performance assessments across network infrastructures. Each agent is a robust, stand-alone module capable of running independently across various segments of the network, from edge devices to central servers. These agents actively gather data on network health, efficiency, and security, transmitting this information back to central management systems for analysis and response.
+The [Monitoring Agent](src/agent/) is a core component of the network monitoring system, designed to execute a range of diagnostic and performance assessments across network infrastructures. Each agent is a robust, stand-alone module capable of running independently across various segments of the network, from edge devices to central servers. These agents actively gather data on network health, efficiency, and security, transmitting this information back to central management systems for analysis and response.
 
 Monitoring agents are equipped with the tools to perform both scheduled and on-demand tests, ensuring comprehensive coverage and immediate responsiveness to emerging issues. They are capable of:
 
@@ -57,6 +57,7 @@ The repository includes a one-step installer script ([deploy/install.sh](deploy/
 | `curl` or `wget` | For downloading files |
 | `gcc` + `python3-dev` | Build toolchain required to compile native dependencies such as `numpy` on a **minimal Ubuntu/Debian** machine that has no prebuilt wheel. Install with `sudo apt install gcc python3-dev`. The installer checks for both and offers to install them automatically on `apt`-based systems. |
 | `pwsh` (PowerShell) | Required only to use `Run-MonitorSession.ps1` or install a system service |
+| `kafkacat` (`kcat`) | Required only when `Run-MonitorSession.ps1` is run in Kafka output mode (`-KafkaBroker`/`-KafkaTopic`), which publishes results to a Kafka topic instead of writing files. Install with `sudo apt-get install kafkacat`. |
 
 > **Minimal Ubuntu note:** a freshly provisioned Ubuntu image often lacks a C compiler and the Python development headers. Without them `pip install` fails while building `numpy`. Install the build prerequisites first:
 >
