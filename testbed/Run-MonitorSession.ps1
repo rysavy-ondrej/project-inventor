@@ -18,11 +18,19 @@
 .PARAMETER OutPath
     The root path where the collected measurements will be stored.
 
+    Informational and debug progress messages are written to the verbose stream,
+    so they are shown only when the script is run with the -Verbose switch.
+
 .EXAMPLE
     .\Run-MonitorSession.ps1 -TestSuiteFile "./schedules/config.yaml" -OutPath "./results"
 
+.EXAMPLE
+    # Show informational/debug progress output:
+    .\Run-MonitorSession.ps1 -TestSuiteFile "./schedules/config.yaml" -OutPath "./results" -Verbose
+
 #>
 
+[CmdletBinding()]
 param (
     [Parameter(Mandatory = $true, HelpMessage = "The configuration YAML file with the test suite to execute.")]
     [string]$TestSuiteFile,
@@ -91,15 +99,15 @@ if (-not (Test-Path -Path $TestSuiteFile)) {
 
 # Test if the output folder exists
 if (-not (Test-Path -Path $OutPath)) {
-    Write-Host "The output folder '$OutPath' does not exist. Creating it..."
-    New-Item -ItemType Directory -Path $OutPath
+    Write-Verbose "The output folder '$OutPath' does not exist. Creating it..."
+    New-Item -ItemType Directory -Path $OutPath | Out-Null
 }
 
 try {
 
     $rootFolder = Split-Path -Path (Get-Location) -Parent
 
-    Write-Host "Root Folder: $rootFolder"
+    Write-Verbose "Root Folder: $rootFolder"
     # Parse the configuration
     $testSuiteConfiguration = Get-Content -Path $TestSuiteFile -Raw | ConvertFrom-Yaml
 
@@ -109,7 +117,7 @@ try {
     # get all tests from the schedule:
     $schedule = $testSuiteConfiguration.schedule
 
-    Write-Host "Enumerating configured tests"
+    Write-Verbose "Enumerating configured tests"
     $jobs = @()
     $testId = 0;
     # Collect test and create a schedule:
@@ -156,17 +164,17 @@ try {
     $md5 = New-Object -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
     $utf8 = New-Object -TypeName System.Text.UTF8Encoding
 
-    Write-Host "Found $($jobs.Count) tests."
-    Write-Host "Running test execution loop..."
+    Write-Verbose "Found $($jobs.Count) tests."
+    Write-Verbose "Running test execution loop..."
     while ($true) {
         $now = Get-Date
         $formattedNow = $now.ToString("yyyy-MM-dd")
-        Write-Host "Checking jobs to run [$now]..."
+        Write-Verbose "Checking jobs to run [$now]..."
         foreach ($job in $jobs) {
 
             # Check if the job is due to run.
             if (($now - $job.LastRun).TotalSeconds -ge $job.Interval -and $null -eq $job.JobObject) {
-                Write-Host "  Launching $($job.Name).$($job.Id), seconds since last run: $(($now - $job.LastRun).TotalSeconds), expected $($job.Interval)"
+                Write-Verbose "  Launching $($job.Name).$($job.Id), seconds since last run: $(($now - $job.LastRun).TotalSeconds), expected $($job.Interval)"
 
                 # Start the external Python script.
                 $job.JobObject = Start-ThreadJob -StreamingHost $Host -ScriptBlock {
@@ -307,6 +315,9 @@ try {
                         }
                     }
                     #------------------------------------
+                    # Inherit the caller's -Verbose preference so Write-Verbose
+                    # below is emitted only when the script was run with -Verbose.
+                    $VerbosePreference = $using:VerbosePreference
                     $job = $using:job
                     $cmd = $job.PythonCmd -replace '"', "'"
                     $cmd = $cmd -replace 'true','True'
@@ -314,9 +325,9 @@ try {
                     $path = $job.Location
                     $tempFile = [System.IO.Path]::GetTempFileName()
                     $outfilePath = "$($job.ResultsFile).$($using:formattedNow).json"
-                    Write-Host "  Starting job for $cmd "
+                    Write-Verbose "  Starting job for $cmd "
                     Start-Process -FilePath "/root/project-inventor/venv/bin/python3" -ArgumentList "-c `"$cmd`"" -WorkingDirectory $path -RedirectStandardOutput $tempFile -Wait
-                    Write-Host "  $($job.Name).$($job.Id) finished. Append results to $outfilePath."
+                    Write-Verbose "  $($job.Name).$($job.Id) finished. Append results to $outfilePath."
 
                     $inputConfig = $job.Configuration
 
@@ -367,8 +378,8 @@ try {
     }
 }
 finally {
-    Write-Host "Cleaning up"
-    Write-Host "Remove schedule jobs ($($jobs.Count))."
+    Write-Verbose "Cleaning up"
+    Write-Verbose "Remove schedule jobs ($($jobs.Count))."
     $jobObjects = $jobs | Select-Object -ExpandProperty JobObject | Where-Object { $null -ne $_ }
     if ($null -ne $jobObjects -and @($jobObjects).Count -gt 0) {
         Remove-Job -Job $jobObjects
