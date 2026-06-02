@@ -1,9 +1,16 @@
+#Requires -Version 7.0
+
 <#
 .SYNOPSIS
     Runs a monitoring session based on a configuration YAML file.
 
 .DESCRIPTION
     This script reads a configuration YAML file that defines a test suite to execute. It schedules and runs the tests at specified intervals, collects the results, and stores them in the specified output path.
+
+.NOTES
+    Prerequisites:
+      - PowerShell 7.0 or newer (pwsh).
+      - The 'powershell-yaml' module (Install-Module powershell-yaml).
 
 .PARAMETER TestSuiteFile
     The configuration YAML file with the test suite to execute.
@@ -22,6 +29,22 @@ param (
     [Parameter(Mandatory = $true, HelpMessage = "The root path where the collected measurements will be stored.")]
     [string]$OutPath
 )
+
+#------------------------------------------------------------------------------
+# Verify prerequisites: PowerShell 7+ and the 'powershell-yaml' module.
+# If either is missing, report the requirement and stop.
+#------------------------------------------------------------------------------
+if ($PSVersionTable.PSVersion.Major -lt 7) {
+    Write-Error "This script requires PowerShell 7.0 or newer. Detected version: $($PSVersionTable.PSVersion). Install PowerShell 7+ (pwsh) and run the script again."
+    exit 1
+}
+
+if (-not (Get-Module -ListAvailable -Name 'powershell-yaml')) {
+    Write-Error "This script requires the 'powershell-yaml' module, which is not installed. Install it with: Install-Module -Name powershell-yaml -Scope CurrentUser"
+    exit 1
+}
+
+Import-Module -Name 'powershell-yaml' -ErrorAction Stop
 
 <#
 .SYNOPSIS
@@ -346,6 +369,8 @@ try {
 finally {
     Write-Host "Cleaning up"
     Write-Host "Remove schedule jobs ($($jobs.Count))."
-    $jobObjects = $jobs | Select-Object -ExpandProperty JobObject
-    Remove-Job -Job $jobObjects
+    $jobObjects = $jobs | Select-Object -ExpandProperty JobObject | Where-Object { $null -ne $_ }
+    if ($null -ne $jobObjects -and @($jobObjects).Count -gt 0) {
+        Remove-Job -Job $jobObjects
+    }
 }
