@@ -52,10 +52,18 @@ The repository includes a one-step installer script ([deploy/install.sh](deploy/
 
 | Requirement | Notes |
 | --- | --- |
-| `bash` 4+ | Ships with Linux; macOS users can use the system shell |
-| `python3` | Used to parse GitHub API responses |
+| `bash` 4+ | Ships with Linux; the installer aborts early on older shells (e.g. macOS's stock bash 3.2 — install a newer one with `brew install bash`) |
+| `python3` | Used to create the virtual environment and run the monitors |
 | `curl` or `wget` | For downloading files |
+| `gcc` + `python3-dev` | Build toolchain required to compile native dependencies such as `numpy` on a **minimal Ubuntu/Debian** machine that has no prebuilt wheel. Install with `sudo apt install gcc python3-dev`. The installer checks for both and offers to install them automatically on `apt`-based systems. |
 | `pwsh` (PowerShell) | Required only to use `Run-MonitorSession.ps1` or install a system service |
+
+> **Minimal Ubuntu note:** a freshly provisioned Ubuntu image often lacks a C compiler and the Python development headers. Without them `pip install` fails while building `numpy`. Install the build prerequisites first:
+>
+> ```bash
+> sudo apt update
+> sudo apt install gcc python3-dev
+> ```
 
 ### Quick start
 

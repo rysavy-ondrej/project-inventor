@@ -197,6 +197,49 @@ require_cmd python3
 command -v curl &>/dev/null || require_cmd wget
 
 # ---------------------------------------------------------------------------
+# Verify build toolchain
+#
+# Several requirements (notably numpy) are compiled from source on a minimal
+# machine that has no prebuilt wheel. That needs a C compiler (gcc) AND the
+# Python development headers (python3-dev, which provides Python.h). Test for
+# both together up front so the failure surfaces here rather than mid-build.
+# ---------------------------------------------------------------------------
+
+check_build_prereqs() {
+    local missing=()
+
+    command -v gcc &>/dev/null || missing+=(gcc)
+
+    # python3-dev provides Python.h, used when compiling C extensions.
+    local python_h
+    python_h="$(python3 -c 'import os, sysconfig; print(os.path.join(sysconfig.get_path("include"), "Python.h"))' 2>/dev/null || true)"
+    [[ -n "$python_h" && -f "$python_h" ]] || missing+=(python3-dev)
+
+    if (( ${#missing[@]} == 0 )); then
+        success "Build prerequisites present (gcc + Python headers)"
+        return 0
+    fi
+
+    warn "Missing build prerequisite(s): ${missing[*]}"
+    warn "These are required to compile packages such as numpy on a minimal system."
+
+    if command -v apt-get &>/dev/null; then
+        echo "  Install with:  sudo apt install ${missing[*]}"
+        if ui_yesno "Install the missing build prerequisites now (sudo apt install ${missing[*]})?" yes; then
+            sudo apt-get update
+            sudo apt-get install -y "${missing[@]}"
+            success "Build prerequisites installed"
+        else
+            warn "Continuing without them — installing Python requirements may fail."
+        fi
+    else
+        warn "Install a C compiler and the Python development headers before installing requirements."
+    fi
+}
+
+check_build_prereqs
+
+# ---------------------------------------------------------------------------
 # Select monitor categories
 # ---------------------------------------------------------------------------
 
