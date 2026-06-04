@@ -40,6 +40,12 @@
     Also write each result JSON document to standard output (one compact JSON
     object per line). Can be combined with -OutPath and/or Kafka output.
 
+.PARAMETER PythonPath
+    Path to the Python interpreter used to run the monitor modules. When not
+    provided, the script first looks for a project virtual environment at
+    '<script folder>/../venv/bin/python3', and otherwise falls back to 'python3'
+    on the system PATH.
+
 .EXAMPLE
     .\Run-MonitorSession.ps1 -TestSuiteFile "./schedules/config.yaml" -OutPath "./results"
 
@@ -76,7 +82,10 @@ param (
     [string]$KafkaTopic,
 
     [Parameter(HelpMessage = "Also write each result JSON to standard output.")]
-    [switch]$Stdout
+    [switch]$Stdout,
+
+    [Parameter(HelpMessage = "Path to the Python interpreter. Defaults to the project venv, then python3 on PATH.")]
+    [string]$PythonPath
 )
 
 #------------------------------------------------------------------------------
@@ -113,6 +122,38 @@ if (-not (Get-Module -ListAvailable -Name 'powershell-yaml')) {
 }
 
 Import-Module -Name 'powershell-yaml' -ErrorAction Stop
+
+#------------------------------------------------------------------------------
+# Resolve the Python interpreter used to run the monitor modules.
+#   1. -PythonPath, when supplied.
+#   2. The project virtual environment: <script folder>/../venv/bin/python3.
+#   3. 'python3' from the system PATH.
+#------------------------------------------------------------------------------
+if (-not [string]::IsNullOrWhiteSpace($PythonPath)) {
+    if (-not (Test-Path -Path $PythonPath)) {
+        Write-Error "The specified Python interpreter '$PythonPath' does not exist."
+        exit 1
+    }
+    $PythonExe = $PythonPath
+}
+else {
+    $venvPython = Join-Path -Path $PSScriptRoot -ChildPath '../venv/bin/python3'
+    if (Test-Path -Path $venvPython) {
+        $PythonExe = (Resolve-Path -Path $venvPython).Path
+    }
+    else {
+        $systemPython = Get-Command -Name 'python3' -ErrorAction SilentlyContinue
+        if ($systemPython) {
+            $PythonExe = $systemPython.Source
+        }
+        else {
+            Write-Error "No Python interpreter found. Provide one with -PythonPath, create a virtual environment at '$venvPython', or install 'python3' on the system PATH."
+            exit 1
+        }
+    }
+}
+
+Write-Verbose "Using Python interpreter: $PythonExe"
 
 # In Kafka mode the kcat (kafkacat) producer CLI must be available on PATH.
 if ($UseKafka -and -not (Get-Command -Name 'kcat' -ErrorAction SilentlyContinue)) {
@@ -399,9 +440,10 @@ try {
                     $useFile   = $using:UseFile
                     $useKafka  = $using:UseKafka
                     $useStdout = $using:UseStdout
+                    $pythonExe = $using:PythonExe
                     $outfilePath = "$($job.ResultsFile).$($using:formattedNow).json"
                     Write-Verbose "  Starting job for $cmd "
-                    Start-Process -FilePath "/root/project-inventor/venv/bin/python3" -ArgumentList "-c `"$cmd`"" -WorkingDirectory $path -RedirectStandardOutput $tempFile -Wait
+                    Start-Process -FilePath $pythonExe -ArgumentList "-c `"$cmd`"" -WorkingDirectory $path -RedirectStandardOutput $tempFile -Wait
                     Write-Verbose "  $($job.Name).$($job.Id) finished."
 
                     $inputConfig = $job.Configuration
