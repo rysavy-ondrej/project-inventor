@@ -13,34 +13,47 @@
       - The 'powershell-yaml' module (Install-Module powershell-yaml).
       - For Kafka output: the 'kcat' (kafkacat) producer CLI on PATH (sudo apt-get install kafkacat).
 
-    Results are delivered in one of two mutually exclusive ways:
-      - File mode  (default): each result is appended to a JSON file under -OutPath.
-      - Kafka mode: each result is published as a message to a Kafka topic. Selected
-                    by supplying -KafkaBroker and -KafkaTopic instead of -OutPath.
+    Each result can be delivered to one or more outputs, which may be combined:
+      - File   : -OutPath                 — append each result to a JSON file under the path.
+      - Kafka  : -KafkaBroker + -KafkaTopic — publish each result as a Kafka message.
+      - Stdout : -Stdout                  — write each result JSON to standard output.
+    At least one output must be specified.
 
     Informational and debug progress messages are written to the verbose stream,
-    so they are shown only when the script is run with the -Verbose switch.
+    so they are shown only when the script is run with the -Verbose switch. This
+    keeps standard output clean for -Stdout consumers when -Verbose is not used.
 
 .PARAMETER TestSuiteFile
     The configuration YAML file with the test suite to execute.
 
 .PARAMETER OutPath
-    File mode. The root path where the collected measurements will be stored.
+    The root path where the collected measurements will be stored as JSON files.
 
 .PARAMETER KafkaBroker
-    Kafka mode. The Kafka bootstrap broker(s), e.g. 'localhost:9092' or a
-    comma-separated list. When set, results are published to Kafka instead of
-    being written to files.
+    The Kafka bootstrap broker(s), e.g. 'localhost:9092' or a comma-separated
+    list. When set (together with -KafkaTopic), results are published to Kafka.
 
 .PARAMETER KafkaTopic
-    Kafka mode. The Kafka topic that result messages are published to.
+    The Kafka topic that result messages are published to. Requires -KafkaBroker.
+
+.PARAMETER Stdout
+    Also write each result JSON document to standard output (one compact JSON
+    object per line). Can be combined with -OutPath and/or Kafka output.
 
 .EXAMPLE
     .\Run-MonitorSession.ps1 -TestSuiteFile "./schedules/config.yaml" -OutPath "./results"
 
 .EXAMPLE
-    # Publish results to a Kafka topic instead of files:
+    # Publish results to a Kafka topic:
     .\Run-MonitorSession.ps1 -TestSuiteFile "./schedules/config.yaml" -KafkaBroker "localhost:9092" -KafkaTopic "inventor.results"
+
+.EXAMPLE
+    # Write results to standard output only (e.g. for piping):
+    .\Run-MonitorSession.ps1 -TestSuiteFile "./schedules/config.yaml" -Stdout
+
+.EXAMPLE
+    # Combine outputs: store to files, publish to Kafka, and echo to stdout:
+    .\Run-MonitorSession.ps1 -TestSuiteFile "./schedules/config.yaml" -OutPath "./results" -KafkaBroker "localhost:9092" -KafkaTopic "inventor.results" -Stdout
 
 .EXAMPLE
     # Show informational/debug progress output:
@@ -48,23 +61,42 @@
 
 #>
 
-[CmdletBinding(DefaultParameterSetName = 'File')]
+[CmdletBinding()]
 param (
     [Parameter(Mandatory = $true, HelpMessage = "The configuration YAML file with the test suite to execute.")]
     [string]$TestSuiteFile,
 
-    [Parameter(Mandatory = $true, ParameterSetName = 'File', HelpMessage = "The root path where the collected measurements will be stored.")]
+    [Parameter(HelpMessage = "Root path where results are stored as JSON files.")]
     [string]$OutPath,
 
-    [Parameter(Mandatory = $true, ParameterSetName = 'Kafka', HelpMessage = "Kafka bootstrap broker(s), e.g. 'localhost:9092'. Publishes results to Kafka instead of files.")]
+    [Parameter(HelpMessage = "Kafka bootstrap broker(s), e.g. 'localhost:9092'. Requires -KafkaTopic.")]
     [string]$KafkaBroker,
 
-    [Parameter(Mandatory = $true, ParameterSetName = 'Kafka', HelpMessage = "Kafka topic to publish result messages to.")]
-    [string]$KafkaTopic
+    [Parameter(HelpMessage = "Kafka topic to publish result messages to. Requires -KafkaBroker.")]
+    [string]$KafkaTopic,
+
+    [Parameter(HelpMessage = "Also write each result JSON to standard output.")]
+    [switch]$Stdout
 )
 
-# Output mode selected by the bound parameter set.
-$UseKafka = $PSCmdlet.ParameterSetName -eq 'Kafka'
+#------------------------------------------------------------------------------
+# Resolve the active output sinks. They are independent and may be combined.
+#------------------------------------------------------------------------------
+$UseFile   = -not [string]::IsNullOrWhiteSpace($OutPath)
+$UseKafka  = (-not [string]::IsNullOrWhiteSpace($KafkaBroker)) -or (-not [string]::IsNullOrWhiteSpace($KafkaTopic))
+$UseStdout = [bool]$Stdout
+
+# Kafka needs both the broker and the topic.
+if ($UseKafka -and ([string]::IsNullOrWhiteSpace($KafkaBroker) -or [string]::IsNullOrWhiteSpace($KafkaTopic))) {
+    Write-Error "Kafka output requires both -KafkaBroker and -KafkaTopic."
+    exit 1
+}
+
+# At least one output sink must be selected.
+if (-not ($UseFile -or $UseKafka -or $UseStdout)) {
+    Write-Error "No output configured. Specify at least one of: -OutPath, -KafkaBroker/-KafkaTopic, or -Stdout."
+    exit 1
+}
 
 #------------------------------------------------------------------------------
 # Verify prerequisites: PowerShell 7+ and the 'powershell-yaml' module.
@@ -137,8 +169,8 @@ if (-not (Test-Path -Path $TestSuiteFile)) {
     exit 1
 }
 
-# Test if the output folder exists (file mode only)
-if (-not $UseKafka -and -not (Test-Path -Path $OutPath)) {
+# Test if the output folder exists (file output only)
+if ($UseFile -and -not (Test-Path -Path $OutPath)) {
     Write-Verbose "The output folder '$OutPath' does not exist. Creating it..."
     New-Item -ItemType Directory -Path $OutPath | Out-Null
 }
@@ -364,16 +396,13 @@ try {
                     $cmd = $cmd -replace 'false','False'
                     $path = $job.Location
                     $tempFile = [System.IO.Path]::GetTempFileName()
-                    $useKafka = $using:UseKafka
+                    $useFile   = $using:UseFile
+                    $useKafka  = $using:UseKafka
+                    $useStdout = $using:UseStdout
                     $outfilePath = "$($job.ResultsFile).$($using:formattedNow).json"
                     Write-Verbose "  Starting job for $cmd "
                     Start-Process -FilePath "/root/project-inventor/venv/bin/python3" -ArgumentList "-c `"$cmd`"" -WorkingDirectory $path -RedirectStandardOutput $tempFile -Wait
-                    if ($useKafka) {
-                        Write-Verbose "  $($job.Name).$($job.Id) finished. Publishing results to Kafka topic '$($using:KafkaTopic)'."
-                    }
-                    else {
-                        Write-Verbose "  $($job.Name).$($job.Id) finished. Append results to $outfilePath."
-                    }
+                    Write-Verbose "  $($job.Name).$($job.Id) finished."
 
                     $inputConfig = $job.Configuration
 
@@ -403,6 +432,16 @@ try {
                     # Serialize the result to a single-line JSON document.
                     $payload = $outputObject | ConvertTo-Json -Depth 100 -Compress
 
+                    # Deliver the result to every configured output. The sinks are
+                    # independent, so a result can go to files, Kafka and stdout at once.
+                    if ($useFile) {
+                        # Append to the per-day results file, guarding concurrent writers.
+                        $lock = [System.Threading.Mutex]::new($false, "Global\MyJsonFileLock")
+                        $lock.WaitOne()
+                        try { $payload | Add-Content -Path $outfilePath }
+                        finally { $lock.ReleaseMutex() }
+                    }
+
                     if ($useKafka) {
                         # Publish to Kafka via the kcat producer. The message key is the
                         # test identifier so consumers can partition/route per test.
@@ -412,12 +451,11 @@ try {
                             Write-Error "Failed to publish $($job.Name).$($job.Id) to Kafka (kcat exit code $LASTEXITCODE)."
                         }
                     }
-                    else {
-                        # Append to the per-day results file, guarding concurrent writers.
-                        $lock = [System.Threading.Mutex]::new($false, "Global\MyJsonFileLock")
-                        $lock.WaitOne()
-                        try { $payload | Add-Content -Path $outfilePath }
-                        finally { $lock.ReleaseMutex() }
+
+                    if ($useStdout) {
+                        # Emit the result to the job's output stream; the main loop's
+                        # Receive-Job surfaces it on the script's standard output.
+                        Write-Output $payload
                     }
 
                     Remove-Item $tempFile
