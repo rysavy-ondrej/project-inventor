@@ -218,7 +218,10 @@ if ($UseFile -and -not (Test-Path -Path $OutPath)) {
 
 try {
 
-    $rootFolder = Split-Path -Path (Get-Location) -Parent
+    # Anchor the module root to the script's location (its parent holds src/ and
+    # venv/), so the job's WorkingDirectory is correct regardless of the caller's
+    # current directory.
+    $rootFolder = Split-Path -Path $PSScriptRoot -Parent
 
     Write-Verbose "Root Folder: $rootFolder"
     # Parse the configuration
@@ -443,6 +446,11 @@ try {
                     $pythonExe = $using:PythonExe
                     $outfilePath = "$($job.ResultsFile).$($using:formattedNow).json"
                     Write-Verbose "  Starting job for $cmd "
+                    if (-not (Test-Path -Path $path -PathType Container)) {
+                        Write-Error "Working directory '$path' for $($job.Name).$($job.Id) does not exist. Check the monitor's 'exec' path and that the modules are installed under the script's parent folder."
+                        Remove-Item $tempFile -ErrorAction SilentlyContinue
+                        return
+                    }
                     Start-Process -FilePath $pythonExe -ArgumentList "-c `"$cmd`"" -WorkingDirectory $path -RedirectStandardOutput $tempFile -Wait
                     Write-Verbose "  $($job.Name).$($job.Id) finished."
 
