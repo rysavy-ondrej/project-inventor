@@ -342,28 +342,8 @@ cp "$SRC_ROOT/deploy/inventor-requirements.txt" "$APP_DIR/deploy/inventor-requir
 copy_tree "$SRC_ROOT/src" "$APP_DIR/src"
 copy_tree "$SRC_ROOT/testbed" "$APP_DIR/testbed"
 
-# Ensure the image installs kcat (kafkacat), which Out-Kafka.ps1 requires to
-# publish results. If the downloaded Dockerfile does not already install it,
-# inject an install step before the application code is copied into the image.
-if ! grep -q 'install -y kcat' "$APP_DIR/Dockerfile"; then
-    info "Patching Dockerfile to install kcat (Kafka sink dependency) ..."
-    tmp_dockerfile="$(mktemp)"
-    awk '
-        /^COPY \. \./ && !injected {
-            print "# Install kcat (kafkacat) — required by Out-Kafka.ps1 to publish to Kafka."
-            print "RUN apt-get update && apt-get install -y kcat && rm -rf /var/lib/apt/lists/*"
-            injected = 1
-        }
-        { print }
-        END {
-            if (!injected) {
-                print "# Install kcat (kafkacat) — required by Out-Kafka.ps1 to publish to Kafka."
-                print "RUN apt-get update && apt-get install -y kcat && rm -rf /var/lib/apt/lists/*"
-            }
-        }
-    ' "$APP_DIR/Dockerfile" > "$tmp_dockerfile"
-    mv "$tmp_dockerfile" "$APP_DIR/Dockerfile"
-fi
+# Note: the Dockerfile already installs kcat (kafkacat), which Out-Kafka.ps1
+# requires to publish results, so no patching is needed here.
 
 success "Build context assembled in $APP_DIR"
 
