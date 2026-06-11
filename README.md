@@ -56,8 +56,8 @@ The repository includes a one-step installer script ([deploy/install.sh](deploy/
 | `python3` | Used to create the virtual environment and run the monitors |
 | `curl` or `wget` | For downloading files |
 | `gcc` + `python3-dev` | Build toolchain required to compile native dependencies such as `numpy` on a **minimal Ubuntu/Debian** machine that has no prebuilt wheel. Install with `sudo apt install gcc python3-dev`. The installer checks for both and offers to install them automatically on `apt`-based systems. |
-| `pwsh` (PowerShell) | Required only to use `Run-MonitorSession.ps1` or install a system service |
-| `kafkacat` (`kcat`) | Required only when `Run-MonitorSession.ps1` is run in Kafka output mode (`-KafkaBroker`/`-KafkaTopic`), which publishes results to a Kafka topic instead of writing files. Install with `sudo apt-get install kafkacat`. |
+| `pwsh` (PowerShell) | Required only to use `Run-MonitorSession.ps1` / the output sink scripts or install a system service |
+| `kafkacat` (`kcat`) | Required only when results are piped into the `Out-Kafka.ps1` sink, which publishes each result to a Kafka topic (`-KafkaBroker`/`-KafkaTopic`). Install with `sudo apt-get install kafkacat`. |
 
 > **Minimal Ubuntu note:** a freshly provisioned Ubuntu image often lacks a C compiler and the Python development headers. Without them `pip install` fails while building `numpy`. Install the build prerequisites first:
 >
@@ -86,8 +86,11 @@ The script will prompt for a target directory (default: `./inventor-monitor`) an
 │   ├── webapp/
 │   ├── performance/
 │   └── other/
-├── bin/          # Runner scripts
-│   ├── Run-MonitorSession.ps1
+├── bin/          # Runner + output sink scripts
+│   ├── Run-MonitorSession.ps1     # runs a schedule, emits results to stdout
+│   ├── Out-Console.ps1            # sink: print results to the console
+│   ├── Out-FileByDay.ps1          # sink: append results to a per-day file
+│   ├── Out-Kafka.ps1              # sink: publish results to a Kafka topic
 │   ├── inventor-testbed.run-all.sh
 │   └── inventor-testbed.kill-all.sh
 ├── etc/          # Schedule configuration files (edit before running)
@@ -101,10 +104,25 @@ The `etc/` templates are pre-populated with minimal schedules targeting `www.exa
 
 ### Running the testbed
 
+`Run-MonitorSession.ps1` runs a schedule and writes each measurement as a single-line JSON document to **standard output**. Where those results go is decided by the **output sink** the stream is piped into:
+
+| Sink script | Destination |
+| --- | --- |
+| `Out-Console.ps1` | The host console (stdout) |
+| `Out-FileByDay.ps1` | A per-day file `<BaseName>.<yyyy-MM-dd>.json` under `-OutPath` |
+| `Out-Kafka.ps1` | A Kafka topic (via `kcat`), keyed by each result's `Meta.TestId` |
+
 **PowerShell (Windows / cross-platform):**
 
 ```powershell
-pwsh bin/Run-MonitorSession.ps1 -TestSuiteFile etc/<schedule>.yaml -OutPath var/
+# Append results to a per-day file under var/:
+pwsh -Command "& bin/Run-MonitorSession.ps1 -TestSuiteFile etc/<schedule>.yaml | & bin/Out-FileByDay.ps1 -BaseName <schedule> -OutPath var/"
+
+# Or just print them to the console:
+pwsh -Command "& bin/Run-MonitorSession.ps1 -TestSuiteFile etc/<schedule>.yaml | & bin/Out-Console.ps1"
+
+# Or publish them to Kafka:
+pwsh -Command "& bin/Run-MonitorSession.ps1 -TestSuiteFile etc/<schedule>.yaml | & bin/Out-Kafka.ps1 -KafkaBroker localhost:9092 -KafkaTopic inventor.results"
 ```
 
 **Bash — run all schedules in `etc/`:**
@@ -113,7 +131,7 @@ pwsh bin/Run-MonitorSession.ps1 -TestSuiteFile etc/<schedule>.yaml -OutPath var/
 bash bin/inventor-testbed.run-all.sh etc/ var/
 ```
 
-Both scripts accept the schedule directory and output directory as positional arguments so the paths can be overridden without editing the files.
+`inventor-testbed.run-all.sh` accepts the schedule directory and output directory as positional arguments (and pipes each session into the per-day file sink), so the paths can be overridden without editing the files. To combine several sinks at once (e.g. file *and* Kafka), see the *Output sinks* section of [testbed/Readme.md](testbed/Readme.md).
 
 ### System service installation
 

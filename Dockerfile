@@ -28,6 +28,9 @@ RUN apt-get install -y powershell
 RUN rm -rf /var/lib/apt/lists/*
     # Install libpcap-dev for packet capture functionality
 RUN apt-get install -y libpcap-dev
+    # Install kcat (kafkacat) — required by the Out-Kafka.ps1 result sink to
+    # publish monitoring results to a Kafka topic.
+RUN apt-get update && apt-get install -y kcat && rm -rf /var/lib/apt/lists/*
 
 # Copy the dependency file to leverage Docker cache
 COPY ./deploy/inventor-requirements.txt .

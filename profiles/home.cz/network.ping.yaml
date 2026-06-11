@@ -1,0 +1,86 @@
+monitors:
+  - name: network.ping
+    module: network_ping
+    exec: src/network/network.ping
+
+# Ping (latency / reachability) monitoring for services a typical CZECH home
+# user connects to. US-only services (Walmart, eBay, ...) are dropped in
+# favour of locally dominant Czech services (Alza, Seznam, Novinky, CT, ...).
+# Each schedule entry groups targets into a service category.
+schedule:
+  - test: network.ping
+    write-to: home.cz.ping.streaming
+    targets:
+        - { "target_host": "www.netflix.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.youtube.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "voyo.nova.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.ceskatelevize.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "open.spotify.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.max.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 1m
+
+  - test: network.ping
+    write-to: home.cz.ping.gaming
+    targets:
+        - { "target_host": "store.steampowered.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.playstation.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.xbox.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.epicgames.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.nintendo.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.riotgames.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 1m
+
+  - test: network.ping
+    write-to: home.cz.ping.social
+    targets:
+        - { "target_host": "www.facebook.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.instagram.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.tiktok.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.reddit.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "x.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "discord.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 2m
+
+  - test: network.ping
+    write-to: home.cz.ping.news
+    targets:
+        - { "target_host": "www.novinky.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.idnes.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.seznamzpravy.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.aktualne.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "ct24.ceskatelevize.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.irozhlas.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 5m
+
+  - test: network.ping
+    write-to: home.cz.ping.shopping
+    targets:
+        - { "target_host": "www.alza.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.mall.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.czc.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.heureka.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.rohlik.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.notino.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 5m
+
+  - test: network.ping
+    write-to: home.cz.ping.banking
+    targets:
+        - { "target_host": "www.csob.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.kb.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.csas.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.moneta.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.airbank.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.fio.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 5m
+
+  - test: network.ping
+    write-to: home.cz.ping.cloud
+    targets:
+        - { "target_host": "www.google.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.seznam.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "outlook.office365.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.icloud.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.dropbox.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "zoom.us", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 2m

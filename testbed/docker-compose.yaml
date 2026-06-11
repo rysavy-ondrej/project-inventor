@@ -6,7 +6,7 @@ services:
 #     context: ..
 #      dockerfile: Dockerfile
 #    working_dir: /inventor/testbed
-#    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/dummy.yaml -OutPath ./results/
+#    command: pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/dummy.yaml | & ./Out-FileByDay.ps1 -BaseName dummy -OutPath ./results/"
 #    volumes:
 #      - ./results:/inventor/testbed/results
 
@@ -16,7 +16,7 @@ services:
       context: ..
       dockerfile: Dockerfile.node
     working_dir: /inventor/testbed
-    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/webapp.http.dynamic.yaml -OutPath ./results/
+    command: pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/webapp.http.dynamic.yaml | & ./Out-FileByDay.ps1 -BaseName webapp.http.dynamic -OutPath ./results/"
     volumes:
       - ./results:/inventor/testbed/results
       
@@ -25,7 +25,7 @@ services:
       context: ..
       dockerfile: Dockerfile
     working_dir: /inventor/testbed
-    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/webapp.http.yaml -OutPath ./results/
+    command: pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/webapp.http.yaml | & ./Out-FileByDay.ps1 -BaseName webapp.http -OutPath ./results/"
     volumes:
       - ./results:/inventor/testbed/results
 
@@ -33,7 +33,7 @@ services:
     build:
       context: ..
     working_dir: /inventor/testbed
-    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.smtp.yaml -OutPath ./results/
+    command: pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.smtp.yaml | & ./Out-FileByDay.ps1 -BaseName network.smtp -OutPath ./results/"
     volumes:
       - ./results:/inventor/testbed/results
 
@@ -41,7 +41,7 @@ services:
     build:
       context: ..
     working_dir: /inventor/testbed
-    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/security.ssh.yaml -OutPath ./results/
+    command: pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/security.ssh.yaml | & ./Out-FileByDay.ps1 -BaseName security.ssh -OutPath ./results/"
     volumes:
       - ./results:/inventor/testbed/results
 
@@ -49,7 +49,7 @@ services:
     build:
       context: ..
     working_dir: /inventor/testbed
-    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.imap.yaml -OutPath ./results/
+    command: pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.imap.yaml | & ./Out-FileByDay.ps1 -BaseName network.imap -OutPath ./results/"
     volumes:
       - ./results:/inventor/testbed/results
 
@@ -57,7 +57,7 @@ services:
     build:
       context:
     working_dir: /inventor/testbed
-    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.dns.yaml -OutPath ./results/
+    command: pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.dns.yaml | & ./Out-FileByDay.ps1 -BaseName network.dns -OutPath ./results/"
     volumes:
       - ./results:/inventor/testbed/results
 
@@ -65,7 +65,7 @@ services:
     build:
       context:
     working_dir: /inventor/testbed
-    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.ntp.yaml -OutPath ./results/
+    command: pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.ntp.yaml | & ./Out-FileByDay.ps1 -BaseName network.ntp -OutPath ./results/"
     volumes:
       - ./results:/inventor/testbed/results
 
@@ -73,7 +73,7 @@ services:
     build:
       context:
     working_dir: /inventor/testbed
-    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/security.ldap.yaml -OutPath ./results/
+    command: pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/security.ldap.yaml | & ./Out-FileByDay.ps1 -BaseName security.ldap -OutPath ./results/"
     volumes:
       - ./results:/inventor/testbed/results
 
@@ -82,7 +82,7 @@ services:
       context: ..
       dockerfile: Dockerfile
     working_dir: /inventor/testbed
-    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.traceroute.yaml -OutPath ./results/
+    command: pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.traceroute.yaml | & ./Out-FileByDay.ps1 -BaseName network.traceroute -OutPath ./results/"
     volumes:
       - ./results:/inventor/testbed/results
   
@@ -91,6 +91,6 @@ services:
       context: ..
       dockerfile: Dockerfile
     working_dir: /inventor/testbed
-    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/security.tls.yaml -OutPath ./results/
+    command: pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/security.tls.yaml | & ./Out-FileByDay.ps1 -BaseName security.tls -OutPath ./results/"
     volumes:
       - ./results:/inventor/testbed/results

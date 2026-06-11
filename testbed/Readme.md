@@ -35,12 +35,12 @@ Define each monitor so that the scheduling logic can later reference it by name.
 This section specifies how and when the tests should be executed. Each scheduled test entry includes:
 
 - **test**: The name of the monitor (from the Monitors section) that should be used for this session.
-- **write-to**: The file name where the test output will be stored.
+- **write-to**: A logical name for the session output. *Note:* `Run-MonitorSession.ps1` no longer writes files itself — it emits every result to standard output. The destination (file name, Kafka topic, …) is now decided by the output **sink** the result stream is piped into (see [Output sinks](#output-sinks)). This field is retained for documentation/back-compat and is not consumed by the runner.
 - **targets**: An array of target objects. Each target contains the parameters for an individual test execution. This has form of JSON input expected by the test.
 - **repeat-every**: A time interval (e.g., `"30s"`, `"1m"`) that determines how often the test session should be repeated.
 - **omit-fields**: Removes the specified fields from the outpu JSON. This is an array of fields.
 - **hash-fields**: Compute a new fields as MD5 hash fo the specified field. This is an arrayf of `{"src": SOURCE-FIELD-NAME, "trg": HASH_FIELD-NAME }` objects.
-Customize each test session by adjusting the targets and timing parameters to suit your monitoring requirements. Use the `write-to` property to specify distinct output files for different sessions.
+Customize each test session by adjusting the targets and timing parameters to suit your monitoring requirements.
 
 ## Example Configuration
 
@@ -81,6 +81,70 @@ Two test sessions are defined:
 * The first session targets several local or institutional websites and outputs results to network.ping.vutbr.json. It is set to run every 30 seconds.
 * The second session targets popular internet domains (e.g., google.com, youtube.com) and outputs to network.ping.internet.json. This session is configured to run every minute.
 
+## Output sinks
+
+`Run-MonitorSession.ps1` does not store results itself. It runs the schedule and
+writes each measurement as a single compact JSON document to **standard output**
+(via `Write-Output`). What happens to that stream is decided by the **sink** the
+output is piped into. Three sinks are provided:
+
+| Sink script | Destination | Key parameters |
+| --- | --- | --- |
+| [`Out-Console.ps1`](Out-Console.ps1) | The host console (stdout) | — |
+| [`Out-FileByDay.ps1`](Out-FileByDay.ps1) | A per-day file `<BaseName>.<yyyy-MM-dd>.json` | `-BaseName`, `-OutPath` |
+| [`Out-Kafka.ps1`](Out-Kafka.ps1) | A Kafka topic (via the `kcat`/`kafkacat` CLI) | `-KafkaBroker`, `-KafkaTopic` |
+
+Basic usage — pick one sink and pipe the session into it:
+
+```bash
+# Print results to the console:
+pwsh ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.ping.yaml | pwsh ./Out-Console.ps1
+
+# Append results to ./results/network.ping.<date>.json (a new file each day):
+pwsh ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.ping.yaml | pwsh ./Out-FileByDay.ps1 -BaseName network.ping -OutPath ./results
+
+# Publish results to a Kafka topic:
+pwsh ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.ping.yaml | pwsh ./Out-Kafka.ps1 -KafkaBroker localhost:9092 -KafkaTopic inventor.results
+```
+
+`Out-FileByDay.ps1` re-evaluates the date for every record, so the output file
+rolls over automatically at midnight even for a long-running session.
+`Out-Kafka.ps1` uses each result's `Meta.TestId` as the Kafka message key.
+
+### Using multiple sinks at once
+
+The previous version of the runner could write to files, Kafka and stdout
+simultaneously. With the sink approach the same is achieved by **fanning the
+stream out** to several sinks. The simplest way is `Tee-Object`, which forwards
+the pipeline while also branching a copy to another sink:
+
+```bash
+# Store to a per-day file AND echo to the console at the same time:
+pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.ping.yaml |
+    Tee-Object -Variable line | & ./Out-Console.ps1; <# 'line' holds the last record #>"
+```
+
+For more than two destinations, or to combine file + Kafka + console, wrap the
+sinks in a small fan-out script that forwards each line to every sink in its
+`process` block, e.g.:
+
+```powershell
+# Out-Multi.ps1 — forward each result to several sinks.
+param([Parameter(ValueFromPipeline)] [string]$InputObject)
+process {
+    $InputObject | ./Out-Console.ps1
+    $InputObject | ./Out-FileByDay.ps1 -BaseName network.ping -OutPath ./results
+    $InputObject | ./Out-Kafka.ps1 -KafkaBroker localhost:9092 -KafkaTopic inventor.results
+}
+```
+
+```bash
+pwsh ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.ping.yaml | pwsh ./Out-Multi.ps1
+```
+
+This keeps each sink small and single-purpose while still allowing any
+combination of outputs.
+
 ## Deployment and Usage
 The testbed is deployed using Docker Compose. Each monitoring session is run in a separate container, providing isolation and better scalability.
 
@@ -95,7 +159,7 @@ services:
       context: ..
       dockerfile: Dockerfile
     working_dir: /inventor/testbed
-    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/dummy.yaml -OutPath ./results/
+    command: pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/dummy.yaml | & ./Out-FileByDay.ps1 -BaseName dummy -OutPath ./results/"
     volumes:
       - ./results:/inventor/testbed/results
 
@@ -104,13 +168,13 @@ services:
       context: ..
       dockerfile: Dockerfile
     working_dir: /inventor/testbed
-    command: pwsh -File ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.ping.yaml -OutPath ./results/
+    command: pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.ping.yaml | & ./Out-FileByDay.ps1 -BaseName network.ping -OutPath ./results/"
     volumes:
       - ./results:/inventor/testbed/results
 ```
 
 Both services use the same Docker image (built from the provided Dockerfile) and set the working directory to /inventor/testbed inside the container.
-Each container runs the Run-MonitorSession.ps1 PowerShell script with its corresponding YAML configuration file, which defines the specific test session.
+Each container runs the `Run-MonitorSession.ps1` PowerShell script with its corresponding YAML configuration file, then pipes the result stream into an output **sink** script (here `Out-FileByDay.ps1`). Because `pwsh -Command` is used to run a pipeline, both stages run inside the same container.
 Results from the tests are stored in the container’s ./results directory and are shared with the host machine via a mounted volume.
 
 Add more sessions by introducing new services in `docker-compose.yaml` or write your own docker compose specification if you need an independent environment.

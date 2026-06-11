@@ -1,0 +1,81 @@
+monitors:
+  - name: network.ping
+    module: network_ping
+    exec: src/network/network.ping
+
+# Ping (latency / reachability) monitoring for the cloud/SaaS services a CZECH
+# enterprise depends on. Each schedule entry groups targets into a business
+# service category and writes to its own output file. NOTE: many cloud and
+# Czech eGovernment endpoints rate-limit or silently drop ICMP, so use these
+# results alongside the DNS and TLS probes for a complete reachability picture.
+schedule:
+  - test: network.ping
+    write-to: enterprise.cz.ping.collaboration
+    targets:
+        - { "target_host": "teams.microsoft.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "slack.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "zoom.us", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.webex.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "mail.google.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 1m
+
+  - test: network.ping
+    write-to: enterprise.cz.ping.saas
+    targets:
+        - { "target_host": "outlook.office365.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "login.salesforce.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.stormware.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.money.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.abra.eu", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 2m
+
+  - test: network.ping
+    write-to: enterprise.cz.ping.identity
+    targets:
+        - { "target_host": "login.microsoftonline.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.okta.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.eidentita.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "duo.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "auth0.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 1m
+
+  - test: network.ping
+    write-to: enterprise.cz.ping.devops
+    targets:
+        - { "target_host": "github.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "gitlab.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "registry-1.docker.io", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "pypi.org", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "registry.npmjs.org", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 3m
+
+  - test: network.ping
+    write-to: enterprise.cz.ping.cloud
+    targets:
+        - { "target_host": "portal.azure.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "console.aws.amazon.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "console.cloud.google.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.wedos.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.active24.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.forpsi.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 2m
+
+  - test: network.ping
+    write-to: enterprise.cz.ping.egov
+    targets:
+        - { "target_host": "www.mojedatovaschranka.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.financnisprava.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "eportal.cssz.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "ares.gov.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.portal.gov.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 5m
+
+  - test: network.ping
+    write-to: enterprise.cz.ping.security
+    targets:
+        - { "target_host": "dash.cloudflare.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.zscaler.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "falcon.crowdstrike.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "www.proofpoint.com", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+        - { "target_host": "nukib.gov.cz", "packet_size": 64, "packet_count": 3, "interpacket_delay": 1, "timeout": 5 }
+    repeat-every: 5m

@@ -1,0 +1,81 @@
+monitors:
+  - name: network.dns
+    module: network_dns
+    exec: src/network/network.dns
+
+# DNS resolution monitoring for the cloud/SaaS services a CZECH enterprise
+# depends on. Names are resolved through resolvers commonly used in Czech
+# corporate networks: Google (8.8.8.8), Cloudflare (1.1.1.1), Quad9 (9.9.9.9)
+# and the CZ.NIC ODVR open resolver (193.17.47.1), which authoritatively
+# resolves .cz domains. Targets are grouped per business-service category.
+schedule:
+  - test: network.dns
+    write-to: enterprise.cz.dns.collaboration
+    targets:
+        - { "target_hosts": ["teams.microsoft.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["slack.com"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+        - { "target_hosts": ["zoom.us"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["www.webex.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["mail.google.com"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+    repeat-every: 1m
+
+  - test: network.dns
+    write-to: enterprise.cz.dns.saas
+    targets:
+        - { "target_hosts": ["outlook.office365.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["login.salesforce.com"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+        - { "target_hosts": ["www.stormware.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["www.money.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["www.abra.eu"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+    repeat-every: 2m
+
+  - test: network.dns
+    write-to: enterprise.cz.dns.identity
+    targets:
+        - { "target_hosts": ["login.microsoftonline.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["www.okta.com"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+        - { "target_hosts": ["www.eidentita.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["duo.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["auth0.com"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+    repeat-every: 1m
+
+  - test: network.dns
+    write-to: enterprise.cz.dns.devops
+    targets:
+        - { "target_hosts": ["github.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["gitlab.com"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+        - { "target_hosts": ["registry-1.docker.io"], "query_type": "A", "nameservers": ["9.9.9.9"] }
+        - { "target_hosts": ["pypi.org"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["registry.npmjs.org"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+    repeat-every: 3m
+
+  - test: network.dns
+    write-to: enterprise.cz.dns.cloud
+    targets:
+        - { "target_hosts": ["portal.azure.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["console.aws.amazon.com"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+        - { "target_hosts": ["console.cloud.google.com"], "query_type": "A", "nameservers": ["9.9.9.9"] }
+        - { "target_hosts": ["www.wedos.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["www.active24.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["www.forpsi.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+    repeat-every: 2m
+
+  - test: network.dns
+    write-to: enterprise.cz.dns.egov
+    targets:
+        - { "target_hosts": ["www.mojedatovaschranka.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["www.financnisprava.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["eportal.cssz.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["ares.gov.cz"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["www.portal.gov.cz"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+    repeat-every: 5m
+
+  - test: network.dns
+    write-to: enterprise.cz.dns.security
+    targets:
+        - { "target_hosts": ["dash.cloudflare.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["www.zscaler.com"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+        - { "target_hosts": ["falcon.crowdstrike.com"], "query_type": "A", "nameservers": ["9.9.9.9"] }
+        - { "target_hosts": ["www.proofpoint.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["nukib.gov.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+    repeat-every: 5m

@@ -366,6 +366,9 @@ info "Downloading runner scripts (bin/) ..."
 
 for script in \
     Run-MonitorSession.ps1       \
+    Out-Console.ps1              \
+    Out-FileByDay.ps1            \
+    Out-Kafka.ps1                \
     inventor-testbed.run-all.sh  \
     inventor-testbed.kill-all.sh
 do
@@ -452,7 +455,8 @@ echo "Activate the environment for manual runs:"
 echo "  source $PREFIX/venv/bin/activate"
 echo ""
 echo "Quick start:"
-echo "  pwsh $PREFIX/bin/Run-MonitorSession.ps1 -TestSuiteFile $PREFIX/etc/<schedule>.yaml -OutPath $PREFIX/var/"
+echo "  # Run a schedule and store results to a per-day file (other sinks: Out-Console.ps1, Out-Kafka.ps1):"
+echo "  pwsh -Command \"& $PREFIX/bin/Run-MonitorSession.ps1 -TestSuiteFile $PREFIX/etc/<schedule>.yaml | & $PREFIX/bin/Out-FileByDay.ps1 -BaseName <schedule> -OutPath $PREFIX/var/\""
 echo "  # or run all schedules:"
 echo "  bash $PREFIX/bin/inventor-testbed.run-all.sh $PREFIX/etc/ $PREFIX/var/"
 echo ""

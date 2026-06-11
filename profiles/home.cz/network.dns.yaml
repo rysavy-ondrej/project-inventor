@@ -1,0 +1,86 @@
+monitors:
+  - name: network.dns
+    module: network_dns
+    exec: src/network/network.dns
+
+# DNS resolution monitoring for services a typical CZECH home user connects to.
+# Targets are resolved through the public resolvers a Czech home user is most
+# likely configured with: Google (8.8.8.8), Cloudflare (1.1.1.1) and the
+# CZ.NIC ODVR open resolver (193.17.47.1). Targets are grouped per category.
+schedule:
+  - test: network.dns
+    write-to: home.cz.dns.streaming
+    targets:
+        - { "target_hosts": ["www.netflix.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["www.youtube.com"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+        - { "target_hosts": ["voyo.nova.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["www.ceskatelevize.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["open.spotify.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["www.max.com"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+    repeat-every: 3m
+
+  - test: network.dns
+    write-to: home.cz.dns.gaming
+    targets:
+        - { "target_hosts": ["store.steampowered.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["www.playstation.com"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+        - { "target_hosts": ["www.xbox.com"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["www.epicgames.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["www.nintendo.com"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+        - { "target_hosts": ["www.riotgames.com"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+    repeat-every: 3m
+
+  - test: network.dns
+    write-to: home.cz.dns.social
+    targets:
+        - { "target_hosts": ["www.facebook.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["www.instagram.com"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+        - { "target_hosts": ["www.tiktok.com"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["www.reddit.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["x.com"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+        - { "target_hosts": ["discord.com"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+    repeat-every: 5m
+
+  - test: network.dns
+    write-to: home.cz.dns.news
+    targets:
+        - { "target_hosts": ["www.novinky.cz"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["www.idnes.cz"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+        - { "target_hosts": ["www.seznamzpravy.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["www.aktualne.cz"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["ct24.ceskatelevize.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["www.irozhlas.cz"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+    repeat-every: 5m
+
+  - test: network.dns
+    write-to: home.cz.dns.shopping
+    targets:
+        - { "target_hosts": ["www.alza.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["www.mall.cz"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["www.czc.cz"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+        - { "target_hosts": ["www.heureka.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["www.rohlik.cz"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["www.notino.cz"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+    repeat-every: 5m
+
+  - test: network.dns
+    write-to: home.cz.dns.banking
+    targets:
+        - { "target_hosts": ["www.csob.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["www.kb.cz"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["www.csas.cz"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+        - { "target_hosts": ["www.moneta.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["www.airbank.cz"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["www.fio.cz"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+    repeat-every: 5m
+
+  - test: network.dns
+    write-to: home.cz.dns.cloud
+    targets:
+        - { "target_hosts": ["www.google.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["www.seznam.cz"], "query_type": "A", "nameservers": ["193.17.47.1"] }
+        - { "target_hosts": ["outlook.office365.com"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+        - { "target_hosts": ["www.icloud.com"], "query_type": "A", "nameservers": ["9.9.9.9"] }
+        - { "target_hosts": ["www.dropbox.com"], "query_type": "A", "nameservers": ["8.8.8.8"] }
+        - { "target_hosts": ["zoom.us"], "query_type": "A", "nameservers": ["1.1.1.1"] }
+    repeat-every: 3m
