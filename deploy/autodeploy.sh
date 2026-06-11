@@ -8,10 +8,10 @@
 # each schedule is derived from the schedule file name (network.dns.yaml ->
 # topic "network.dns").
 #
-# Unlike install.sh (which pulls files from GitHub for a bare-metal install),
-# autodeploy.sh copies the local repository sources into the deployment folder
-# so the result is self-contained and relocatable, and generates a run.sh that
-# brings the whole environment up with docker compose.
+# Like install.sh, autodeploy.sh downloads the project sources from GitHub (a
+# branch tarball) and assembles a self-contained deployment folder from them, so
+# it can run straight from `curl ... | bash` without a local clone. It then
+# generates a run.sh that brings the whole environment up with docker compose.
 
 set -euo pipefail
 
@@ -27,13 +27,21 @@ if [[ -z "${BASH_VERSINFO:-}" || "${BASH_VERSINFO[0]}" -lt 4 ]]; then
     exit 1
 fi
 
-# Resolve the repository root from this script's location (deploy/ -> repo root)
-# so sources are copied regardless of the caller's current working directory.
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-PROFILES_DIR="$REPO_ROOT/profiles"
+# ---------------------------------------------------------------------------
+# Source location on GitHub
+#
+# The repository is downloaded as a branch tarball and the deployment is
+# assembled from it. Override the branch by exporting INVENTOR_BRANCH.
+# ---------------------------------------------------------------------------
+GITHUB_REPO="rysavy-ondrej/project-inventor"
+GITHUB_BRANCH="${INVENTOR_BRANCH:-main}"
+GITHUB_TARBALL="https://github.com/${GITHUB_REPO}/archive/refs/heads/${GITHUB_BRANCH}.tar.gz"
 
 IMAGE_NAME="inventor-monitor:local"
+
+# Populated once the sources are downloaded (see "Download sources" below).
+SRC_ROOT=""
+PROFILES_DIR=""
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -184,7 +192,10 @@ require_cmd docker
 if ! docker compose version &>/dev/null; then
     error "Docker Compose v2 is required ('docker compose'). Install Docker Desktop or the compose plugin."
 fi
-success "Docker and Docker Compose are available"
+# Needed to download and unpack the source tarball from GitHub.
+require_cmd tar
+command -v curl &>/dev/null || require_cmd wget
+success "Docker, Docker Compose and download tools are available"
 
 # ---------------------------------------------------------------------------
 # Prompt for install prefix
@@ -201,13 +212,44 @@ PREFIX=$(cd "$PREFIX" && pwd)
 info "Deploying to: $PREFIX"
 
 # ---------------------------------------------------------------------------
+# Download sources from GitHub
+#
+# Fetch the repository as a branch tarball into a temporary staging area and
+# extract it. Everything baked into the image (Dockerfile, src/, testbed/) and
+# the list of available profiles are taken from this download.
+# ---------------------------------------------------------------------------
+
+STAGING="$(mktemp -d "${TMPDIR:-/tmp}/inventor-autodeploy.XXXXXX")"
+cleanup_staging() { [[ -n "${STAGING:-}" && -d "$STAGING" ]] && rm -rf "$STAGING"; }
+trap cleanup_staging EXIT
+
+info "Downloading sources from $GITHUB_TARBALL ..."
+if command -v curl &>/dev/null; then
+    curl -fsSL "$GITHUB_TARBALL" -o "$STAGING/repo.tar.gz" \
+        || error "Failed to download $GITHUB_TARBALL"
+else
+    wget -qO "$STAGING/repo.tar.gz" "$GITHUB_TARBALL" \
+        || error "Failed to download $GITHUB_TARBALL"
+fi
+
+info "Extracting sources ..."
+tar -xzf "$STAGING/repo.tar.gz" -C "$STAGING" || error "Failed to extract the downloaded archive"
+
+# GitHub names the extracted directory "<repo>-<branch>".
+SRC_ROOT="$STAGING/${GITHUB_REPO##*/}-${GITHUB_BRANCH}"
+[[ -d "$SRC_ROOT" ]] || error "Unexpected archive layout: $SRC_ROOT not found"
+PROFILES_DIR="$SRC_ROOT/profiles"
+
+success "Sources downloaded for branch '$GITHUB_BRANCH'"
+
+# ---------------------------------------------------------------------------
 # Discover and select profiles
 #
 # Each immediate sub-directory of profiles/ is a deployable profile (a folder
 # of *.yaml monitoring schedules). One Docker container is created per profile.
 # ---------------------------------------------------------------------------
 
-[[ -d "$PROFILES_DIR" ]] || error "Profiles directory not found: $PROFILES_DIR"
+[[ -d "$PROFILES_DIR" ]] || error "Profiles directory not found in download: $PROFILES_DIR"
 
 ALL_PROFILES=()
 while IFS= read -r d; do
@@ -268,7 +310,7 @@ fi
 # Build the deployment directory layout
 #
 #   <PREFIX>/
-#     app/              build context copied from the repo (Dockerfile + sources)
+#     app/              build context assembled from the GitHub download
 #       Dockerfile
 #       deploy/inventor-requirements.txt
 #       src/
@@ -280,7 +322,7 @@ fi
 # ---------------------------------------------------------------------------
 
 APP_DIR="$PREFIX/app"
-info "Copying repository sources into $APP_DIR ..."
+info "Assembling build context in $APP_DIR ..."
 mkdir -p "$APP_DIR/deploy"
 
 # Prefer rsync (handles excludes / repeat runs cleanly); fall back to cp.
@@ -295,12 +337,35 @@ copy_tree() {
     fi
 }
 
-cp "$REPO_ROOT/Dockerfile" "$APP_DIR/Dockerfile"
-cp "$REPO_ROOT/deploy/inventor-requirements.txt" "$APP_DIR/deploy/inventor-requirements.txt"
-copy_tree "$REPO_ROOT/src" "$APP_DIR/src"
-copy_tree "$REPO_ROOT/testbed" "$APP_DIR/testbed"
+cp "$SRC_ROOT/Dockerfile" "$APP_DIR/Dockerfile"
+cp "$SRC_ROOT/deploy/inventor-requirements.txt" "$APP_DIR/deploy/inventor-requirements.txt"
+copy_tree "$SRC_ROOT/src" "$APP_DIR/src"
+copy_tree "$SRC_ROOT/testbed" "$APP_DIR/testbed"
 
-success "Sources copied to $APP_DIR"
+# Ensure the image installs kcat (kafkacat), which Out-Kafka.ps1 requires to
+# publish results. If the downloaded Dockerfile does not already install it,
+# inject an install step before the application code is copied into the image.
+if ! grep -q 'install -y kcat' "$APP_DIR/Dockerfile"; then
+    info "Patching Dockerfile to install kcat (Kafka sink dependency) ..."
+    tmp_dockerfile="$(mktemp)"
+    awk '
+        /^COPY \. \./ && !injected {
+            print "# Install kcat (kafkacat) — required by Out-Kafka.ps1 to publish to Kafka."
+            print "RUN apt-get update && apt-get install -y kcat && rm -rf /var/lib/apt/lists/*"
+            injected = 1
+        }
+        { print }
+        END {
+            if (!injected) {
+                print "# Install kcat (kafkacat) — required by Out-Kafka.ps1 to publish to Kafka."
+                print "RUN apt-get update && apt-get install -y kcat && rm -rf /var/lib/apt/lists/*"
+            }
+        }
+    ' "$APP_DIR/Dockerfile" > "$tmp_dockerfile"
+    mv "$tmp_dockerfile" "$APP_DIR/Dockerfile"
+fi
+
+success "Build context assembled in $APP_DIR"
 
 # Copy the selected profiles to an editable, mounted location (not baked into
 # the image), so schedules can be tweaked without rebuilding.
