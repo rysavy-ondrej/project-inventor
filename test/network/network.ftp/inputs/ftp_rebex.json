@@ -1,0 +1,7 @@
+{
+    "_comment": "Rebex public FTP test server (anonymous login may be refused; banner still returned).",
+    "target_host": "test.rebex.net",
+    "expect_keys": [
+        "welcome_op"
+    ]
+}

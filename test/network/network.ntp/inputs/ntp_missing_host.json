@@ -1,0 +1,4 @@
+{
+    "_comment": "Negative: no target_host -> error.",
+    "expect_status": "error"
+}

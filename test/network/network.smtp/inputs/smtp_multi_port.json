@@ -1,0 +1,7 @@
+{
+    "_comment": "Negative: comma in target_port is rejected before any I/O.",
+    "target_host": "gmail-smtp-in.l.google.com",
+    "target_port": "25,587",
+    "send_email_flag": "False",
+    "expect_status": "error"
+}

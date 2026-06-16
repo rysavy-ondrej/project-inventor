@@ -1,0 +1,4 @@
+{
+    "_comment": "Negative: no params -> error.",
+    "expect_status": "error"
+}

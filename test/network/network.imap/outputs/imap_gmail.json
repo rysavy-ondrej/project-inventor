@@ -1,0 +1,16 @@
+{
+    "target_host": "imap.gmail.com",
+    "target_port": "993",
+    "IP_address": "142.251.9.108",
+    "protocol_version": "IMAP4REV1",
+    "connected_time": "2026-06-16T06:56:50.867164Z",
+    "noop_op": {
+        "status_code": "OK",
+        "status_msg": "[b'Nothing Accomplished. 988c60f3423e3-1dab8e83364mb404157573442']"
+    },
+    "response_time": "0.038s",
+    "server_msg": "('OK', [b'IMAP4rev1 UNSELECT IDLE NAMESPACE QUOTA ID XLIST CHILDREN X-GM-EXT-1 XYZZY SASL-IR AUTH=XOAUTH2 AUTH=PLAIN AUTH=PLAIN-CLIENTTOKEN AUTH=OAUTHBEARER'])",
+    "duration": "0.27s",
+    "run_id": 1,
+    "status": "completed"
+}

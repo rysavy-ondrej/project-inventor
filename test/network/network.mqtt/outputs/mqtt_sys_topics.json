@@ -1,0 +1,13 @@
+{
+    "target_host": "test.mosquitto.org",
+    "IP_address": "54.36.178.49",
+    "response_time": 0.047,
+    "is_connected": true,
+    "connected_time": "2026-06-16T06:56:31.691280Z",
+    "reason_code_list": "[ReasonCode(Suback, 'Granted QoS 0')]",
+    "$SYS/broker/version": "b'mosquitto version 2.1.2'",
+    "$SYS/broker/uptime": "b'518502 seconds'",
+    "duration": 1.332,
+    "run_id": 2,
+    "status": "completed"
+}

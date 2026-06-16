@@ -1,0 +1,7 @@
+{
+    "_comment": "CESNET stratum-1 server.",
+    "target_host": "tik.cesnet.cz",
+    "expect_keys": [
+        "offset"
+    ]
+}

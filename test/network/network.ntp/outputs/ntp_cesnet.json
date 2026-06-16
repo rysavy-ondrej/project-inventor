@@ -1,0 +1,18 @@
+{
+    "target_host": "tik.cesnet.cz",
+    "IP_address": "195.113.144.201",
+    "connected_time": "2026-06-16T06:56:26.393545Z",
+    "delay": "0.05659294128417969",
+    "offset": "0.025889873504638672",
+    "leap_indicator": "no warning",
+    "stratum": "1",
+    "refid": "ATOM",
+    "root_delay": "0.0",
+    "root_dispersion": "0.0009918212890625",
+    "precision": "-23",
+    "tx_time": "2026-06-16T06:56:26.390547Z",
+    "recv_time": "2026-06-16T06:56:26.390501Z",
+    "dest_time": "2026-06-16T06:56:26.392954Z",
+    "run_id": 1,
+    "status": "completed"
+}

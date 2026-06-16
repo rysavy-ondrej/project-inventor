@@ -1,0 +1,13 @@
+{
+    "target_host": "test.rebex.net",
+    "IP_address": "194.108.117.16",
+    "connected_time": "2026-06-16T06:56:46.650228Z",
+    "welcome_op": "220-Welcome to test.rebex.net!\n    See https://test.rebex.net/ for more information and terms of use.\n220 If you don't have an account, log in as 'anonymous' or 'ftp'.",
+    "login_op": "Failed: 425 Cannot secure data connection - TLS session resumption required.",
+    "protect_op": "200 PROT OK.",
+    "response_time": "0.724s",
+    "quit_op": "221 Closing session.",
+    "duration": "0.873s",
+    "run_id": 3,
+    "status": "completed"
+}

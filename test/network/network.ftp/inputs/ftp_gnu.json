@@ -1,0 +1,7 @@
+{
+    "_comment": "Anonymous FTP welcome banner from ftp.gnu.org.",
+    "target_host": "ftp.gnu.org",
+    "expect_keys": [
+        "welcome_op"
+    ]
+}

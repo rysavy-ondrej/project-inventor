@@ -1,0 +1,7 @@
+{
+    "_comment": "Google public NTP.",
+    "target_host": "time.google.com",
+    "expect_keys": [
+        "stratum"
+    ]
+}

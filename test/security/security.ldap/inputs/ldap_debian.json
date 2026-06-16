@@ -1,0 +1,7 @@
+{
+    "_comment": "Anonymous bind against the Debian public LDAP.",
+    "target_host": "db.debian.org",
+    "expect_keys": [
+        "search_query"
+    ]
+}

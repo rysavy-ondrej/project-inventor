@@ -1,0 +1,7 @@
+{
+    "status": "error",
+    "error": {
+        "code": "CONFIG FILE ERROR",
+        "message": "Missing configuration parametr: 'packet_size'"
+    }
+}

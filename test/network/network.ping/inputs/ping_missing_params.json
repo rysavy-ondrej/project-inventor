@@ -1,0 +1,5 @@
+{
+    "_comment": "Negative (unprivileged): missing packet_size/count -> error.",
+    "target_host": "8.8.8.8",
+    "expect_status": "error"
+}

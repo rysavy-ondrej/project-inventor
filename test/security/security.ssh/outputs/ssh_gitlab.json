@@ -1,0 +1,8 @@
+{
+    "target_host": "gitlab.com",
+    "IP_address": "172.65.251.78",
+    "connected_time": "2026-06-16T06:56:36.483018Z",
+    "ssh_banner": "SSH-2.0-GitLab-SSHD\r\n",
+    "response_time": "0.248s",
+    "duration": "0.31s"
+}

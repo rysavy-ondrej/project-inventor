@@ -1,0 +1,10 @@
+{
+    "_comment": "EHLO probe to a public MX (no email sent). SKIPPED where outbound port 25 is blocked.",
+    "target_host": "gmail-smtp-in.l.google.com",
+    "target_port": "25",
+    "send_email_flag": "False",
+    "skip_on_error": true,
+    "expect_keys": [
+        "target_host"
+    ]
+}

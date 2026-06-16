@@ -1,0 +1,8 @@
+{
+    "target_host": "gmail-smtp-in.l.google.com",
+    "target_port": "25",
+    "retcode": "ERROR: on port 25 can't connect.",
+    "errcode": "timed out",
+    "run_id": 2,
+    "status": "error"
+}

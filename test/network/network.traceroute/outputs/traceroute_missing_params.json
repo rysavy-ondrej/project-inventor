@@ -1,0 +1,7 @@
+{
+    "status": "error",
+    "error": {
+        "error_code": "ERROR",
+        "description": "Error running traceroute test: 'ttl_max'. Please check if you have the necessary permissions."
+    }
+}

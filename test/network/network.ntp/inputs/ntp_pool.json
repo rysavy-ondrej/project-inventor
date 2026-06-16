@@ -1,0 +1,8 @@
+{
+    "_comment": "NTP query to the public pool.",
+    "target_host": "pool.ntp.org",
+    "expect_keys": [
+        "offset",
+        "stratum"
+    ]
+}

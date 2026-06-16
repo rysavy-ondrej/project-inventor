@@ -1,0 +1,7 @@
+{
+    "status": "error",
+    "error": {
+        "error_code": "CONFIG FILE ERROR",
+        "description": "No whitespaces allowed in `oids` parametrs!"
+    }
+}

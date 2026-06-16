@@ -1,0 +1,8 @@
+{
+    "_comment": "Subscribe to broker $SYS topics on the public test broker.",
+    "target_host": "test.mosquitto.org",
+    "topic_names": "$SYS/broker/version,$SYS/broker/uptime",
+    "expect_keys": [
+        "duration"
+    ]
+}

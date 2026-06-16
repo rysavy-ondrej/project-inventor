@@ -1,0 +1,18 @@
+{
+    "target_host": "time.google.com",
+    "IP_address": "216.239.35.8",
+    "connected_time": "2026-06-16T06:56:26.446414Z",
+    "delay": "0.04811429977416992",
+    "offset": "0.026674985885620117",
+    "leap_indicator": "no warning",
+    "stratum": "1",
+    "refid": "GOOG",
+    "root_delay": "0.0",
+    "root_dispersion": "7.62939453125e-05",
+    "precision": "-20",
+    "tx_time": "2026-06-16T06:56:26.448980Z",
+    "recv_time": "2026-06-16T06:56:26.448980Z",
+    "dest_time": "2026-06-16T06:56:26.446362Z",
+    "run_id": 2,
+    "status": "completed"
+}

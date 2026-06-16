@@ -1,0 +1,5 @@
+{
+    "_comment": "Negative (unprivileged): missing ttl_max etc -> error.",
+    "target_host": "8.8.8.8",
+    "expect_status": "error"
+}

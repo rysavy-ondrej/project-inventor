@@ -1,0 +1,7 @@
+{
+    "_comment": "Anonymous bind + root-DSE search against the public forumsys test server.",
+    "target_host": "ldap.forumsys.com",
+    "expect_keys": [
+        "search_query"
+    ]
+}

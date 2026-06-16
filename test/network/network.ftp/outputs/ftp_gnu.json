@@ -1,0 +1,12 @@
+{
+    "target_host": "ftp.gnu.org",
+    "IP_address": "209.51.188.20",
+    "connected_time": "2026-06-16T06:56:46.323398Z",
+    "welcome_op": "220 GNU FTP server ready.",
+    "login_op": "Failed: 530 Please login with USER and PASS.",
+    "response_time": "0.116s",
+    "quit_op": "221 Goodbye.",
+    "duration": "0.489s",
+    "run_id": 1,
+    "status": "completed"
+}

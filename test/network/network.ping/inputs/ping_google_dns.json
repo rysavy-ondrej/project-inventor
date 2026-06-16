@@ -1,0 +1,9 @@
+{
+    "_comment": "ICMP echo to 8.8.8.8 (raw socket -> root).",
+    "target_host": "8.8.8.8",
+    "packet_size": 56,
+    "packet_count": 2,
+    "interpacket_delay": 1,
+    "timeout": 5,
+    "requires_root": true
+}

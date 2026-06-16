@@ -1,0 +1,6 @@
+{
+    "_comment": "Negative: comma in target_host is rejected before any I/O.",
+    "target_host": "a.example,b.example",
+    "topic_names": "x",
+    "expect_status": "error"
+}

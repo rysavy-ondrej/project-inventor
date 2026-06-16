@@ -1,0 +1,7 @@
+{
+    "_comment": "SSH banner grab from github.com.",
+    "target_host": "github.com",
+    "expect_keys": [
+        "ssh_banner"
+    ]
+}

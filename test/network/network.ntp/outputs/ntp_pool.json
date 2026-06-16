@@ -1,0 +1,18 @@
+{
+    "target_host": "pool.ntp.org",
+    "IP_address": "91.236.251.35",
+    "connected_time": "2026-06-16T06:56:26.521240Z",
+    "delay": "0.04061079025268555",
+    "offset": "0.023658037185668945",
+    "leap_indicator": "no warning",
+    "stratum": "2",
+    "refid": "118.188.39.164",
+    "root_delay": "0.004150390625",
+    "root_dispersion": "0.0292510986328125",
+    "precision": "-30",
+    "tx_time": "2026-06-16T06:56:26.524483Z",
+    "recv_time": "2026-06-16T06:56:26.524429Z",
+    "dest_time": "2026-06-16T06:56:26.521130Z",
+    "run_id": 4,
+    "status": "completed"
+}

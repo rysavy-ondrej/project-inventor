@@ -43,10 +43,20 @@ targets exist. Same shape as the dns reference.
 | --- | --- | --- | --- | --- |
 | network.ntp | `network_ntp` | `target_host` | `pool.ntp.org`, `time.google.com`, `tik.cesnet.cz` | missing `target_host` → error |
 | network.mqtt | `network_mqtt` | `target_host`, `topic_names` (comma-sep) | `test.mosquitto.org` with `$SYS/broker/version,$SYS/broker/uptime` | unresolvable host → error |
-| security.ssh | `security_ssh` | `target_host` | `github.com`, a public university host | comma in `target_host` → error |
+| security.ssh | `security_ssh` | `target_host` | `github.com`, `gitlab.com` | comma in `target_host` → error |
 | security.ldap | `security_ldap` | `target_host` | `ldap.forumsys.com`, `db.debian.org` | missing `target_host` → error |
 | network.ftp | `network_ftp` | `target_host` | `ftp.gnu.org`, `test.rebex.net` | unresolvable host → error |
 | network.imap | `network_imap` | `target_host`, `target_port`, `login_flag` (keep `"False"`), `login_username`, `login_server` | `imap.gmail.com:993` (banner, no login) | bad port → error |
+
+**Use public targets only.** The existing `src/.../test/input.json` examples
+point at internal VUT FIT hosts; replace them with the public equivalents above
+so the tests run anywhere. Concretely:
+
+- ssh: `eva.fit.vutbr.cz` → `github.com` / `gitlab.com`
+- ldap: `ldap.fit.vutbr.cz` → `ldap.forumsys.com` / `db.debian.org`
+- imap: `kazi.fit.vutbr.cz` → `imap.gmail.com`
+- smtp (Tier 3): `kazi.fit.vutbr.cz` → a public MX
+- snmp (Tier 3): `isa.fit.vutbr.cz` → n/a (negative-only, see Tier 3)
 
 Notes:
 - Keep `login_flag`/`send_email_flag` style booleans `"False"` so no credentials
@@ -58,15 +68,20 @@ Notes:
 
 ### Tier 2 — privileged (raw sockets, need root)
 
-`run()` opens raw ICMP sockets, so these fail unprivileged. Two options per the
-Readme's "privileged capture paths" rule:
+`run()` opens raw ICMP sockets, so these fail unprivileged. Decision:
 
-1. Preferred: make `run_tests.sh` detect lack of privilege and **skip with a
-   clear message** (exit 0 but print `SKIPPED: needs root`), and document the
-   `sudo ./run_tests.sh` invocation in the per-monitor Readme.
-2. Still always include the **top-level negative case** (missing params), which
-   needs no socket and runs unprivileged — so the suite has at least one real
-   assertion even without root.
+1. **Skip the privileged (live-target) cases when not run as root.**
+   `run_tests.sh` checks `id -u` (equivalently `EUID`); if it is not 0 it prints
+   a clear note — e.g. `SKIPPED: network.ping live cases require root privilege
+   to open raw ICMP sockets; re-run with 'sudo ./run_tests.sh' to execute them` —
+   and exits 0 without running those cases. When run as root the live cases
+   execute normally.
+2. **Always run the top-level negative case** (missing params), which needs no
+   socket and runs unprivileged — so the suite has at least one real assertion
+   even when the privileged cases are skipped.
+
+The per-monitor `Readme.md` states the root requirement and the
+`sudo ./run_tests.sh` invocation.
 
 | Monitor | Module | Key config params | Targets | Extra |
 | --- | --- | --- | --- | --- |
@@ -81,7 +96,7 @@ with that explanation rather than a confusing pip or timeout error.
 
 | Monitor | Obstacle | Plan |
 | --- | --- | --- |
-| network.snmp | `easysnmp` is a C-extension binding to system net-snmp libs (`libsnmp-dev`); also needs a live SNMP agent (public ones are scarce/unstable). | Document the apt prereq; target a known public/test agent if one is available, otherwise ship only the unprivileged negative cases (missing `oids`/`community_string`, which hit the validation branch before any network I/O) and mark the live case as opt-in. |
+| network.snmp | `easysnmp` is a C-extension binding to system net-snmp libs (`libsnmp-dev`); also needs a live SNMP agent (public ones are scarce/unstable). | **Negative testing only — no live agent target.** Ship only the cases that hit `run()`'s validation branches before any network I/O: missing/empty `oids`, missing `community_string`, a space inside `oids`, and missing params. These run without a live agent. The per-monitor Readme still documents the `libsnmp-dev` prereq needed for the import to succeed. |
 | network.smtp | Outbound port 25 is frequently blocked by ISPs/cloud, so a live banner probe is environment-dependent. Keep `send_email_flag: "False"`. | Use a public MX (e.g. a provider's mail host) for the positive case but treat a connection timeout as an environment skip; always ship the negative case (bad port / missing params). |
 
 ## Per-monitor deliverables (same for all)
@@ -106,16 +121,24 @@ For each monitor, following [Readme.md](Readme.md) §1–7:
 1. **Tier 1, batch A:** ntp, ssh, ldap (simplest single-param probes) — fastest
    way to validate the runner generalizes beyond dns.
 2. **Tier 1, batch B:** ftp, imap, mqtt.
-3. **Tier 2:** ping, then traceroute (add the privilege-skip guard once, reuse).
-4. **Tier 3:** smtp, then snmp (document prereqs; ship negative cases at minimum).
+3. **Tier 2:** ping, then traceroute (add the root-skip guard once, reuse).
+4. **Tier 3:** smtp, then snmp (snmp is negative-only; document prereqs).
+
+## Decisions (locked)
+
+- **Public targets only.** All live cases use the public hosts listed in Tier 1
+  / Tier 3; the internal VUT FIT hosts from the `src/.../test/input.json`
+  examples are not used (mapping under the Tier 1 table).
+- **Privileged cases skip without root.** Tier 2 (ping, traceroute) skips its
+  live raw-socket cases when not run as root, printing a note that the operation
+  requires privilege and to re-run with `sudo ./run_tests.sh`; the negative case
+  still runs unprivileged.
+- **snmp is negative-testing only.** No live SNMP agent target; only the
+  validation-branch negative cases are shipped.
 
 ## Open decisions to confirm before/while implementing
 
-- **Live-network dependence.** All positive cases hit public hosts. Acceptable
-  per the Readme ("tests hit live targets"), but Tier 2/3 add privilege/egress
-  variance — confirm the skip-vs-fail behaviour is desired.
-- **Pinned target hosts.** The targets above are suggestions; confirm or swap for
-  hosts known-stable in the project's environment (the existing
-  `src/.../test/input.json` files use VUT FIT hosts that may be internal).
-- **snmp scope.** Decide whether to invest in a live SNMP agent target or ship
-  snmp as negative-cases-only with the live case marked opt-in.
+- **smtp positive case.** Outbound port 25 is often blocked, so the live banner
+  probe is environment-dependent. Confirm whether to keep a public-MX positive
+  case (treating a timeout as an environment skip) or make smtp negative-only
+  like snmp.

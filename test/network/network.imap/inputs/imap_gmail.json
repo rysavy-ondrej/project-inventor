@@ -1,0 +1,11 @@
+{
+    "_comment": "IMAPS connect + NOOP against Gmail (no login).",
+    "target_host": "imap.gmail.com",
+    "target_port": "993",
+    "login_flag": "False",
+    "login_username": "",
+    "login_server": "imap.gmail.com",
+    "expect_keys": [
+        "protocol_version"
+    ]
+}
