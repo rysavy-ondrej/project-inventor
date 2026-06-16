@@ -1,0 +1,11 @@
+{
+    "target_host": "www.google.com",
+    "target_port": 443,
+    "tls_version": "TLSv1.2",
+    "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"],
+    "elliptic_curves": [],
+    "extensions": [
+        { "type": "sni", "data": "www.google.com" }
+    ],
+    "timeout": 6
+}

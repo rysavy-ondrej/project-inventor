@@ -1,0 +1,8 @@
+{
+    "run_id": 5,
+    "status": "error",
+    "error": {
+        "error_msg": "SSL Error",
+        "description": "Invalid TLS 1.3 ciphersuite(s): ['ECDHE-RSA-AES256-GCM-SHA384']"
+    }
+}

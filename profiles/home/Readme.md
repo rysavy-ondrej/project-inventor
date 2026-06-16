@@ -33,7 +33,7 @@ analysed independently.
 - **DNS** queries are sent through the public resolvers a home user is most
   likely to be configured with: Google (`8.8.8.8`), Cloudflare (`1.1.1.1`)
   and Quad9 (`9.9.9.9`).
-- **TLS** targets use modern `TLSv1.3` with `TLS_AES_128_GCM_SHA256` on the
+- **TLS** targets use `TLSv1.2` with `ECDHE-RSA-AES256-GCM-SHA384` on the
   standard HTTPS port `443`.
 - **Ping** intervals are tighter for interactive categories (streaming,
   gaming, cloud) and more relaxed for less latency-sensitive ones (news,

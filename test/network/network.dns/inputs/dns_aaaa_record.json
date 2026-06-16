@@ -1,0 +1,8 @@
+{
+    "_comment": "AAAA (IPv6) resolution of dual-stack domains.",
+    "target_hosts": ["www.google.com", "cloudflare.com"],
+    "query_type": "AAAA",
+    "nameservers": ["1.1.1.1"],
+    "expect_status": "completed",
+    "expect_failed_tests": 0
+}

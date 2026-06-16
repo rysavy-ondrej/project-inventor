@@ -43,7 +43,7 @@ own `home.cz.<test>.<category>` output file.
 - **DNS** adds the **CZ.NIC ODVR** open resolver (`193.17.47.1`) alongside
   Google (`8.8.8.8`) and Cloudflare (`1.1.1.1`), since CZ.NIC's resolver is a
   common choice in Czech homes; Czech `.cz` domains are resolved through it.
-- **TLS** targets use modern `TLSv1.3` with `TLS_AES_128_GCM_SHA256` on port
+- **TLS** targets use `TLSv1.2` with `ECDHE-RSA-AES256-GCM-SHA384` on port
   `443`. The **banking** category runs at a tighter interval given its
   security relevance.
 - **Ping** intervals are tighter for interactive categories (streaming,

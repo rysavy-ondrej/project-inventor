@@ -1,0 +1,86 @@
+{
+    "run_id": 4,
+    "status": "completed",
+    "handshake_time": 50,
+    "IP_address": "216.239.38.120",
+    "target_port": 443,
+    "tls_version": "TLSv1.3",
+    "cipher_suite": "TLS_AES_256_GCM_SHA384",
+    "elliptic_curve": "N/A",
+    "SNIs": "www.google.com",
+    "alpn": "N/A",
+    "client_extension_count": 0,
+    "server_extension_count": 0,
+    "client_extension_names": "N/A",
+    "server_extension_names": "N/A",
+    "addition_server_cert_info": {
+        "key_usage": "Digital Signature",
+        "extended_key_usage": "TLS Web Server Authentication",
+        "authority_info_access": [
+            "OCSP - URI:http://o.pki.goog/we2",
+            "CA Issuers - URI:http://i.pki.goog/we2.crt"
+        ]
+    },
+    "server_cert_chain": [
+        {
+            "subject_cn": "www.google.com",
+            "subject_on": "N/A",
+            "subject_country": null,
+            "issuer_cn": "WE2",
+            "issuer_on": "Google Trust Services",
+            "issuer_country": "US",
+            "not_before": "2026-05-25 08:39:17",
+            "not_after": "2026-08-17 08:39:16",
+            "serial_number": 271487189042143882022428277156732757337,
+            "version": 3,
+            "signature_algorithm": "ecdsa-with-SHA256",
+            "public_key_length": 256,
+            "fingerprint": "B7:A4:8A:A2:B6:70:DA:53:CC:A9:0A:3B:AD:C5:D2:A1:CD:9B:C8:93:E1:6F:A0:B5:1C:98:2D:1F:AF:16:E1:5F"
+        },
+        {
+            "subject_cn": "WE2",
+            "subject_on": "Google Trust Services",
+            "subject_country": "US",
+            "issuer_cn": "GTS Root R4",
+            "issuer_on": "Google Trust Services LLC",
+            "issuer_country": "US",
+            "not_before": "2023-12-13 09:00:00",
+            "not_after": "2029-02-20 14:00:00",
+            "serial_number": 170074604807150777415902075947543458528,
+            "version": 3,
+            "signature_algorithm": "ecdsa-with-SHA384",
+            "public_key_length": 256,
+            "fingerprint": "9C:3F:2F:D1:1C:57:D7:C6:49:AD:5A:09:32:C0:F0:D2:97:56:F6:A0:A1:C7:4C:43:E1:E8:9A:62:D6:4C:D3:20"
+        },
+        {
+            "subject_cn": "GTS Root R4",
+            "subject_on": "Google Trust Services LLC",
+            "subject_country": "US",
+            "issuer_cn": "GlobalSign Root CA",
+            "issuer_on": "GlobalSign nv-sa",
+            "issuer_country": "BE",
+            "not_before": "2023-11-15 03:43:21",
+            "not_after": "2028-01-28 00:00:42",
+            "serial_number": 170001980149335831901244157168837298715,
+            "version": 3,
+            "signature_algorithm": "sha256WithRSAEncryption",
+            "public_key_length": 384,
+            "fingerprint": "76:B2:7B:80:A5:80:27:DC:3C:F1:DA:68:DA:C1:70:10:ED:93:99:7D:0B:60:3E:2F:AD:BE:85:01:24:93:B5:A7"
+        }
+    ],
+    "server_cert": {
+        "subject_cn": "www.google.com",
+        "subject_on": "N/A",
+        "subject_country": null,
+        "issuer_cn": "WE2",
+        "issuer_on": "Google Trust Services",
+        "issuer_country": "US",
+        "not_before": "2026-05-25 08:39:17",
+        "not_after": "2026-08-17 08:39:16",
+        "serial_number": 271487189042143882022428277156732757337,
+        "version": 3,
+        "signature_algorithm": "ecdsa-with-SHA256",
+        "public_key_length": 256,
+        "fingerprint": "B7:A4:8A:A2:B6:70:DA:53:CC:A9:0A:3B:AD:C5:D2:A1:CD:9B:C8:93:E1:6F:A0:B5:1C:98:2D:1F:AF:16:E1:5F"
+    }
+}

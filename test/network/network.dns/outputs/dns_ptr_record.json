@@ -1,0 +1,53 @@
+{
+    "run_id": 6,
+    "status": "completed",
+    "summary": {
+        "total_tests": 2,
+        "successful_tests": 2,
+        "failed_tests": 0,
+        "response_time_avg": 16.6647,
+        "response_time_min": 15.2121,
+        "response_time_max": 18.1172,
+        "resolution_type": "PTR"
+    },
+    "details": [
+        {
+            "domain_names": [
+                "dns.google."
+            ],
+            "expiration_time": 8308,
+            "response_time": 18.1172,
+            "status": "success",
+            "status_code": "NOERROR",
+            "nameservers_used": [
+                "8.8.8.8"
+            ],
+            "ds": "N/A",
+            "cname": "N/A",
+            "ns": "N/A",
+            "soa": "N/A",
+            "caa": "N/A",
+            "dnskey": "N/A",
+            "rrsig": "N/A"
+        },
+        {
+            "domain_names": [
+                "one.one.one.one."
+            ],
+            "expiration_time": 1481,
+            "response_time": 15.2121,
+            "status": "success",
+            "status_code": "NOERROR",
+            "nameservers_used": [
+                "8.8.8.8"
+            ],
+            "ds": "N/A",
+            "cname": "N/A",
+            "ns": "N/A",
+            "soa": "N/A",
+            "caa": "N/A",
+            "dnskey": "N/A",
+            "rrsig": "N/A"
+        }
+    ]
+}

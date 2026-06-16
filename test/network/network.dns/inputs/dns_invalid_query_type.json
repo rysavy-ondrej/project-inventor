@@ -1,0 +1,7 @@
+{
+    "_comment": "Negative (top-level): an unsupported query_type must be rejected with status=error before any resolution is attempted.",
+    "target_hosts": ["example.com"],
+    "query_type": "BOGUS",
+    "nameservers": ["8.8.8.8"],
+    "expect_status": "error"
+}

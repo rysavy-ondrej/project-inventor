@@ -1,0 +1,8 @@
+{
+    "_comment": "NS query exercises the get_ns() record-specific branch.",
+    "target_hosts": ["vutbr.cz", "example.com"],
+    "query_type": "NS",
+    "nameservers": ["8.8.8.8"],
+    "expect_status": "completed",
+    "expect_failed_tests": 0
+}

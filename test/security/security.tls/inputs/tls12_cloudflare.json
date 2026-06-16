@@ -1,0 +1,11 @@
+{
+    "target_host": "www.cloudflare.com",
+    "target_port": 443,
+    "tls_version": "TLSv1.2",
+    "cipher_suites": ["ECDHE-ECDSA-AES128-GCM-SHA256"],
+    "elliptic_curves": [],
+    "extensions": [
+        { "type": "sni", "data": "www.cloudflare.com" }
+    ],
+    "timeout": 6
+}

@@ -1,0 +1,63 @@
+{
+    "run_id": 2,
+    "status": "completed",
+    "summary": {
+        "total_tests": 2,
+        "successful_tests": 2,
+        "failed_tests": 0,
+        "response_time_avg": 20.9592,
+        "response_time_min": 19.4082,
+        "response_time_max": 22.5101,
+        "resolution_type": "AAAA"
+    },
+    "details": [
+        {
+            "target_host": "www.google.com.",
+            "IP_address": [
+                "2001:4860:482a:7700::",
+                "2001:4860:4828:7700::",
+                "2001:4860:4829:7700::",
+                "2001:4860:482d:7700::",
+                "2001:4860:482c:7700::",
+                "2001:4860:4827:7700::",
+                "2001:4860:482b:7700::",
+                "2001:4860:4826:7700::"
+            ],
+            "expiration_time": 296,
+            "response_time": 19.4082,
+            "status": "success",
+            "status_code": "NOERROR",
+            "nameservers_used": [
+                "1.1.1.1"
+            ],
+            "ds": "N/A",
+            "cname": "N/A",
+            "ns": "N/A",
+            "soa": "N/A",
+            "caa": "N/A",
+            "dnskey": "N/A",
+            "rrsig": "N/A"
+        },
+        {
+            "target_host": "cloudflare.com.",
+            "IP_address": [
+                "2606:4700::6810:85e5",
+                "2606:4700::6810:84e5"
+            ],
+            "expiration_time": 43,
+            "response_time": 22.5101,
+            "status": "success",
+            "status_code": "NOERROR",
+            "nameservers_used": [
+                "1.1.1.1"
+            ],
+            "ds": "N/A",
+            "cname": "N/A",
+            "ns": "N/A",
+            "soa": "N/A",
+            "caa": "N/A",
+            "dnskey": "N/A",
+            "rrsig": "N/A"
+        }
+    ]
+}

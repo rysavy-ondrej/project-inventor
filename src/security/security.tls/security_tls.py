@@ -9,6 +9,7 @@ from multiprocessing import Queue
 import socket
 from OpenSSL import SSL
 from OpenSSL import crypto
+from OpenSSL._util import lib as _ssl_lib
 import time
 from datetime import datetime
 import scapy.all as scapy
@@ -228,9 +229,16 @@ def create_ssl_context(tls_version, cipher_suites, elliptic_curves, extensions):
     context.set_max_proto_version(tls_versions[tls_version])
     context.set_min_proto_version(tls_versions[tls_version])
 
-    # Set the cipher suites
-    if cipher_suites and not tls_version == 'TLSv1.3':
-        context.set_cipher_list(b':'.join(cipher.encode('utf-8') for cipher in cipher_suites))
+    # Set the cipher suites. TLS 1.3 ciphersuites use a separate OpenSSL API
+    # (SSL_CTX_set_ciphersuites); set_cipher_list only affects TLS 1.2 and
+    # below. pyOpenSSL does not wrap the TLS 1.3 setter, so call it via FFI.
+    if cipher_suites:
+        joined = b':'.join(cipher.encode('utf-8') for cipher in cipher_suites)
+        if tls_version == 'TLSv1.3':
+            if _ssl_lib.SSL_CTX_set_ciphersuites(context._context, joined) != 1:
+                raise SSL.Error(f'Invalid TLS 1.3 ciphersuite(s): {cipher_suites}')
+        else:
+            context.set_cipher_list(joined)
 
     # Set the elliptic curves
     if elliptic_curves is not None and len(elliptic_curves) > 0:

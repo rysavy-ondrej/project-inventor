@@ -1,0 +1,57 @@
+{
+    "run_id": 4,
+    "status": "completed",
+    "summary": {
+        "total_tests": 2,
+        "successful_tests": 2,
+        "failed_tests": 0,
+        "response_time_avg": 30.4431,
+        "response_time_min": 18.9121,
+        "response_time_max": 41.9741,
+        "resolution_type": "NS"
+    },
+    "details": [
+        {
+            "target_host": "vutbr.cz.",
+            "IP_address": [],
+            "expiration_time": 7199,
+            "response_time": 41.9741,
+            "status": "success",
+            "status_code": "NOERROR",
+            "nameservers_used": [
+                "8.8.8.8"
+            ],
+            "ds": "N/A",
+            "cname": "N/A",
+            "ns": [
+                "pipit.cis.vutbr.cz.",
+                "rhino.cis.vutbr.cz."
+            ],
+            "soa": "N/A",
+            "caa": "N/A",
+            "dnskey": "N/A",
+            "rrsig": "N/A"
+        },
+        {
+            "target_host": "example.com.",
+            "IP_address": [],
+            "expiration_time": 21599,
+            "response_time": 18.9121,
+            "status": "success",
+            "status_code": "NOERROR",
+            "nameservers_used": [
+                "8.8.8.8"
+            ],
+            "ds": "N/A",
+            "cname": "N/A",
+            "ns": [
+                "elliott.ns.cloudflare.com.",
+                "hera.ns.cloudflare.com."
+            ],
+            "soa": "N/A",
+            "caa": "N/A",
+            "dnskey": "N/A",
+            "rrsig": "N/A"
+        }
+    ]
+}

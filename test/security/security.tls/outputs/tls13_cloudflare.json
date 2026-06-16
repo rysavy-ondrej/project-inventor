@@ -1,0 +1,86 @@
+{
+    "run_id": 3,
+    "status": "completed",
+    "handshake_time": 49,
+    "IP_address": "104.16.123.96",
+    "target_port": 443,
+    "tls_version": "TLSv1.3",
+    "cipher_suite": "TLS_CHACHA20_POLY1305_SHA256",
+    "elliptic_curve": "N/A",
+    "SNIs": "www.cloudflare.com",
+    "alpn": "N/A",
+    "client_extension_count": 0,
+    "server_extension_count": 0,
+    "client_extension_names": "N/A",
+    "server_extension_names": "N/A",
+    "addition_server_cert_info": {
+        "key_usage": "Digital Signature",
+        "extended_key_usage": "TLS Web Server Authentication",
+        "authority_info_access": [
+            "OCSP - URI:http://o.pki.goog/s/we1/ihc",
+            "CA Issuers - URI:http://i.pki.goog/we1.crt"
+        ]
+    },
+    "server_cert_chain": [
+        {
+            "subject_cn": "www.cloudflare.com",
+            "subject_on": "N/A",
+            "subject_country": null,
+            "issuer_cn": "WE1",
+            "issuer_on": "Google Trust Services",
+            "issuer_country": "US",
+            "not_before": "2026-05-07 16:54:23",
+            "not_after": "2026-08-05 17:54:15",
+            "serial_number": 183557822941041984877039947296962221508,
+            "version": 3,
+            "signature_algorithm": "ecdsa-with-SHA256",
+            "public_key_length": 256,
+            "fingerprint": "8A:3D:B2:9E:34:D4:4E:A1:10:47:17:BD:88:A0:A8:6D:E2:84:A4:EF:8D:F5:64:53:86:65:48:7B:A0:A8:1B:2F"
+        },
+        {
+            "subject_cn": "WE1",
+            "subject_on": "Google Trust Services",
+            "subject_country": "US",
+            "issuer_cn": "GTS Root R4",
+            "issuer_on": "Google Trust Services LLC",
+            "issuer_country": "US",
+            "not_before": "2023-12-13 09:00:00",
+            "not_after": "2029-02-20 14:00:00",
+            "serial_number": 170074200136485300614847617070429275619,
+            "version": 3,
+            "signature_algorithm": "ecdsa-with-SHA384",
+            "public_key_length": 256,
+            "fingerprint": "1D:FC:16:05:FB:AD:35:8D:8B:C8:44:F7:6D:15:20:3F:AC:9C:A5:C1:A7:9F:D4:85:7F:FA:F2:86:4F:BE:BF:96"
+        },
+        {
+            "subject_cn": "GTS Root R4",
+            "subject_on": "Google Trust Services LLC",
+            "subject_country": "US",
+            "issuer_cn": "GlobalSign Root CA",
+            "issuer_on": "GlobalSign nv-sa",
+            "issuer_country": "BE",
+            "not_before": "2023-11-15 03:43:21",
+            "not_after": "2028-01-28 00:00:42",
+            "serial_number": 170001980149335831901244157168837298715,
+            "version": 3,
+            "signature_algorithm": "sha256WithRSAEncryption",
+            "public_key_length": 384,
+            "fingerprint": "76:B2:7B:80:A5:80:27:DC:3C:F1:DA:68:DA:C1:70:10:ED:93:99:7D:0B:60:3E:2F:AD:BE:85:01:24:93:B5:A7"
+        }
+    ],
+    "server_cert": {
+        "subject_cn": "www.cloudflare.com",
+        "subject_on": "N/A",
+        "subject_country": null,
+        "issuer_cn": "WE1",
+        "issuer_on": "Google Trust Services",
+        "issuer_country": "US",
+        "not_before": "2026-05-07 16:54:23",
+        "not_after": "2026-08-05 17:54:15",
+        "serial_number": 183557822941041984877039947296962221508,
+        "version": 3,
+        "signature_algorithm": "ecdsa-with-SHA256",
+        "public_key_length": 256,
+        "fingerprint": "8A:3D:B2:9E:34:D4:4E:A1:10:47:17:BD:88:A0:A8:6D:E2:84:A4:EF:8D:F5:64:53:86:65:48:7B:A0:A8:1B:2F"
+    }
+}

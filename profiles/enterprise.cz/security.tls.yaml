@@ -3,7 +3,7 @@ monitors:
     module: security_tls
     exec: src/security/security.tls
 
-# TLS handshake monitoring (port 443, modern TLSv1.3) for the cloud/SaaS
+# TLS handshake monitoring (port 443, TLSv1.2) for the cloud/SaaS
 # services a CZECH enterprise depends on. Targets are grouped per
 # business-service category. Identity providers and the Czech eGovernment
 # portals are watched most aggressively, since a TLS failure on the SSO gateway
@@ -12,70 +12,70 @@ schedule:
   - test: security.tls
     write-to: enterprise.cz.tls.collaboration
     targets:
-        - { "target_host": "teams.microsoft.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "slack.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "zoom.us", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.webex.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "mail.google.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "teams.microsoft.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "slack.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "zoom.us", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.webex.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "mail.google.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
     repeat-every: 5m
 
   - test: security.tls
     write-to: enterprise.cz.tls.saas
     targets:
-        - { "target_host": "outlook.office365.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "login.salesforce.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.stormware.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.money.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.abra.eu", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "outlook.office365.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "login.salesforce.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.stormware.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.money.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.abra.eu", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
     repeat-every: 5m
 
   - test: security.tls
     write-to: enterprise.cz.tls.identity
     targets:
-        - { "target_host": "login.microsoftonline.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.okta.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.eidentita.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "duo.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "auth0.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "login.microsoftonline.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.okta.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.eidentita.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "duo.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "auth0.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
     repeat-every: 3m
 
   - test: security.tls
     write-to: enterprise.cz.tls.devops
     targets:
-        - { "target_host": "github.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "gitlab.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "hub.docker.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "pypi.org", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "registry.npmjs.org", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "github.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "gitlab.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "hub.docker.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "pypi.org", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "registry.npmjs.org", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
     repeat-every: 5m
 
   - test: security.tls
     write-to: enterprise.cz.tls.cloud
     targets:
-        - { "target_host": "portal.azure.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "console.aws.amazon.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "console.cloud.google.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.wedos.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.active24.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.forpsi.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "portal.azure.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "console.aws.amazon.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "console.cloud.google.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.wedos.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.active24.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.forpsi.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
     repeat-every: 3m
 
   - test: security.tls
     write-to: enterprise.cz.tls.egov
     targets:
-        - { "target_host": "www.mojedatovaschranka.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.financnisprava.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "eportal.cssz.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "ares.gov.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.portal.gov.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.mojedatovaschranka.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.financnisprava.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "eportal.cssz.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "ares.gov.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.portal.gov.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
     repeat-every: 3m
 
   - test: security.tls
     write-to: enterprise.cz.tls.security
     targets:
-        - { "target_host": "dash.cloudflare.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.zscaler.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "falcon.crowdstrike.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.proofpoint.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "nukib.gov.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "dash.cloudflare.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.zscaler.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "falcon.crowdstrike.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.proofpoint.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "nukib.gov.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
     repeat-every: 5m

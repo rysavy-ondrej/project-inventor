@@ -33,7 +33,7 @@ analysed independently.
 - **DNS** queries are sent through resolvers commonly deployed in enterprise
   networks: Cisco Umbrella / OpenDNS (`208.67.222.222`), Cloudflare
   (`1.1.1.1`), Quad9 (`9.9.9.9`) and Google (`8.8.8.8`).
-- **TLS** targets use modern `TLSv1.3` with `TLS_AES_128_GCM_SHA256` on the
+- **TLS** targets use `TLSv1.2` with `ECDHE-RSA-AES256-GCM-SHA384` on the
   standard HTTPS port `443`.
 - **Intervals** are tightest for **identity** and **collaboration** — an SSO or
   conferencing outage blocks every downstream application — and more relaxed

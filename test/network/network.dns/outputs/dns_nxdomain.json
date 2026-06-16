@@ -1,0 +1,24 @@
+{
+    "run_id": 5,
+    "status": "completed",
+    "summary": {
+        "total_tests": 1,
+        "successful_tests": 0,
+        "failed_tests": 1,
+        "response_time_avg": 35.7661,
+        "response_time_min": 35.7661,
+        "response_time_max": 35.7661,
+        "resolution_type": "A"
+    },
+    "details": [
+        {
+            "target_host": "this-domain-should-not-exist-inventor-test.cz",
+            "IP_address": [],
+            "expiration_time": "N/A",
+            "response_time": 35.7661,
+            "status": "failed",
+            "status_code": "NXDOMAIN",
+            "error_message": "The DNS query name does not exist: this-domain-should-not-exist-inventor-test.cz."
+        }
+    ]
+}

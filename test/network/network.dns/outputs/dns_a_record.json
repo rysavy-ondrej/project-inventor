@@ -1,0 +1,56 @@
+{
+    "run_id": 1,
+    "status": "completed",
+    "summary": {
+        "total_tests": 2,
+        "successful_tests": 2,
+        "failed_tests": 0,
+        "response_time_avg": 36.9896,
+        "response_time_min": 14.8962,
+        "response_time_max": 59.083,
+        "resolution_type": "A"
+    },
+    "details": [
+        {
+            "target_host": "example.com.",
+            "IP_address": [
+                "172.66.147.243",
+                "104.20.23.154"
+            ],
+            "expiration_time": 292,
+            "response_time": 14.8962,
+            "status": "success",
+            "status_code": "NOERROR",
+            "nameservers_used": [
+                "8.8.8.8"
+            ],
+            "ds": "N/A",
+            "cname": "N/A",
+            "ns": "N/A",
+            "soa": "N/A",
+            "caa": "N/A",
+            "dnskey": "N/A",
+            "rrsig": "N/A"
+        },
+        {
+            "target_host": "www.vutbr.cz.",
+            "IP_address": [
+                "147.229.2.90"
+            ],
+            "expiration_time": 299,
+            "response_time": 59.083,
+            "status": "success",
+            "status_code": "NOERROR",
+            "nameservers_used": [
+                "8.8.8.8"
+            ],
+            "ds": "N/A",
+            "cname": "N/A",
+            "ns": "N/A",
+            "soa": "N/A",
+            "caa": "N/A",
+            "dnskey": "N/A",
+            "rrsig": "N/A"
+        }
+    ]
+}

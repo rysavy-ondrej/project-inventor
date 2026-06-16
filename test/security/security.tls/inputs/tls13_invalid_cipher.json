@@ -1,0 +1,13 @@
+{
+    "_comment": "Negative case: a TLS 1.2 cipher name requested under TLS 1.3. Must be rejected at config time with status=error, not silently ignored.",
+    "target_host": "www.google.com",
+    "target_port": 443,
+    "tls_version": "TLSv1.3",
+    "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"],
+    "elliptic_curves": [],
+    "extensions": [
+        { "type": "sni", "data": "www.google.com" }
+    ],
+    "timeout": 6,
+    "expect_status": "error"
+}

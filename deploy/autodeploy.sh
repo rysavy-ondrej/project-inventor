@@ -5,8 +5,9 @@
 # (a folder of monitoring schedules under ../profiles) runs as its own Docker
 # container. Every schedule in a profile is executed by Run-MonitorSession.ps1
 # and its results are published to Kafka via Out-Kafka.ps1. The Kafka topic for
-# each schedule is derived from the schedule file name (network.dns.yaml ->
-# topic "network.dns").
+# each schedule is resolved from the schedule YAML in priority order —
+# monitors[].topic, then monitors[].name, then the file name without .yaml
+# (e.g. network.dns.yaml -> topic "network.dns").
 #
 # Like install.sh, autodeploy.sh downloads the project sources from GitHub (a
 # branch tarball) and assembles a self-contained deployment folder from them, so
@@ -377,8 +378,12 @@ cat > "$RUN_KAFKA" <<'EOF'
 #   KAFKA_TOPIC_PREFIX prefix prepended to each topic       (optional)
 #
 # The Kafka topic for each schedule is "<KAFKA_TOPIC_PREFIX><schedule-name>",
-# where <schedule-name> is the schedule file name without its .yaml extension
-# (e.g. network.dns.yaml -> network.dns).
+# where <schedule-name> is resolved from the schedule YAML in priority order:
+#   1. monitors[].topic   (first monitor entry that defines a 'topic')
+#   2. monitors[].name    (first monitor entry that defines a 'name')
+#   3. the schedule file name without its .yaml extension
+# (e.g. network.dns.yaml -> network.dns). The YAML fields are read via the
+# powershell-yaml module already required by Run-MonitorSession.ps1.
 
 set -euo pipefail
 
@@ -393,10 +398,28 @@ if ! compgen -G "$PROFILE_DIR/*.yaml" > /dev/null; then
     exit 1
 fi
 
+# Resolve a schedule's logical name in priority order: monitors[].topic, then
+# monitors[].name, then the file name without its .yaml extension. The first two
+# are parsed from the YAML with powershell-yaml; any parse error or missing
+# value falls through to the file name.
+resolve_schedule_name() {
+    local file="$1" name=""
+    name="$(SUITE="$file" pwsh -NoProfile -Command '
+        try { $cfg = Get-Content -Raw -LiteralPath $env:SUITE | ConvertFrom-Yaml } catch { exit 0 }
+        $monitors = @($cfg.monitors)
+        $val = $null
+        foreach ($m in $monitors) { if ($m.topic) { $val = $m.topic; break } }
+        if (-not $val) { foreach ($m in $monitors) { if ($m.name) { $val = $m.name; break } } }
+        if ($val) { Write-Output ([string]$val).Trim() }
+    ' 2>/dev/null)"
+    [[ -n "$name" ]] || name="$(basename "$file" .yaml)"
+    printf '%s' "$name"
+}
+
 echo "Launching schedules from $PROFILE_DIR -> Kafka broker $KAFKA_BROKER ..."
 
 for suite in "$PROFILE_DIR"/*.yaml; do
-    base="$(basename "$suite" .yaml)"
+    base="$(resolve_schedule_name "$suite")"
     topic="${KAFKA_TOPIC_PREFIX}${base}"
     echo "Starting $base -> topic '$topic' ..."
     pwsh -Command "& '$SCRIPT_DIR/Run-MonitorSession.ps1' -TestSuiteFile '$suite' | & '$SCRIPT_DIR/Out-Kafka.ps1' -KafkaBroker '$KAFKA_BROKER' -KafkaTopic '$topic'" &

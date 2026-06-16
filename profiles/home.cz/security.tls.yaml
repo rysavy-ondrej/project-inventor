@@ -3,83 +3,83 @@ monitors:
     module: security_tls
     exec: src/security/security.tls
 
-# TLS handshake monitoring (port 443, modern TLSv1.3) for services a typical
+# TLS handshake monitoring (port 443, TLSv1.2) for services a typical
 # CZECH home user connects to. Targets are grouped per service category. The
 # 'banking' category is especially relevant for TLS health in a Czech home.
 schedule:
   - test: security.tls
     write-to: home.cz.tls.streaming
     targets:
-        - { "target_host": "www.netflix.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.youtube.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "voyo.nova.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.ceskatelevize.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "open.spotify.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.max.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.netflix.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.youtube.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "voyo.nova.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.ceskatelevize.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "open.spotify.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.max.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
     repeat-every: 5m
 
   - test: security.tls
     write-to: home.cz.tls.gaming
     targets:
-        - { "target_host": "store.steampowered.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.playstation.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.xbox.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.epicgames.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.nintendo.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.riotgames.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "store.steampowered.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.playstation.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.xbox.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.epicgames.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.nintendo.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.riotgames.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
     repeat-every: 5m
 
   - test: security.tls
     write-to: home.cz.tls.social
     targets:
-        - { "target_host": "www.facebook.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.instagram.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.tiktok.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.reddit.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "x.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "discord.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.facebook.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.instagram.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.tiktok.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.reddit.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "x.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "discord.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
     repeat-every: 5m
 
   - test: security.tls
     write-to: home.cz.tls.news
     targets:
-        - { "target_host": "www.novinky.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.idnes.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.seznamzpravy.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.aktualne.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "ct24.ceskatelevize.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.irozhlas.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.novinky.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.idnes.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.seznamzpravy.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.aktualne.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "ct24.ceskatelevize.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.irozhlas.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
     repeat-every: 10m
 
   - test: security.tls
     write-to: home.cz.tls.shopping
     targets:
-        - { "target_host": "www.alza.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.mall.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.czc.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.heureka.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.rohlik.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.notino.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.alza.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.mall.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.czc.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.heureka.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.rohlik.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.notino.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
     repeat-every: 10m
 
   - test: security.tls
     write-to: home.cz.tls.banking
     targets:
-        - { "target_host": "www.csob.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.kb.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.csas.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.moneta.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.airbank.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.fio.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.csob.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.kb.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.csas.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.moneta.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.airbank.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.fio.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
     repeat-every: 5m
 
   - test: security.tls
     write-to: home.cz.tls.cloud
     targets:
-        - { "target_host": "www.google.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.seznam.cz", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "outlook.office365.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.icloud.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "www.dropbox.com", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
-        - { "target_host": "zoom.us", "target_port": 443, "tls_version": "TLSv1.3", "cipher_suites": ["TLS_AES_128_GCM_SHA256"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.google.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.seznam.cz", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "outlook.office365.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.icloud.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "www.dropbox.com", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
+        - { "target_host": "zoom.us", "target_port": 443, "tls_version": "TLSv1.2", "cipher_suites": ["ECDHE-RSA-AES256-GCM-SHA384"], "elliptic_curves": [], "extensions": [], "timeout": 6 }
     repeat-every: 5m

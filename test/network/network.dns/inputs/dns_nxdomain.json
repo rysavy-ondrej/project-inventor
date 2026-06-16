@@ -1,0 +1,8 @@
+{
+    "_comment": "Negative (per-domain): NXDOMAIN is counted as a failed test but the run still completes. Proves per-domain failures are surfaced in the summary, not swallowed.",
+    "target_hosts": ["this-domain-should-not-exist-inventor-test.cz"],
+    "query_type": "A",
+    "nameservers": ["8.8.8.8"],
+    "expect_status": "completed",
+    "expect_failed_tests": 1
+}

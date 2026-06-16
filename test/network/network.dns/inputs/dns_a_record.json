@@ -1,0 +1,8 @@
+{
+    "_comment": "Basic A-record resolution of two stable domains via a public resolver.",
+    "target_hosts": ["example.com", "www.vutbr.cz"],
+    "query_type": "A",
+    "nameservers": ["8.8.8.8"],
+    "expect_status": "completed",
+    "expect_failed_tests": 0
+}

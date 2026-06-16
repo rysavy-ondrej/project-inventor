@@ -51,7 +51,7 @@ own `enterprise.cz.<test>.<category>` output file.
 - **DNS** adds the **CZ.NIC ODVR** open resolver (`193.17.47.1`) alongside
   Google (`8.8.8.8`), Cloudflare (`1.1.1.1`) and Quad9 (`9.9.9.9`); `.cz`
   domains are resolved through it.
-- **TLS** targets use modern `TLSv1.3` with `TLS_AES_128_GCM_SHA256` on port
+- **TLS** targets use `TLSv1.2` with `ECDHE-RSA-AES256-GCM-SHA384` on port
   `443`. **Identity** and **egov** run at tighter intervals — a TLS failure on
   the SSO gateway or a statutory portal blocks business-critical access.
 - **Ping** caveat: many cloud and Czech eGovernment endpoints rate-limit or
