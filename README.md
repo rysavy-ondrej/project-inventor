@@ -44,117 +44,95 @@ The following test case specifications are used to implement the test cases.
 | [No SQL databases](src/other/other.nosql/) | Other | Tests operations for selected NoSQL databases, assessing their performance and scalability under various data loads. |
 | [security.ldap](src/security/security.ldap/) | Security | Tests LDAP protocol implementations for managing and accessing distributed directory information services, ensuring that directory operations are performed efficiently and securely. |
 
-## Automated Deployment
+## Deployment
 
-The repository includes a one-step installer script ([deploy/install.sh](deploy/install.sh)) that downloads all necessary files directly from GitHub, arranges them in a self-contained directory, and optionally registers the testbed as a system service.
+The preferred way to deploy the testbed is the Docker Compose installer
+[deploy/autodeploy.sh](deploy/autodeploy.sh). It downloads the project sources
+from GitHub, assembles a self-contained deployment directory, and runs each
+selected **profile** — a folder of monitoring schedules under
+[profiles/](profiles/) — as its own Docker container. Every schedule in a
+profile is executed by the in-container runner and its results are published to
+a Kafka topic.
 
 ### Prerequisites
 
+Everything the monitors need (Python, PowerShell, `kcat`, the build toolchain)
+is baked into the container image, so the **host** only needs:
+
 | Requirement | Notes |
 | --- | --- |
-| `bash` 4+ | Ships with Linux; the installer aborts early on older shells (e.g. macOS's stock bash 3.2 — install a newer one with `brew install bash`) |
-| `python3` | Used to create the virtual environment and run the monitors |
-| `curl` or `wget` | For downloading files |
-| `gcc` + `python3-dev` | Build toolchain required to compile native dependencies such as `numpy` on a **minimal Ubuntu/Debian** machine that has no prebuilt wheel. Install with `sudo apt install gcc python3-dev`. The installer checks for both and offers to install them automatically on `apt`-based systems. |
-| `pwsh` (PowerShell) | Required only to use `Run-MonitorSession.ps1` / the output sink scripts or install a system service |
-| `kafkacat` (`kcat`) | Required only when results are piped into the `Out-Kafka.ps1` sink, which publishes each result to a Kafka topic (`-KafkaBroker`/`-KafkaTopic`). Install with `sudo apt-get install kafkacat`. |
-
-> **Minimal Ubuntu note:** a freshly provisioned Ubuntu image often lacks a C compiler and the Python development headers. Without them `pip install` fails while building `numpy`. Install the build prerequisites first:
->
-> ```bash
-> sudo apt update
-> sudo apt install gcc python3-dev
-> ```
+| `docker` | Docker Engine (or Docker Desktop on macOS/Windows). |
+| Docker Compose v2 | Invoked as `docker compose`; ships with Docker Desktop or the compose plugin. |
+| `bash` 4+ | The installer aborts on older shells (macOS's stock bash 3.2 — install a newer one with `brew install bash`). |
+| `tar` + (`curl` or `wget`) | Used to download and unpack the source tarball from GitHub. |
+| A reachable Kafka broker | Results are published to Kafka, so have a bootstrap broker ready (default `localhost:9092`). |
 
 ### Quick start
 
 Run the installer directly from GitHub — no clone needed:
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/rysavy-ondrej/project-inventor/main/deploy/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/rysavy-ondrej/project-inventor/main/deploy/autodeploy.sh)
 ```
 
-The script will prompt for a target directory (default: `./inventor-monitor`) and then download everything automatically.
+The script walks you through:
 
-### Installed layout
+1. **Target folder** — where to assemble the deployment (default `./inventor-testbed`).
+2. **Profiles** — pick which profiles to deploy; each becomes one container named `testbed-<profile>`.
+3. **Kafka** — the bootstrap broker(s) and an optional topic prefix.
+
+It then assembles the build context, generates `docker-compose.yaml`, a `.env`
+holding the Kafka settings, and a `run.sh` wrapper, and offers to build and
+start everything immediately. Run non-interactively (e.g. piped with no TTY) it
+deploys all profiles using the defaults.
+
+### Deployment layout
 
 ```text
 <target>/
-├── src/          # Monitoring test-case modules (Python source files)
-│   ├── network/
-│   ├── security/
-│   ├── webapp/
-│   ├── performance/
-│   └── other/
-├── bin/          # Runner + output sink scripts
-│   ├── Run-MonitorSession.ps1     # runs a schedule, emits results to stdout
-│   ├── Out-Console.ps1            # sink: print results to the console
-│   ├── Out-FileByDay.ps1          # sink: append results to a per-day file
-│   ├── Out-Kafka.ps1              # sink: publish results to a Kafka topic
-│   ├── inventor-testbed.run-all.sh
-│   └── inventor-testbed.kill-all.sh
-├── etc/          # Schedule configuration files (edit before running)
-│   ├── network.dns.yaml
-│   ├── network.ping.yaml
-│   └── ...
-└── var/          # Monitor output (written at runtime)
+├── app/                 # build context (Dockerfile, src/, testbed/) assembled from GitHub
+├── profiles/<name>/     # editable schedules, mounted read-only into each container
+├── docker-compose.yaml  # one service per selected profile
+├── .env                 # Kafka broker + topic prefix
+└── run.sh               # convenience wrapper around docker compose
 ```
 
-The `etc/` templates are pre-populated with minimal schedules targeting `www.example.com`. Edit them to point at your own hosts before starting the testbed.
+The `profiles/` schedules are mounted into the containers, so you can edit a
+profile's `*.yaml` and restart without rebuilding the image.
 
-### Running the testbed
+### Managing the deployment
 
-`Run-MonitorSession.ps1` runs a schedule and writes each measurement as a single-line JSON document to **standard output**. Where those results go is decided by the **output sink** the stream is piped into:
-
-| Sink script | Destination |
-| --- | --- |
-| `Out-Console.ps1` | The host console (stdout) |
-| `Out-FileByDay.ps1` | A per-day file `<BaseName>.<yyyy-MM-dd>.json` under `-OutPath` |
-| `Out-Kafka.ps1` | A Kafka topic (via `kcat`), keyed by each result's `Meta.TestId` |
-
-**PowerShell (Windows / cross-platform):**
-
-```powershell
-# Append results to a per-day file under var/:
-pwsh -Command "& bin/Run-MonitorSession.ps1 -TestSuiteFile etc/<schedule>.yaml | & bin/Out-FileByDay.ps1 -BaseName <schedule> -OutPath var/"
-
-# Or just print them to the console:
-pwsh -Command "& bin/Run-MonitorSession.ps1 -TestSuiteFile etc/<schedule>.yaml | & bin/Out-Console.ps1"
-
-# Or publish them to Kafka:
-pwsh -Command "& bin/Run-MonitorSession.ps1 -TestSuiteFile etc/<schedule>.yaml | & bin/Out-Kafka.ps1 -KafkaBroker localhost:9092 -KafkaTopic inventor.results"
-```
-
-**Bash — run all schedules in `etc/`:**
+Use the generated `run.sh` from the target folder:
 
 ```bash
-bash bin/inventor-testbed.run-all.sh etc/ var/
+cd <target>
+./run.sh              # build images (if needed) and start all profiles
+./run.sh up -d        # start in the background
+./run.sh logs         # follow container logs
+./run.sh ps           # show container status
+./run.sh down         # stop and remove containers
 ```
 
-`inventor-testbed.run-all.sh` accepts the schedule directory and output directory as positional arguments (and pipes each session into the per-day file sink), so the paths can be overridden without editing the files. To combine several sinks at once (e.g. file *and* Kafka), see the *Output sinks* section of [testbed/Readme.md](testbed/Readme.md).
+To change the Kafka broker or topic prefix later, edit `.env` and re-run `./run.sh`.
 
-### System service installation
+### Kafka topics
 
-At the end of the install, the script asks whether to register the testbed as a persistent system service:
+Each schedule publishes to `<topic-prefix><name>`, where `<name>` is resolved
+from the schedule YAML in priority order:
 
-| Platform | Init system | Service scope |
-| --- | --- | --- |
-| Linux | systemd | System-wide (`/etc/systemd/system/`) |
-| macOS | launchd | User (`~/Library/LaunchAgents`) or system (`/Library/LaunchDaemons`) |
+1. `monitors[].topic`
+2. `monitors[].name`
+3. the schedule file name without its `.yaml` extension
 
-Useful service commands after installation:
+(e.g. `network.dns.yaml` → topic `network.dns`). Set an explicit `topic:` on a
+profile's monitor entry to give it a dedicated topic — for example to publish a
+TLS 1.2 and a TLS 1.3 variant of the same monitor to separate topics.
 
-```bash
-# Linux (systemd)
-sudo systemctl status  inventor-monitor
-sudo systemctl restart inventor-monitor
-sudo journalctl -u     inventor-monitor -f
+### Manual and advanced runs
 
-# macOS (launchd)
-launchctl list | grep inventor-monitor
-launchctl stop  inventor-monitor
-tail -f var/inventor-monitor.log
-```
+To run individual schedules by hand (without Docker), pick an output sink, or
+combine several sinks at once, see the runner documentation in
+[testbed/Readme.md](testbed/Readme.md).
 
 ## License
 

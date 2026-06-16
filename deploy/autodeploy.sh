@@ -9,10 +9,10 @@
 # monitors[].topic, then monitors[].name, then the file name without .yaml
 # (e.g. network.dns.yaml -> topic "network.dns").
 #
-# Like install.sh, autodeploy.sh downloads the project sources from GitHub (a
-# branch tarball) and assembles a self-contained deployment folder from them, so
-# it can run straight from `curl ... | bash` without a local clone. It then
-# generates a run.sh that brings the whole environment up with docker compose.
+# autodeploy.sh downloads the project sources from GitHub (a branch tarball) and
+# assembles a self-contained deployment folder from them, so it can run straight
+# from `curl ... | bash` without a local clone. It then generates a run.sh that
+# brings the whole environment up with docker compose.
 
 set -euo pipefail
 
