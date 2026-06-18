@@ -218,13 +218,15 @@ def extract_cert_data(cert):
     subject_cn = subject_components.get('CN')
     issuer_cn = issuer_components.get('CN')
 
+    # Absent string fields are null (consistent with subject_cn/issuer_cn above,
+    # which are None when the component is missing), not an "N/A" placeholder.
     if subject_components.get('O') is None:
-        subject_on = 'N/A'
+        subject_on = None
     else:
         subject_on = subject_components.get('O').replace('\xa0', ' ')
 
     if issuer_components.get('O') is None:
-        issuer_on = 'N/A'
+        issuer_on = None
     else:
         issuer_on = issuer_components.get('O').replace('\xa0', ' ')
 
@@ -264,9 +266,12 @@ def extract_extensions(cert):
     - dict: The certificate extensions
     """
 
-    key_usage = 'N/A'
-    extended_key_usage = 'N/A'
-    autorityInfoAccess = 'N/A'
+    # Scalar string fields are null when the extension is absent (not "N/A").
+    key_usage = None
+    extended_key_usage = None
+    # authority_info_access is a repeated (array) field; default to an empty list
+    # so the type stays an array even when the cert has no such extension.
+    autorityInfoAccess = []
 
     for i in range(cert.get_extension_count()):
         ext = cert.get_extension(i)
@@ -413,13 +418,18 @@ def perform_tls_handshake(run_id, hostname_or_ip, port, tls_version, cipher_suit
         res['target_port'] = port
         res['tls_version'] = ssl_conn.get_protocol_version_name()
         res['cipher_suite'] = ssl_conn.get_cipher_name()
-        res['elliptic_curve'] = elliptic_curves[0] if elliptic_curves else 'N/A'
-        res['SNIs'] = ssl_conn.get_servername().decode('utf-8') if ssl_conn.get_servername() else 'N/A'
-        res['alpn'] = ssl_conn.get_alpn_proto_negotiated().decode('utf-8') if ssl_conn.get_alpn_proto_negotiated() else 'N/A'
+        # Null (not "N/A") when no value applies: no curve requested, or the
+        # server returned no SNI / negotiated no ALPN protocol.
+        res['elliptic_curve'] = elliptic_curves[0] if elliptic_curves else None
+        res['SNIs'] = ssl_conn.get_servername().decode('utf-8') if ssl_conn.get_servername() else None
+        res['alpn'] = ssl_conn.get_alpn_proto_negotiated().decode('utf-8') if ssl_conn.get_alpn_proto_negotiated() else None
         res['client_extension_count'] = 0
         res['server_extension_count'] = 0
-        res['client_extension_names'] = "N/A"
-        res['server_extension_names'] = "N/A"
+        # These are repeated (array) fields; initialize to empty lists, not a
+        # string placeholder, so the type stays an array if enhance_tls_info
+        # (the packet-capture pass) does not run or finds no handshake packets.
+        res['client_extension_names'] = []
+        res['server_extension_names'] = []
         res['addition_server_cert_info'] = extract_extensions(cert)
         res['server_cert_chain'] = [extract_cert_data(cert) for cert in cert_chain]
         res['server_cert'] = extract_cert_data(cert)

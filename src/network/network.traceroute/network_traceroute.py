@@ -48,21 +48,23 @@ def process_hops(res):
         last_distance = hop.distance
     return hops
 
-def calculate_path_stability(paths, target_reached):
+def calculate_path_stability(paths):
+    # path_stability is a numeric field (double in [0, 1]). Return None when it
+    # cannot be computed (no paths / zero-length paths) rather than a string
+    # placeholder, so the JSON type stays numeric-or-null. Whether the target was
+    # reached is reported separately via the 'target_reached' field.
     # Fix: guard empty paths to avoid np.var([]) returning NaN (breaks JSON)
     if not paths:
-        return "N/A"
+        return None
     max_length = max(len(path) for path in paths)
     if max_length == 0:
-        return "N/A"
+        return None
     for path in paths:
         while len(path) < max_length:
             path.append(None)
     variability = np.var([len(set(filter(None, path))) for path in paths])
     max_variability = max_length - 1 if max_length > 1 else 1
     stability = round(float(1 - (variability / max_variability)), 4)
-    if not target_reached:
-        stability = "Target not reached"
     return stability
 
 def traceroute_test(run_id, target, ttl_max, packet_size, count, interval, timeout, repeats):
@@ -101,7 +103,7 @@ def traceroute_test(run_id, target, ttl_max, packet_size, count, interval, timeo
         except ICMPLibError as e:
             run_details.append({'run': run_cnt, 'hops': [str(e)]})
 
-    path_stability = calculate_path_stability(paths, target_reached)
+    path_stability = calculate_path_stability(paths)
     packet_loss = round((1 - packet_received / packet_sent) * 100, 2) if packet_sent > 0 else 0
     data = {
         'run_id': run_id,
@@ -111,6 +113,7 @@ def traceroute_test(run_id, target, ttl_max, packet_size, count, interval, timeo
             'min_hops': min_hops,
             'max_hops': max_hops,
             'path_stability': path_stability,
+            'target_reached': target_reached,
             'packet_loss': packet_loss
         },
         'details': run_details

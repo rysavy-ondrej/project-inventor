@@ -61,7 +61,7 @@ def handle_exception(domain, response_code, resolution_time, e):
     exception_data = {
         'target_host': str(domain),
         'IP_address': [],
-        'expiration_time': 'N/A',
+        'expiration_time': None,
         'response_time': convert_to_mili_seconds(resolution_time),
         'status': 'failed',
         'status_code': response_code,
@@ -332,13 +332,18 @@ def dns_resolve(query_domains, query_type, run_id, nameservers=None):
             detail['status'] = 'success'
             detail['status_code'] = rcode.to_text(answers.response.rcode())
             detail['nameservers_used'] = nameservers
-            detail['ds'] = check_ds(answers) if query_type == 'DS' else 'N/A'
-            detail['cname'] = get_cname(answers) if query_type == 'CNAME' else 'N/A'
-            detail['ns'] = get_ns(answers) if query_type == 'NS' else 'N/A'
-            detail['soa'] = get_soa(answers) if query_type == 'SOA' else 'N/A'
-            detail['caa'] = get_caa(answers) if query_type == 'CAA' else 'N/A'
-            detail['dnskey'] = get_dnskey(answers) if query_type == 'DNSKEY' else 'N/A'
-            detail['rrsig'] = get_rrsig(answers) if query_type == 'RRSIG' else 'N/A'
+            # Null when the query type does not populate the field, not an "N/A"
+            # string: ds/soa are object types, cname/ns are strings.
+            detail['ds'] = check_ds(answers) if query_type == 'DS' else None
+            detail['cname'] = get_cname(answers) if query_type == 'CNAME' else None
+            detail['ns'] = get_ns(answers) if query_type == 'NS' else None
+            detail['soa'] = get_soa(answers) if query_type == 'SOA' else None
+            # caa/dnskey/rrsig are repeated (array) fields; use an empty list when
+            # the query type does not populate them, not a string placeholder, so
+            # the JSON type stays an array.
+            detail['caa'] = get_caa(answers) if query_type == 'CAA' else []
+            detail['dnskey'] = get_dnskey(answers) if query_type == 'DNSKEY' else []
+            detail['rrsig'] = get_rrsig(answers) if query_type == 'RRSIG' else []
 
         except dns.resolver.NXDOMAIN as e:
             detail = handle_exception(domain, 'NXDOMAIN', time.time() - start_time, e)

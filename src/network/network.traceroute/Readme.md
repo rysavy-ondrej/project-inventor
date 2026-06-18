@@ -41,8 +41,9 @@ message Summary {
   string IP_address = 1;   // Target host IP address
   int32 min_hops = 2;   // Minimum number of hops
   int32 max_hops = 3;  // Maximum number of hops
-  double path_stability = 4;  // Path stability, a value between 0 and 1 (0: unstable, 1: stable)
-  double packet_loss = 5;   // Packet loss percentage
+  double path_stability = 4;  // Path stability, a value between 0 and 1 (0: unstable, 1: stable); null if it cannot be computed
+  bool target_reached = 5;  // Whether the traceroute reached the target host
+  double packet_loss = 6;   // Packet loss percentage
 }
 
 message Detail {
@@ -91,6 +92,7 @@ OUTPUT:
         "min_hops": 9,
         "max_hops": 9,
         "path_stability": 1.0,
+        "target_reached": true,
         "packet_loss": 0.0
     },
     "details": [
@@ -223,7 +225,8 @@ OUTPUT
         "IP_address": "192.168.1.11",
         "min_hops": 3,
         "max_hops": 3,
-        "path_stability": "Target not reached",
+        "path_stability": 0.0,
+        "target_reached": false,
         "packet_loss": 0.0
     },
     "details": [
