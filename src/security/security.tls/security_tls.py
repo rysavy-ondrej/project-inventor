@@ -7,6 +7,7 @@
 import json
 from multiprocessing import Queue
 import socket
+import ipaddress
 from OpenSSL import SSL
 from OpenSSL import crypto
 from OpenSSL._util import lib as _ssl_lib
@@ -67,6 +68,68 @@ def handle_exception(e, msg):
     return {'error_msg': f'{msg}', 'description': f'{str(e)}'}
 
 
+def explain_ssl_error(raw_text):
+    """
+    Map a raw OpenSSL/pyOpenSSL error string to a human-readable explanation.
+
+    The handshake errors surfaced by OpenSSL (e.g. "sslv3 alert handshake
+    failure") are accurate but terse; this adds the most likely cause so the
+    result is actionable without having to interpret the raw alert.
+
+    Parameters:
+    - raw_text (str): The raw error string (str(exception)).
+
+    Returns:
+    - str | None: A plain-language explanation, or None if no specific
+      interpretation is known.
+    """
+    text = raw_text.lower()
+    # Most-specific substrings first; the raw OpenSSL text is preserved by the
+    # caller, so these only need to add the likely cause.
+    hints = [
+        ('handshake failure',
+         'The server rejected the handshake because no parameters were shared. '
+         'Commonly the offered cipher_suites do not match the server certificate '
+         'key type (e.g. an ECDHE-RSA cipher against an ECDSA-only server), or '
+         'none of the offered cipher_suites/elliptic_curves are accepted.'),
+        ('protocol version',
+         'The server does not support the requested tls_version. The host may '
+         'only offer a different version (e.g. TLS 1.2); try another tls_version.'),
+        ('unexpected eof',
+         'The server closed the connection during the handshake without sending '
+         'a TLS alert. This is often caused by a missing/incorrect SNI (the target '
+         'requires Server Name Indication) or an edge/CDN dropping unrecognized '
+         'ClientHellos.'),
+        ('internal error',
+         'The server reported an internal error during the handshake. This is '
+         'often caused by a missing/incorrect SNI so the edge/CDN cannot select a '
+         'backend or certificate for the requested host.'),
+        ('no protocols available',
+         'The requested tls_version is disabled in the local OpenSSL build '
+         '(e.g. TLS 1.0/1.1 are no longer enabled). Use a newer tls_version.'),
+        ('wrong version number',
+         'The server did not speak TLS on this port (a non-TLS response was '
+         'received). Check target_port.'),
+        ('unknown ca',
+         'The server presented a certificate chain from an unknown CA.'),
+        ('certificate expired',
+         'The server certificate has expired.'),
+        ('bad certificate',
+         'The server rejected the client certificate.'),
+        ('decode error',
+         'The server could not decode the ClientHello (a malformed extension or '
+         'field). Check the configured extensions/elliptic_curves.'),
+        ('ciphersuite',
+         'One or more of the configured cipher_suites is invalid for this '
+         'tls_version. Note TLS 1.3 uses its own cipher suite names '
+         '(e.g. TLS_AES_256_GCM_SHA384).'),
+    ]
+    for needle, hint in hints:
+        if needle in text:
+            return hint
+    return None
+
+
 def ip_to_hostname(ip):
     """
     Convert an IP address to a hostname
@@ -98,6 +161,25 @@ def hostname_to_ip(hostname):
         return ip
     except Exception as e:
         return hostname
+
+def is_ip_address(value):
+    """
+    Check whether a string is a literal IPv4 or IPv6 address.
+
+    Used to decide whether a target can be sent as SNI: SNI must be a hostname,
+    never an IP literal.
+
+    Parameters:
+    - value (str): The host string to test.
+
+    Returns:
+    - bool: True if value is an IP address literal, False otherwise.
+    """
+    try:
+        ipaddress.ip_address(value)
+        return True
+    except ValueError:
+        return False
 
 def extract_cert_data(cert):
     """
@@ -295,10 +377,20 @@ def perform_tls_handshake(run_id, hostname_or_ip, port, tls_version, cipher_suit
         ssl_conn = SSL.Connection(context, sock)
         ssl_conn.setblocking(1)
 
+        # Determine the SNI to send. An explicit 'sni' extension always wins;
+        # otherwise default to the target hostname, which is what ordinary TLS
+        # clients do and what most CDN/virtual-hosted servers require to route
+        # the handshake and select a certificate. SNI must be a hostname, so it
+        # is skipped when the target is a literal IP address.
+        sni_host = None
         if extensions:
             for ext in extensions:
                 if ext['type'] == 'sni':
-                    ssl_conn.set_tlsext_host_name(ext['data'].encode('utf-8'))
+                    sni_host = ext['data']
+        if sni_host is None and not is_ip_address(hostname_or_ip):
+            sni_host = hostname_or_ip
+        if sni_host:
+            ssl_conn.set_tlsext_host_name(sni_host.encode('utf-8'))
 
         # Initiate the SSL handshake
         ssl_conn.set_connect_state()
@@ -335,9 +427,13 @@ def perform_tls_handshake(run_id, hostname_or_ip, port, tls_version, cipher_suit
         sock.close()
 
     except SSL.Error as e:
-        data = handle_exception(e, 'SSL Error')
+        # Enrich the terse OpenSSL message with a likely cause when one can be
+        # inferred, while preserving the original text for diagnosis.
+        raw = str(e)
+        hint = explain_ssl_error(raw)
+        description = f'{hint} (raw error: {raw})' if hint else raw
         res['status'] = 'error'
-        res['error'] = data
+        res['error'] = {'error_msg': 'SSL Error', 'description': description}
 
     except Exception as e:
         data = handle_exception(e, 'Error establishing connection')
@@ -445,7 +541,11 @@ def enhance_tls_info(tls_info, handshake_packets):
             target['src_p'] = packet[TCP].sport
             for ext in msg.ext:
                 client_extensions.append(ext.name)
-        elif (msg.msgtype == 20 or msg.msgtype == 4) and check_tuple(packet, target):
+        # Guard the msgtype access with hasattr: encrypted TLS 1.2 Finished
+        # records (content type 22) cannot be dissected by scapy, so they arrive
+        # as raw content with no 'msgtype' field. Reading it unguarded raised
+        # AttributeError('msgtype'), which aborted otherwise-successful handshakes.
+        elif hasattr(msg, 'msgtype') and (msg.msgtype == 20 or msg.msgtype == 4) and check_tuple(packet, target):
             end_time = packet.time
         elif isinstance(msg, TLSServerHello) and check_tuple(packet, target):
             for ext in msg.ext:
@@ -463,6 +563,14 @@ def enhance_tls_info(tls_info, handshake_packets):
 def run(params : dict, run_id : int, queue : Queue = None) -> dict:
     if params:
         try:
+            # Reset the shared capture buffer so this run only analyzes its own
+            # handshake packets. The list is a module global appended to by the
+            # sniffer thread; without this reset a long-lived session would carry
+            # packets (and encrypted messages) from earlier runs into this one,
+            # corrupting extension counts/timings and re-triggering parse errors.
+            global handshake_packets
+            handshake_packets = []
+
             target_host = params.get('target_host', None)
             if target_host is None:
                 raise ValueError("Target host is not specified in the configuration file")

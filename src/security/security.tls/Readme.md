@@ -333,3 +333,33 @@ OUTPUT
     }
 }
 ```
+
+# Observed Error Responses
+
+```json
+{"Meta":{"Timestamp":"2026-06-18T05:31:46","TestId":"security.tls.2"},"Config":{"cipher_suites":["ECDHE-RSA-AES256-GCM-SHA384"],"timeout":6,"extensions":[],"tls_version":"TLSv1.2","elliptic_curves":[],"target_host":"www.youtube.com","target_port":443},"Result":{"status":"error","error":{"error_code":"TLS_TEST_ERROR","description":"Error running TLS test: msgtype"}}}
+```
+
+```json
+{"Meta":{"Timestamp":"2026-06-18T05:30:47","TestId":"security.tls.1"},"Config":{"cipher_suites":["ECDHE-RSA-AES256-GCM-SHA384"],"timeout":6,"extensions":[],"tls_version":"TLSv1.2","elliptic_curves":[],"target_host":"www.netflix.com","target_port":443},"Result":{"run_id":0,"status":"error","error":{"error_msg":"SSL Error","description":"(-1, 'Unexpected EOF')"}}}
+```
+
+```json
+{"Meta":{"Timestamp":"2026-06-18T05:31:05","TestId":"security.tls.6"},"Config":{"cipher_suites":["ECDHE-RSA-AES256-GCM-SHA384"],"timeout":6,"extensions":[],"tls_version":"TLSv1.2","elliptic_curves":[],"target_host":"www.max.com","target_port":443},"Result":{"run_id":0,"status":"error","error":{"error_msg":"SSL Error","description":"[('SSL routines', '', 'tlsv1 alert internal error')]"}}}
+```
+
+```json
+{"Meta":{"Timestamp":"2026-06-18T05:30:09","TestId":"security.tls.12"},"Config":{"target_host":"www.riotgames.com","elliptic_curves":[],"target_port":443,"cipher_suites":["TLS_AES_256_GCM_SHA384","TLS_AES_128_GCM_SHA256","TLS_CHACHA20_POLY1305_SHA256"],"timeout":6,"tls_version":"TLSv1.3","extensions":[]},"Result":{"run_id":0,"status":"error","error":{"error_msg":"SSL Error","description":"[('SSL routines', '', 'tlsv1 alert protocol version')]"}}}
+```
+
+```json
+{"Meta":{"Timestamp":"2026-06-18T05:30:32","TestId":"security.tls.35"},"Config":{"cipher_suites":["ECDHE-RSA-AES256-GCM-SHA384"],"timeout":6,"extensions":[],"tls_version":"TLSv1.2","elliptic_curves":[],"target_host":"www.airbank.cz","target_port":443},"Result":{"run_id":0,"status":"error","error":{"error_msg":"SSL Error","description":"[('SSL routines', '', 'sslv3 alert handshake failure')]"}}}
+```
+
+```json
+{"Meta":{"Timestamp":"2026-06-18T05:30:40","TestId":"security.tls.3"},"Config":{"target_host":"voyo.nova.cz","elliptic_curves":[],"target_port":443,"cipher_suites":["TLS_AES_256_GCM_SHA384","TLS_AES_128_GCM_SHA256","TLS_CHACHA20_POLY1305_SHA256"],"timeout":6,"tls_version":"TLSv1.3","extensions":[]},"Result":{"run_id":0,"status":"error","error":{"error_msg":"Error establishing connection","description":"[Errno 111] Connection refused"}}}
+```
+
+```json
+{"Meta":{"Timestamp":"2026-06-18T05:31:47","TestId":"security.tls.40"},"Config":{"cipher_suites":["ECDHE-RSA-AES256-GCM-SHA384"],"timeout":6,"extensions":[],"tls_version":"TLSv1.2","elliptic_curves":[],"target_host":"www.icloud.com","target_port":443},"Result":{"run_id":0,"status":"error","handshake_time":74,"IP_address":"23.64.142.194","target_port":443,"tls_version":"TLSv1.2","cipher_suite":"ECDHE-RSA-AES256-GCM-SHA384","elliptic_curve":"N/A","SNIs":"N/A","alpn":"N/A","client_extension_count":0,"server_extension_count":0,"client_extension_names":"N/A","server_extension_names":"N/A","error":{"error_msg":"Error establishing connection","description":"[]"}}}
+```

@@ -20,6 +20,14 @@
     unreachable broker no longer blocks the (single-threaded) PowerShell pipeline
     that schedules and runs the measurements.
 
+    librdkafka reconnects to a broker on its own while the kcat process stays
+    alive. Should the kcat producer itself die (for example, it exits on a fatal
+    librdkafka error after the broker disappears), the script detects the dead
+    process and starts a fresh producer so delivery resumes once the broker is
+    reachable again. Restart attempts are throttled (see -ReconnectIntervalSeconds)
+    so a broker that stays down does not trigger a tight respawn loop; results that
+    arrive during the throttle window are dropped instead of blocking the pipeline.
+
     The Kafka message key is set to the result's Meta.TestId (when present) so that
     consumers can partition or route messages per test. Per-message keys are passed
     to the shared producer using kcat's key delimiter mode (-K).
@@ -50,6 +58,12 @@
     the producer applies backpressure (further writes wait) instead of growing
     without limit, while expiring messages (see -TimeoutSeconds) keep draining it.
     Defaults to 100000 (the librdkafka default).
+
+.PARAMETER ReconnectIntervalSeconds
+    Minimum time, in seconds, between attempts to restart the kcat producer after
+    it has exited. This throttles reconnection so a broker that stays down does not
+    cause a rapid process-respawn loop. Results received while waiting out this
+    interval are dropped rather than blocking the pipeline. Defaults to 5 seconds.
 
 .PARAMETER InputObject
     The result line(s) received from the pipeline. Typically the standard output
@@ -87,6 +101,10 @@ param (
     [ValidateRange(1, 10000000)]
     [int]$MaxQueueMessages = 100000,
 
+    [Parameter(HelpMessage = "Minimum seconds between attempts to restart a dead kcat producer (avoids a respawn loop while the broker stays down).")]
+    [ValidateRange(1, 3600)]
+    [int]$ReconnectIntervalSeconds = 60,
+
     [Parameter(ValueFromPipeline = $true, HelpMessage = "Result line received from the pipeline.")]
     [string]$InputObject
 )
@@ -113,35 +131,45 @@ Install it and run the script again, e.g.:
     # hold messages (and ultimately stall stdin) forever.
     $timeoutMs = $TimeoutSeconds * 1000
 
-    # Start a single, long-lived kcat producer and keep its stdin open for the
-    # whole session. ArgumentList avoids any manual quoting of the arguments.
-    $psi = [System.Diagnostics.ProcessStartInfo]::new()
-    $psi.FileName               = (Get-Command -Name 'kcat').Source
-    $psi.RedirectStandardInput  = $true
-    $psi.UseShellExecute        = $false
-    $psi.StandardInputEncoding  = [System.Text.UTF8Encoding]::new($false)  # no BOM
-    foreach ($a in @(
-            '-P'
-            '-b', $KafkaBroker
-            '-t', $KafkaTopic
-            '-K', $script:KeyDelimiter
-            '-X', "message.timeout.ms=$timeoutMs"
-            '-X', "queue.buffering.max.messages=$MaxQueueMessages"
-        )) {
-        $psi.ArgumentList.Add($a)
+    # Building the producer is factored into a scriptblock so it can be reused:
+    # the session starts one kcat here and, if that process later dies (e.g. kcat
+    # exits on a fatal librdkafka error after the broker goes away), the process
+    # block can spawn a fresh one to resume delivery once the broker is back.
+    # ArgumentList avoids any manual quoting of the arguments.
+    $script:NewProducer = {
+        $psi = [System.Diagnostics.ProcessStartInfo]::new()
+        $psi.FileName               = (Get-Command -Name 'kcat').Source
+        $psi.RedirectStandardInput  = $true
+        $psi.UseShellExecute        = $false
+        $psi.StandardInputEncoding  = [System.Text.UTF8Encoding]::new($false)  # no BOM
+        foreach ($a in @(
+                '-P'
+                '-b', $KafkaBroker
+                '-t', $KafkaTopic
+                '-K', $script:KeyDelimiter
+                '-X', "message.timeout.ms=$timeoutMs"
+                '-X', "queue.buffering.max.messages=$MaxQueueMessages"
+            )) {
+            $psi.ArgumentList.Add($a)
+        }
+
+        Write-Verbose "Starting shared kcat producer: $($psi.FileName) $($psi.ArgumentList -join ' ')"
+        $p = [System.Diagnostics.Process]::Start($psi)
+        # Promptly hand each line to kcat rather than waiting for the writer to fill.
+        $p.StandardInput.AutoFlush = $true
+        return $p
     }
 
-    Write-Verbose "Starting shared kcat producer: $($psi.FileName) $($psi.ArgumentList -join ' ')"
+    # Timestamp of the last (re)start attempt, used to throttle reconnects.
+    $script:LastStartAttempt = Get-Date
+
     try {
-        $script:Producer = [System.Diagnostics.Process]::Start($psi)
+        $script:Producer = & $script:NewProducer
     }
     catch {
         Write-Error "Failed to start the kcat producer: $($_.Exception.Message)"
         exit 1
     }
-
-    # Promptly hand each line to kcat rather than waiting for the writer to fill.
-    $script:Producer.StandardInput.AutoFlush = $true
 }
 
 process {
@@ -150,11 +178,30 @@ process {
         return
     }
 
-    # If the producer has died (e.g. fatal kcat error), surface it and stop
-    # silently dropping results.
-    if ($script:Producer.HasExited) {
-        Write-Error "The kcat producer exited unexpectedly (code $($script:Producer.ExitCode)); cannot publish further results."
-        return
+    # If the producer has died (e.g. kcat exited on a fatal error after the broker
+    # became unreachable), try to bring it back so delivery resumes once the broker
+    # is accessible again. Restart attempts are throttled to one per
+    # -ReconnectIntervalSeconds so a broker that stays down does not cause a tight
+    # respawn loop; results arriving inside that window are dropped rather than
+    # blocking the pipeline.
+    if ($null -eq $script:Producer -or $script:Producer.HasExited) {
+        if (((Get-Date) - $script:LastStartAttempt).TotalSeconds -lt $ReconnectIntervalSeconds) {
+            Write-Verbose "kcat producer is down; within the reconnect throttle window, dropping this result."
+            return
+        }
+
+        $exitCode = if ($script:Producer) { $script:Producer.ExitCode } else { 'n/a' }
+        if ($script:Producer) { $script:Producer.Dispose() }
+        $script:Producer = $null
+        $script:LastStartAttempt = Get-Date
+        try {
+            $script:Producer = & $script:NewProducer
+            Write-Warning "Restarted the kcat producer (previous exit code $exitCode); resuming delivery to $KafkaBroker."
+        }
+        catch {
+            Write-Error "kcat producer is down and could not be restarted: $($_.Exception.Message)"
+            return
+        }
     }
 
     # Use the test identifier as the message key when the payload carries one.
@@ -173,7 +220,12 @@ process {
         $script:Producer.StandardInput.WriteLine($line)
     }
     catch {
-        Write-Error "Failed to hand a result to the kcat producer: $($_.Exception.Message)"
+        # The write can fail if kcat exited between the liveness check above and
+        # this WriteLine (broken stdin pipe). Drop the dead producer so the next
+        # result triggers a throttled restart rather than repeating this failure.
+        Write-Warning "Failed to hand a result to the kcat producer (will attempt to reconnect): $($_.Exception.Message)"
+        try { if ($script:Producer) { $script:Producer.Dispose() } } catch { }
+        $script:Producer = $null
     }
 }
 
