@@ -74,7 +74,7 @@ ServerCertificate {
     string issuer_country = 6; // The country of the issuer
     string not_before = 7; // The not before date of the certificate
     string not_after = 8; // The not after date of the certificate
-    int64 serial_number = 9; // The serial number of the certificate
+    string serial_number = 9; // The certificate serial number, as a decimal string (an identifier up to 160 bits, so it can exceed a 64-bit integer)
     int32 version = 10; // The version of the certificate
     string signature_algorithm = 11; // The signature algorithm of the certificate
     int32 public_key_length = 12; // The public key size of the certificate
@@ -209,7 +209,7 @@ OUTPUT:
             "issuer_country": "US",
             "not_before": "2024-01-30 00:00:00",
             "not_after": "2025-03-01 23:59:59",
-            "serial_number": 9781292415466404211737309641897402759,
+            "serial_number": "9781292415466404211737309641897402759",
             "version": 3,
             "signature_algorithm": "sha256WithRSAEncryption",
             "public_key_length": 2048,
@@ -224,7 +224,7 @@ OUTPUT:
             "issuer_country": "US",
             "not_before": "2021-03-30 00:00:00",
             "not_after": "2031-03-29 23:59:59",
-            "serial_number": 17226682543955925492517929723242541158,
+            "serial_number": "17226682543955925492517929723242541158",
             "version": 3,
             "signature_algorithm": "sha256WithRSAEncryption",
             "public_key_length": 2048,
@@ -240,7 +240,7 @@ OUTPUT:
         "issuer_country": "US",
         "not_before": "2024-01-30 00:00:00",
         "not_after": "2025-03-01 23:59:59",
-        "serial_number": 9781292415466404211737309641897402759,
+        "serial_number": "9781292415466404211737309641897402759",
         "version": 3,
         "signature_algorithm": "sha256WithRSAEncryption",
         "public_key_length": 2048,

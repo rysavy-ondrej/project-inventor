@@ -241,7 +241,10 @@ def extract_cert_data(cert):
         'issuer_country': issuer_country,
         'not_before': not_before,
         'not_after': not_after,
-        'serial_number': cert.get_serial_number(),
+        # X.509 serial numbers are identifiers (up to 160 bits), not quantities,
+        # and routinely exceed UINT64. Emit as a decimal string so downstream
+        # consumers with 64-bit integer columns cannot overflow.
+        'serial_number': str(cert.get_serial_number()),
         'version': cert.get_version() + 1,  # Certificates are 0-indexed, but typically presented as 1-indexed
         'signature_algorithm': signature_algorithm,
         'public_key_length': public_key_bits,
