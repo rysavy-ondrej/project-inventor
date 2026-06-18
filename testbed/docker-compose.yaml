@@ -81,6 +81,9 @@ services:
     build:
       context: ..
       dockerfile: Dockerfile
+    # Raw sockets (icmplib traceroute) require CAP_NET_RAW.
+    cap_add:
+      - NET_RAW
     working_dir: /inventor/testbed
     command: pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/network.traceroute.yaml | & ./Out-FileByDay.ps1 -BaseName network.traceroute -OutPath ./results/"
     volumes:
@@ -90,6 +93,9 @@ services:
     build:
       context: ..
       dockerfile: Dockerfile
+    # Packet capture (scapy sniff of the TLS handshake) requires CAP_NET_RAW.
+    cap_add:
+      - NET_RAW
     working_dir: /inventor/testbed
     command: pwsh -Command "& ./Run-MonitorSession.ps1 -TestSuiteFile schedules/security.tls.yaml | & ./Out-FileByDay.ps1 -BaseName security.tls -OutPath ./results/"
     volumes:

@@ -26,11 +26,15 @@ RUN apt-get update
     # Install PowerShell
 RUN apt-get install -y powershell 
 RUN rm -rf /var/lib/apt/lists/*
-    # Install libpcap-dev for packet capture functionality -- not widely available!
-# RUN apt-get install -y libpcap-dev
-    # Install kcat (kafkacat) — required by the Out-Kafka.ps1 result sink to
-    # publish monitoring results to a Kafka topic.
-RUN apt-get update && apt-get install -y kcat && rm -rf /var/lib/apt/lists/*
+    # Install runtime system libraries / tools:
+    #  - libpcap0.8: the runtime libpcap shared library. scapy loads it via
+    #    ctypes to compile the BPF capture filter used by the security.tls
+    #    monitor's sniffer; without it scapy raises
+    #    "Cannot set filter: libpcap is not available. Cannot compile filter !".
+    #    Only the runtime lib is needed here, not the libpcap-dev headers.
+    #  - kcat (kafkacat): required by the Out-Kafka.ps1 result sink to publish
+    #    monitoring results to a Kafka topic.
+RUN apt-get update && apt-get install -y libpcap0.8 kcat && rm -rf /var/lib/apt/lists/*
 
 # Copy the dependency file to leverage Docker cache
 COPY ./deploy/inventor-requirements.txt .

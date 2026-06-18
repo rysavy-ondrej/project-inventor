@@ -465,6 +465,12 @@ info "Writing $COMPOSE_FILE ..."
       context: ./app
       dockerfile: Dockerfile
     restart: on-failure
+    # Raw-socket capability for the packet-capture monitors a profile runs:
+    # security.tls (scapy sniff) and network.ping (raw ICMP) both need
+    # CAP_NET_RAW. Without it the capture/raw socket fails with
+    # "Operation not permitted" even though libpcap is installed in the image.
+    cap_add:
+      - NET_RAW
     working_dir: /inventor/testbed
     environment:
       PROFILE_DIR: /inventor/profiles/${prof}
